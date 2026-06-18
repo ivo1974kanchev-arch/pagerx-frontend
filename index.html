@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PageRX — AI Landing Page Analyzer</title>
+    <meta name="description" content="Analyze your landing page from 5 perspectives: security, code quality, UX, completeness, and business viability. Get actionable insights in seconds.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ── Reset & Base ── */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0d0d1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        ::selection { background: #d4a84344; color: #d4a843; }
+
+        /* ── Gold Accent ── */
+        :root {
+            --gold: #d4a843;
+            --gold-light: #e8c46a;
+            --gold-dark: #b08a30;
+            --bg-dark: #0d0d1a;
+            --bg-card: #14142a;
+            --bg-card-hover: #1c1c3a;
+            --bg-input: #1a1a35;
+            --border: #2a2a50;
+            --text: #e0e0e0;
+            --text-muted: #8888aa;
+            --gradient: linear-gradient(135deg, #1a1a3e 0%, #0d0d1a 100%);
+        }
+
+        /* ── Utility ── */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        .section { padding: 80px 0; }
+        .section-title { font-size: 32px; font-weight: 700; text-align: center; margin-bottom: 16px; color: #fff; }
+        .section-subtitle { text-align: center; color: var(--text-muted); font-size: 16px; max-width: 600px; margin: 0 auto 48px; }
+        .gold-text { color: var(--gold); }
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px; border-radius: 8px; font-weight: 600; font-size: 15px;
+            cursor: pointer; transition: all 0.2s; border: none; text-decoration: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #0d0d1a;
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(212,168,67,0.3); }
+        .btn-secondary {
+            background: transparent; color: var(--gold); border: 1px solid var(--gold);
+        }
+        .btn-secondary:hover { background: var(--gold); color: #0d0d1a; }
+
+        /* ── Navigation ── */
+        nav {
+            padding: 16px 0;
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(13,13,26,0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+        nav .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+        .logo span { color: var(--gold); }
+        .nav-links { display: flex; gap: 24px; align-items: center; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--gold); }
+
+        /* ── Hero ── */
+        .hero {
+            padding: 100px 0 80px;
+            background: var(--gradient);
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -50%; right: -20%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(212,168,67,0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-content { text-align: center; position: relative; z-index: 1; }
+        .hero h1 { font-size: 48px; font-weight: 800; line-height: 1.15; margin-bottom: 16px; color: #fff; }
+        .hero h1 span { background: linear-gradient(135deg, var(--gold), var(--gold-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { font-size: 18px; color: var(--text-muted); max-width: 600px; margin: 0 auto 32px; }
+        .hero-input-group {
+            display: flex; gap: 12px; max-width: 600px; margin: 0 auto;
+            background: var(--bg-input); border-radius: 12px; padding: 6px;
+            border: 1px solid var(--border); align-items: center;
+        }
+        .hero-input-group input {
+            flex: 1; background: transparent; border: none; padding: 14px 16px;
+            color: #fff; font-size: 15px; outline: none;
+        }
+        .hero-input-group input::placeholder { color: #555; }
+        .hero-input-group .btn { border-radius: 8px; padding: 14px 24px; }
+        .hero-stats {
+            display: flex; justify-content: center; gap: 48px; margin-top: 48px;
+        }
+        .hero-stat { text-align: center; }
+        .hero-stat-number { display: block; font-size: 28px; font-weight: 700; color: var(--gold); }
+        .hero-stat-label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+        /* ── How It Works ── */
+        .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+        .step-card {
+            background: var(--bg-card); border-radius: 16px; padding: 32px 24px;
+            text-align: center; border: 1px solid var(--border);
+            transition: all 0.3s; position: relative;
+        }
+        .step-card:hover { transform: translateY(-4px); border-color: var(--gold); box-shadow: 0 12px 40px rgba(212,168,67,0.08); }
+        .step-number {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #0d0d1a; font-weight: 700; font-size: 18px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px;
+        }
+        .step-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: #fff; }
+        .step-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+        /* ── Demo Report ── */
+        .demo-report {
+            background: var(--bg-card); border-radius: 20px;
+            border: 1px solid var(--border); overflow: hidden;
+        }
+        .demo-header {
+            padding: 32px; text-align: center;
+            background: linear-gradient(135deg, #14142a 0%, #1a1a3e 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        .demo-header h2 { font-size: 24px; margin-bottom: 8px; }
+        .demo-gauge { position: relative; width: 180px; height: 90px; margin: 20px auto; overflow: hidden; }
+        .demo-gauge canvas { width: 100%; height: 100%; }
+        .demo-gauge-value {
+            position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
+            font-size: 42px; font-weight: 800; color: var(--gold);
+        }
+        .demo-gauge-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: -8px; }
+        .demo-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--border); }
+        .demo-category { padding: 20px; text-align: center; background: var(--bg-card); }
+        .demo-category h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 8px; }
+        .demo-category .score { font-size: 28px; font-weight: 700; }
+        .demo-issues { padding: 24px 32px; }
+        .demo-issues h3 { font-size: 16px; margin-bottom: 16px; color: var(--gold); }
+        .demo-issues li { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; color: #ccc; display: flex; align-items: flex-start; gap: 10px; }
+        .demo-issues li::before { content: '⚠'; color: var(--gold); font-size: 14px; }
+
+        /* ── Pricing ── */
+        .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .pricing-card {
+            background: var(--bg-card); border-radius: 20px; padding: 40px 28px;
+            border: 1px solid var(--border); position: relative;
+            transition: all 0.3s; display: flex; flex-direction: column;
+        }
+        .pricing-card.featured {
+            border-color: var(--gold); transform: scale(1.03);
+            box-shadow: 0 0 30px rgba(212,168,67,0.1);
+        }
+        .pricing-card.featured::before {
+            content: 'Popular'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+            background: var(--gold); color: #0d0d1a; padding: 4px 16px; border-radius: 20px;
+            font-size: 12px; font-weight: 600;
+        }
+        .pricing-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 4px; color: #fff; }
+        .pricing-card .subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+        .pricing-card .price { font-size: 42px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+        .pricing-card .price span { font-size: 16px; font-weight: 400; color: var(--text-muted); }
+        .pricing-card .price-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+        .pricing-card ul { list-style: none; margin-bottom: 28px; flex: 1; }
+        .pricing-card ul li { padding: 8px 0; font-size: 14px; color: #ccc; display: flex; align-items: center; gap: 10px; }
+        .pricing-card ul li::before { content: '✓'; color: var(--gold); font-weight: 700; }
+        .pricing-card ul li.muted::before { content: '—'; color: #555; }
+        .pricing-card ul li.muted { color: #555; }
+
+        /* ── FAQ ── */
+        .faq-list { max-width: 700px; margin: 0 auto; }
+        .faq-item {
+            border-bottom: 1px solid var(--border); padding: 20px 0;
+            cursor: pointer;
+        }
+        .faq-item summary {
+            font-size: 16px; font-weight: 500; color: #fff;
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; list-style: none;
+        }
+        .faq-item summary::after {
+            content: '+'; font-size: 20px; color: var(--gold); transition: transform 0.2s;
+        }
+        .faq-item[open] summary::after { content: '−'; }
+        .faq-item .answer { margin-top: 12px; color: var(--text-muted); font-size: 14px; line-height: 1.8; }
+        .faq-item .answer a { color: var(--gold); }
+
+        /* ── CTA ── */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(212,168,67,0.06) 0%, transparent 100%);
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+        .cta-section h2 { font-size: 36px; font-weight: 700; margin-bottom: 12px; }
+        .cta-section p { color: var(--text-muted); margin-bottom: 28px; font-size: 16px; }
+
+        /* ── Footer ── */
+        footer {
+            padding: 32px 0; border-top: 1px solid var(--border);
+            text-align: center; color: var(--text-muted); font-size: 13px;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .hero-stats { flex-direction: column; gap: 24px; }
+            .steps { grid-template-columns: 1fr; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            .pricing-card.featured { transform: none; }
+            .demo-grid { grid-template-columns: repeat(3, 1fr); }
+            .nav-links { display: none; }
+            .hero-input-group { flex-direction: column; background: transparent; border: none; padding: 0; }
+            .hero-input-group input { background: var(--bg-input); border-radius: 12px; border: 1px solid var(--border); }
+            .hero-input-group .btn { width: 100%; }
+        }
+
+        /* ── Lead Capture Modal ── */
+        .lead-modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7); z-index: 1000;
+            display: none; align-items: center; justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .lead-modal-overlay.active { display: flex; }
+        .lead-modal {
+            background: var(--bg-card); border: 1px solid var(--gold);
+            border-radius: 20px; padding: 40px 36px; max-width: 440px; width: 90%;
+            position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        .lead-modal h3 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+        .lead-modal p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
+        .lead-modal .close-btn {
+            position: absolute; top: 16px; right: 20px;
+            background: none; border: none; color: var(--text-muted); font-size: 24px;
+            cursor: pointer; transition: color 0.2s;
+        }
+        .lead-modal .close-btn:hover { color: var(--gold); }
+        .lead-form { display: flex; flex-direction: column; gap: 12px; }
+        .lead-form input[type="email"] {
+            background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 10px; padding: 14px 16px; color: #fff; font-size: 15px;
+            outline: none; transition: border-color 0.2s; width: 100%;
+        }
+        .lead-form input[type="email"]:focus { border-color: var(--gold); }
+        .lead-form input[type="email"]::placeholder { color: #555; }
+        .lead-form .btn { width: 100%; justify-content: center; }
+        .lead-success {
+            display: none; padding: 20px 0; color: #28a745; font-size: 15px; font-weight: 500;
+        }
+        .lead-success.show { display: block; }
+        .lead-success .check-icon {
+            display: inline-flex; width: 48px; height: 48px; border-radius: 50%;
+            background: #28a74522; color: #28a745; align-items: center; justify-content: center;
+            font-size: 24px; margin-bottom: 12px; border: 2px solid #28a745;
+        }
+        .lead-error { color: #dc3545; font-size: 13px; display: none; margin-top: -4px; }
+        .lead-error.show { display: block; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo"><span>Page</span>RX</div>
+            <div class="nav-links">
+                <a href="#how-it-works">How It Works</a>
+                <a href="#demo-report">Sample Report</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#faq">FAQ</a>
+                <a href="#analyze" class="btn btn-primary">Analyze Your Site</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="analyze">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Is your website <span>costing you customers?</span></h1>
+                <p>PageRX analyzes your landing page from 5 expert perspectives — security, code quality, UX, completeness, and business viability — and gives you a score with actionable fixes.</p>
+                <form id="analyze-form" class="hero-input-group">
+                    <input type="url" id="url-input" placeholder="https://yoursite.com" required>
+                    <button type="submit" class="btn btn-primary">Analyze →</button>
+                </form>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span class="hero-stat-number">5</span>
+                        <span class="hero-stat-label">Expert Perspectives</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-number">60s</span>
+                        <span class="hero-stat-label">Analysis Time</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-number">100%</span>
+                        <span class="hero-stat-label">Free Basic Scan</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section (hidden by default) -->
+    <section id="results" class="section" style="display:none;">
+        <div class="container">
+            <div id="loading" style="text-align:center;padding:60px 0;">
+                <div style="width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 20px;"></div>
+                <p style="color:var(--text-muted);">Analyzing your website from 5 perspectives...</p>
+            </div>
+            <div id="results-content" style="display:none;">
+                <div class="demo-report" id="results-report">
+                    <div class="demo-header">
+                        <h2>PageRX <span class="gold-text">Analysis Report</span></h2>
+                        <p style="color:var(--text-muted);font-size:14px;margin-top:4px;" id="analyzed-url"></p>
+                        <div class="demo-gauge">
+                            <canvas id="results-gauge-canvas" width="360" height="180"></canvas>
+                            <div class="demo-gauge-value" id="results-gauge-value">0</div>
+                        </div>
+                        <div style="margin-top:4px;"><span id="results-verdict" style="padding:4px 16px;border-radius:20px;font-size:13px;font-weight:600;"></span></div>
+                    </div>
+                    <div class="demo-grid" id="results-categories"></div>
+                    <div class="demo-issues">
+                        <h3>🔍 Issues Found</h3>
+                        <ul id="results-issues-list"></ul>
+                    </div>
+                    <div class="demo-issues" style="border-top:1px solid var(--border);">
+                        <h3>💡 Suggestions</h3>
+                        <ul id="results-suggestions-list"></ul>
+                    </div>
+                    <div style="padding:20px 32px;text-align:center;border-top:1px solid var(--border);display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                        <button onclick="openLeadModal()" class="btn btn-primary" id="pdf-report-btn">📄 Get Your Full PDF Report</button>
+                        <button onclick="startNewAnalysis()" class="btn btn-secondary">Analyze Another Site</button>
+                    </div>
+                </div>
+            </div>
+            <div id="error" style="display:none;text-align:center;padding:40px;background:var(--bg-card);border-radius:16px;border:1px solid #dc3545;">
+                <h3 style="color:#dc3545;margin-bottom:12px;">⚠ Analysis Failed</h3>
+                <p id="error-message" style="color:var(--text-muted);margin-bottom:20px;"></p>
+                <button onclick="startNewAnalysis()" class="btn btn-secondary">Try Again</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It <span class="gold-text">Works</span></h2>
+            <p class="section-subtitle">Three simple steps to get a complete, multi-perspective analysis of your landing page.</p>
+            <div class="steps">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Enter Your URL</h3>
+                    <p>Paste your website URL or drop in your HTML code. No account needed to get started.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>AI Analyzes <span class="gold-text">5 Ways</span></h3>
+                    <p>Our AI reviews security, code quality, UX, completeness, and business viability simultaneously.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Get Your Report</h3>
+                    <p>Receive a detailed scorecard with issues, actionable suggestions, and an overall score out of 100.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sample Report -->
+    <section class="section" id="demo-report">
+        <div class="container">
+            <h2 class="section-title">See What You <span class="gold-text">Get</span></h2>
+            <p class="section-subtitle">Here's a sample report from a real landing page analysis. Yours will be just as detailed.</p>
+            <div class="demo-report">
+                <div class="demo-header">
+                    <h2>PageRX <span class="gold-text">Sample Report</span></h2>
+                    <p style="color:var(--text-muted);font-size:14px;margin-top:4px;">example.com — Analyzed June 2026</p>
+                    <div class="demo-gauge">
+                        <canvas id="demo-gauge-canvas" width="360" height="180"></canvas>
+                        <div class="demo-gauge-value" id="demo-gauge-value">67</div>
+                    </div>
+                    <div style="margin-top:4px;"><span style="background:#ffc10722;color:#ffc107;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #ffc107;">NEEDS IMPROVEMENT</span></div>
+                </div>
+                <div class="demo-grid">
+                    <div class="demo-category">
+                        <h4>🔒 Security</h4>
+                        <div class="score" style="color:#ffc107;">6<span style="font-size:14px;color:var(--text-muted);">/10</span></div>
+                    </div>
+                    <div class="demo-category">
+                        <h4>📐 Code Quality</h4>
+                        <div class="score" style="color:#28a745;">8<span style="font-size:14px;color:var(--text-muted);">/10</span></div>
+                    </div>
+                    <div class="demo-category">
+                        <h4>🎨 UX</h4>
+                        <div class="score" style="color:#ffc107;">5<span style="font-size:14px;color:var(--text-muted);">/10</span></div>
+                    </div>
+                    <div class="demo-category">
+                        <h4>📋 Completeness</h4>
+                        <div class="score" style="color:#28a745;">7<span style="font-size:14px;color:var(--text-muted);">/10</span></div>
+                    </div>
+                    <div class="demo-category">
+                        <h4>💼 Business</h4>
+                        <div class="score" style="color:#dc3545;">4<span style="font-size:14px;color:var(--text-muted);">/10</span></div>
+                    </div>
+                </div>
+                <div class="demo-issues">
+                    <h3>🔍 Key Issues Found</h3>
+                    <ul>
+                        <li>No Content-Security-Policy meta tag — potential XSS vector</li>
+                        <li>Missing viewport meta tag — page may not be mobile-friendly</li>
+                        <li>No call-to-action (CTA) detected — may reduce conversion</li>
+                        <li>Missing meta description tag — poor SEO</li>
+                        <li>No social proof elements found (testimonials, reviews)</li>
+                    </ul>
+                </div>
+                <div class="demo-issues" style="border-top:1px solid var(--border);">
+                    <h3>💡 Top Suggestions</h3>
+                    <ul>
+                        <li>Add Content-Security-Policy meta tag for XSS protection</li>
+                        <li>Add viewport meta tag for mobile responsiveness</li>
+                        <li>Add prominent CTA button (e.g., "Get Started", "Sign Up")</li>
+                        <li>Add meta description and title tags for SEO</li>
+                        <li>Add testimonials or customer logos to build trust</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="section" id="pricing">
+        <div class="container">
+            <h2 class="section-title">Simple <span class="gold-text">Pricing</span></h2>
+            <p class="section-subtitle">Start free. Upgrade when you need more scans, detailed reports, and monitoring.</p>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Free</h3>
+                    <p class="subtitle">Basic scan to test the waters</p>
+                    <div class="price">$0<span>/mo</span></div>
+                    <p class="price-desc">10 scans per month</p>
+                    <ul>
+                        <li>5-perspective heuristic analysis</li>
+                        <li>Score gauge &amp; issue list</li>
+                        <li>Basic suggestions</li>
+                        <li class="muted">PDF reports</li>
+                        <li class="muted">Weekly monitoring</li>
+                        <li class="muted">Priority support</li>
+                    </ul>
+                    <a href="#analyze" class="btn btn-secondary" style="width:100%;text-align:center;">Get Started</a>
+                </div>
+                <div class="pricing-card featured">
+                    <h3>Pro</h3>
+                    <p class="subtitle">For serious website owners</p>
+                    <div class="price">$9<span>/mo</span></div>
+                    <p class="price-desc">Unlimited scans + LLM analysis</p>
+                    <ul>
+                        <li>5-perspective LLM-powered analysis</li>
+                        <li>Detailed score gauge &amp; report</li>
+                        <li>Actionable suggestions</li>
+                        <li>PDF report downloads</li>
+                        <li>Weekly monitoring &amp; alerts</li>
+                        <li class="muted">Priority support</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary" style="width:100%;text-align:center;">Subscribe Now</a>
+                </div>
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <p class="subtitle">For agencies &amp; teams</p>
+                    <div class="price">$29<span>/mo</span></div>
+                    <p class="price-desc">Custom integrations &amp; API access</p>
+                    <ul>
+                        <li>Everything in Pro</li>
+                        <li>Custom reviewer prompts</li>
+                        <li>API access (1000 req/day)</li>
+                        <li>Priority support</li>
+                        <li>Team accounts (up to 5 seats)</li>
+                        <li>White-label reports</li>
+                    </ul>
+                    <a href="#" class="btn btn-secondary" style="width:100%;text-align:center;">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked <span class="gold-text">Questions</span></h2>
+            <p class="section-subtitle">Everything you need to know about PageRX.</p>
+            <div class="faq-list">
+                <details class="faq-item">
+                    <summary>What does PageRX analyze?</summary>
+                    <div class="answer">PageRX analyzes your landing page from 5 expert perspectives: <strong>Security</strong> (XSS, CSP, vulnerabilities), <strong>Code Quality</strong> (patterns, performance, maintainability), <strong>UX</strong> (accessibility, mobile-friendliness), <strong>Completeness</strong> (missing elements, SEO tags), and <strong>Business Viability</strong> (CTA, social proof, conversion optimization).</div>
+                </details>
+                <details class="faq-item">
+                    <summary>Do I need an account to analyze a page?</summary>
+                    <div class="answer">No! The free scan is available to anyone without an account. Just enter a URL and get your results in seconds.</div>
+                </details>
+                <details class="faq-item">
+                    <summary>How is the score calculated?</summary>
+                    <div class="answer">Each of the 5 perspectives is scored out of 10 based on issues found and severity. The overall score is a weighted average scaled to 0-100. A score above 70 means your page is in good shape; below 50 means significant improvements are needed.</div>
+                </details>
+                <details class="faq-item">
+                    <summary>What's the difference between free and Pro?</summary>
+                    <div class="answer">The free scan uses heuristic analysis (rule-based detection). Pro uses <strong>LLM-powered analysis</strong> — each of the 5 reviews runs through a different AI model specialized for that perspective, giving deeper, more nuanced insights. Pro also includes PDF reports and weekly monitoring.</div>
+                </details>
+                <details class="faq-item">
+                    <summary>Can I use PageRX on multiple pages?</summary>
+                    <div class="answer">Absolutely! With a Pro subscription, you have unlimited scans. The free tier gives you 10 scans per month.</div>
+                </details>
+                <details class="faq-item">
+                    <summary>Is my data safe?</summary>
+                    <div class="answer">Yes. We only analyze the HTML content you submit. We don't store your page content permanently. Our analysis runs in real-time and is not shared with third parties.</div>
+                </details>
+                <details class="faq-item">
+                    <summary>How accurate is the AI analysis?</summary>
+                    <div class="answer">The heuristic analysis catches well-known issues with high accuracy. The LLM-powered analysis uses state-of-the-art models (including Claude, GPT-4o, and Gemini) for deeper understanding. No automated analysis is perfect, so we always recommend reviewing the findings and suggestions critically.</div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section cta-section">
+        <div class="container">
+            <h2>Ready to <span class="gold-text">optimize</span> your site?</h2>
+            <p>Get your free PageRX analysis in 60 seconds. No account required.</p>
+            <a href="#analyze" class="btn btn-primary" style="font-size:16px;padding:14px 36px;">Analyze Your Landing Page →</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2026 PageRX. Built with AI.</p>
+        </div>
+    </footer>
+
+    <!-- Lead Capture Modal -->
+    <div class="lead-modal-overlay" id="lead-modal">
+        <div class="lead-modal">
+            <button class="close-btn" onclick="closeLeadModal()">&times;</button>
+            <h3>📄 Get Your <span class="gold-text">Full PDF Report</span></h3>
+            <p>Enter your email and we'll send you a detailed PDF report of this analysis — including all 5 perspective scores, every issue found, and actionable recommendations.</p>
+            <form id="lead-form" class="lead-form">
+                <input type="email" id="lead-email" placeholder="you@example.com" required autocomplete="email">
+                <div class="lead-error" id="lead-error"></div>
+                <button type="submit" class="btn btn-primary" id="lead-submit-btn">Send Me the PDF Report →</button>
+            </form>
+            <div class="lead-success" id="lead-success">
+                <div class="check-icon">✓</div>
+                <p>Thanks! We'll send your full PDF report to <strong id="lead-confirm-email"></strong> shortly.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── Gauge Drawing ──
+        function drawGauge(canvasId, valueId, score) {
+            const canvas = document.getElementById(canvasId);
+            const valueEl = document.getElementById(valueId);
+            if (!canvas || !valueEl) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width, h = canvas.height;
+            const cx = w / 2, cy = h - 20, r = Math.min(cx - 20, cy - 10);
+            const startAngle = Math.PI, endAngle = 2 * Math.PI;
+            
+            ctx.clearRect(0, 0, w, h);
+            
+            // Background arc
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, startAngle, endAngle);
+            ctx.strokeStyle = '#2a2a50';
+            ctx.lineWidth = 18;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            
+            // Value arc (0-100 → 0 to PI)
+            const fraction = Math.min(1, Math.max(0, score / 100));
+            const valueAngle = startAngle + (endAngle - startAngle) * fraction;
+            
+            const gradient = ctx.createLinearGradient(0, 0, w, 0);
+            if (score < 40) {
+                gradient.addColorStop(0, '#dc3545');
+                gradient.addColorStop(1, '#ffc107');
+            } else if (score < 70) {
+                gradient.addColorStop(0, '#ffc107');
+                gradient.addColorStop(1, '#d4a843');
+            } else {
+                gradient.addColorStop(0, '#d4a843');
+                gradient.addColorStop(1, '#28a745');
+            }
+            
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, startAngle, valueAngle);
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 18;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            
+            // Value text
+            valueEl.textContent = score;
+        }
+
+        // Init demo gauge
+        document.addEventListener('DOMContentLoaded', function() {
+            drawGauge('demo-gauge-canvas', 'demo-gauge-value', 67);
+        });
+
+        // ── Analysis ──
+        const API_BASE = 'http://116.203.180.240:8000/api';
+        const form = document.getElementById('analyze-form');
+        const urlInput = document.getElementById('url-input');
+        const resultsSection = document.getElementById('results');
+        const loadingEl = document.getElementById('loading');
+        const resultsContent = document.getElementById('results-content');
+        const errorEl = document.getElementById('error');
+        const errorMessage = document.getElementById('error-message');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const url = urlInput.value.trim();
+            if (!url) return;
+            
+            // Show results section with loading
+            document.querySelector('.hero').scrollIntoView({ behavior: 'smooth' });
+            resultsSection.style.display = 'block';
+            loadingEl.style.display = 'block';
+            resultsContent.style.display = 'none';
+            errorEl.style.display = 'none';
+            
+            try {
+                const resp = await fetch(API_BASE + '/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: url })
+                });
+                
+                if (!resp.ok) {
+                    const errData = await resp.json().catch(() => ({}));
+                    throw new Error(errData.detail || `Server error: ${resp.status}`);
+                }
+                
+                const data = await resp.json();
+                displayResults(data, url);
+            } catch (err) {
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'block';
+                errorMessage.textContent = err.message || 'Failed to analyze. Please check the URL and try again.';
+            }
+        });
+
+        function displayResults(data, url) {
+            loadingEl.style.display = 'none';
+            resultsContent.style.display = 'block';
+            errorEl.style.display = 'none';
+            
+            const overall = Math.round(data.overall_score);
+            document.getElementById('analyzed-url').textContent = url + ' — Analyzed just now';
+            document.getElementById('results-gauge-value').textContent = overall;
+            
+            const verdictEl = document.getElementById('results-verdict');
+            if (data.verdict === 'PASS') {
+                verdictEl.textContent = '✅ PASSED';
+                verdictEl.style.cssText = 'background:#28a74522;color:#28a745;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #28a745;';
+            } else if (overall >= 50) {
+                verdictEl.textContent = '⚠ NEEDS IMPROVEMENT';
+                verdictEl.style.cssText = 'background:#ffc10722;color:#ffc107;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #ffc107;';
+            } else {
+                verdictEl.textContent = '❌ FAILED';
+                verdictEl.style.cssText = 'background:#dc354522;color:#dc3545;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #dc3545;';
+            }
+            
+            // Categories
+            const categoriesContainer = document.getElementById('results-categories');
+            const roleIcons = {
+                'security': '🔒',
+                'code_quality': '📐',
+                'ux': '🎨',
+                'completeness': '📋',
+                'business': '💼'
+            };
+            const roleLabels = {
+                'security': 'Security',
+                'code_quality': 'Code Quality',
+                'ux': 'UX',
+                'completeness': 'Completeness',
+                'business': 'Business'
+            };
+            
+            categoriesContainer.innerHTML = '';
+            (data.reviews || []).forEach(function(r) {
+                const role = r.role;
+                const score = r.score || 0;
+                const icon = roleIcons[role] || '📊';
+                const label = roleLabels[role] || role;
+                let color = '#dc3545';
+                if (score >= 8) color = '#28a745';
+                else if (score >= 6) color = '#ffc107';
+                else if (score >= 4) color = '#e07c3c';
+                
+                const div = document.createElement('div');
+                div.className = 'demo-category';
+                div.innerHTML = '<h4>' + icon + ' ' + label + '</h4>' +
+                    '<div class="score" style="color:' + color + ';">' + score +
+                    '<span style="font-size:14px;color:var(--text-muted);">/10</span></div>';
+                categoriesContainer.appendChild(div);
+            });
+            
+            // Issues
+            const issuesList = document.getElementById('results-issues-list');
+            issuesList.innerHTML = '';
+            const issues = data.issues || [];
+            if (issues.length === 0) {
+                const li = document.createElement('li');
+                li.textContent = 'No issues found — great job!';
+                li.style.cssText = 'list-style:none;padding:8px 0;';
+                issuesList.appendChild(li);
+            } else {
+                issues.forEach(function(issue) {
+                    const li = document.createElement('li');
+                    const text = typeof issue === 'string' ? issue : issue.issue || issue;
+                    const sev = issue.severity || '';
+                    let prefix = '⚠';
+                    if (sev === 'critical') prefix = '🚨';
+                    else if (sev === 'major') prefix = '⚠';
+                    else prefix = '💡';
+                    li.innerHTML = prefix + ' ' + text;
+                    issuesList.appendChild(li);
+                });
+            }
+            
+            // Suggestions
+            const suggestionsList = document.getElementById('results-suggestions-list');
+            suggestionsList.innerHTML = '';
+            // Merge suggestions from reviews
+            const allSugs = [];
+            const seen = new Set();
+            (data.suggestions || []).forEach(function(s) {
+                if (!seen.has(s)) {
+                    allSugs.push(s);
+                    seen.add(s);
+                }
+            });
+            // Also get from issues
+            (data.issues || []).forEach(function(issue) {
+                if (issue.suggestion && !seen.has(issue.suggestion)) {
+                    allSugs.push(issue.suggestion);
+                    seen.add(issue.suggestion);
+                }
+            });
+            
+            if (allSugs.length === 0) {
+                const li = document.createElement('li');
+                li.textContent = 'No suggestions available.';
+                li.style.cssText = 'list-style:none;padding:8px 0;';
+                suggestionsList.appendChild(li);
+            } else {
+                allSugs.slice(0, 10).forEach(function(s) {
+                    const li = document.createElement('li');
+                    li.innerHTML = '💡 ' + s;
+                    suggestionsList.appendChild(li);
+                });
+            }
+            
+            // Draw gauge after a small delay to ensure the element is visible
+            setTimeout(function() {
+                drawGauge('results-gauge-canvas', 'results-gauge-value', overall);
+            }, 100);
+            
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function startNewAnalysis() {
+            resultsSection.style.display = 'none';
+            urlInput.value = '';
+            urlInput.focus();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Smooth scroll for all anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+            a.addEventListener('click', function(e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // ── Analytics Tracking (local, no external services) ──
+        function trackAnalytics(event, url) {
+            const data = new URLSearchParams({ event: event, url: url || window.location.href });
+            // Use sendBeacon for reliability, fallback to fetch
+            const endpoint = API_BASE + '/analytics/pixel?' + data.toString();
+            try {
+                if (navigator.sendBeacon) {
+                    navigator.sendBeacon(endpoint);
+                } else {
+                    fetch(endpoint, { method: 'POST', keepalive: true }).catch(function(){});
+                }
+            } catch(e) {}
+        }
+
+        // Track page view on load
+        document.addEventListener('DOMContentLoaded', function() {
+            trackAnalytics('page_view', window.location.href);
+        });
+
+        // Track analysis request
+        form.addEventListener('submit', function(e) {
+            var url = document.getElementById('url-input').value.trim();
+            if (url) {
+                trackAnalytics('analysis_request', url);
+            }
+        });
+
+        // ── Lead Capture (Email for PDF Report) ──
+        var _lastAnalyzedUrl = '';
+
+        function openLeadModal() {
+            document.getElementById('lead-modal').classList.add('active');
+            document.getElementById('lead-form').style.display = 'flex';
+            document.getElementById('lead-success').classList.remove('show');
+            document.getElementById('lead-error').classList.remove('show');
+            document.getElementById('lead-email').value = '';
+            document.getElementById('lead-email').focus();
+        }
+
+        function closeLeadModal() {
+            document.getElementById('lead-modal').classList.remove('active');
+        }
+
+        // Close modal on overlay click (not on modal content click)
+        document.getElementById('lead-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeLeadModal();
+        });
+
+        // Close on Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLeadModal();
+        });
+
+        document.getElementById('lead-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var email = document.getElementById('lead-email').value.trim();
+            var errorEl = document.getElementById('lead-error');
+            var submitBtn = document.getElementById('lead-submit-btn');
+
+            // Basic email validation
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                errorEl.textContent = 'Please enter a valid email address.';
+                errorEl.classList.add('show');
+                return;
+            }
+            errorEl.classList.remove('show');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+
+            try {
+                var resp = await fetch(API_BASE + '/leads', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        url: _lastAnalyzedUrl || document.getElementById('url-input').value.trim()
+                    })
+                });
+                var data = await resp.json();
+                if (resp.ok) {
+                    document.getElementById('lead-form').style.display = 'none';
+                    document.getElementById('lead-confirm-email').textContent = email;
+                    document.getElementById('lead-success').classList.add('show');
+                    trackAnalytics('lead_captured', email);
+                } else {
+                    throw new Error(data.detail || 'Failed to save');
+                }
+            } catch (err) {
+                errorEl.textContent = err.message || 'Something went wrong. Please try again.';
+                errorEl.classList.add('show');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Me the PDF Report →';
+            }
+        });
+
+        // Also store the analyzed URL when results are displayed
+        var _origDisplayResults = displayResults;
+        displayResults = function(data, url) {
+            _lastAnalyzedUrl = url;
+            _origDisplayResults(data, url);
+        };
+    </script>
+
+</body>
+</html>
