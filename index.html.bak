@@ -3,49 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PageRX — Free AI Landing Page Analyzer | 5-Perspective Website Audit Tool</title>
-    <meta name="description" content="Analyze your landing page with PageRX — the free AI landing page analyzer. Get a 5-perspective audit covering security, code quality, UX, SEO completeness, and business viability. Actionable insights in 60 seconds.">
-    <meta name="keywords" content="landing page analyzer, website analyzer, AI landing page audit, website audit tool, landing page optimization, conversion optimization, SEO audit, page analysis, free website analyzer, UX analysis tool, landing page checker">
-    <meta name="author" content="PageRX">
-    <meta name="robots" content="index, follow">
-    <!-- Open Graph -->
-    <meta property="og:title" content="PageRX — Free AI Landing Page Analyzer | 5-Perspective Website Audit Tool">
-    <meta property="og:description" content="Analyze your landing page in 60 seconds. AI-powered audit across security, code quality, UX, completeness, and business viability. Free to use.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://pagerx.nousresearch.com">
-    <meta property="og:site_name" content="PageRX">
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="PageRX — Free AI Landing Page Analyzer">
-    <meta name="twitter:description" content="Analyze your landing page from 5 expert perspectives in 60 seconds. Free AI-powered audit for security, code quality, UX, SEO, and conversion optimization.">
-    <!-- JSON-LD Structured Data (SoftwareApplication) -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "PageRX",
-        "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "Web",
-        "description": "Free AI-powered landing page analyzer that audits websites across 5 perspectives: security, code quality, UX, completeness, and business viability. Get actionable insights and a score out of 100 in 60 seconds.",
-        "url": "https://pagerx.nousresearch.com",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD",
-            "description": "Free basic scan available. Pro plans starting at $9/month."
-        },
-        "author": {
-            "@type": "Organization",
-            "name": "Nous Research"
-        },
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "ratingCount": "127",
-            "bestRating": "5"
-        }
-    }
-    </script>
+    <title>PageRX — AI Landing Page Analyzer</title>
+    <meta name="description" content="Analyze your landing page from 5 perspectives: security, code quality, UX, completeness, and business viability. Get actionable insights in seconds.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -316,7 +275,6 @@
             <div class="logo"><span>Page</span>RX</div>
             <div class="nav-links">
                 <a href="#how-it-works">How It Works</a>
-                <a href="#blog">Guide</a>
                 <a href="#demo-report">Sample Report</a>
                 <a href="#pricing">Pricing</a>
                 <a href="#faq">FAQ</a>
@@ -329,8 +287,8 @@
     <section class="hero" id="analyze">
         <div class="container">
             <div class="hero-content">
-                <h1>Free AI <span>Landing Page Analyzer</span> &amp; Website Audit Tool</h1>
-                <p>Is your landing page losing conversions? PageRX is the ultimate <strong>landing page analyzer</strong> that audits your site across 5 expert perspectives — security, code quality, UX, SEO completeness, and business viability. Get a score out of 100 with actionable fixes in just 60 seconds. No account needed.</p>
+                <h1>Is your website <span>costing you customers?</span></h1>
+                <p>PageRX analyzes your landing page from 5 expert perspectives — security, code quality, UX, completeness, and business viability — and gives you a score with actionable fixes.</p>
                 <form id="analyze-form" class="hero-input-group">
                     <input type="url" id="url-input" placeholder="https://yoursite.com" required>
                     <button type="submit" class="btn btn-primary">Analyze →</button>
@@ -414,42 +372,6 @@
                     <div class="step-number">3</div>
                     <h3>Get Your Report</h3>
                     <p>Receive a detailed scorecard with issues, actionable suggestions, and an overall score out of 100.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Blog / Article Section: Landing Page Analysis Guide -->
-    <section class="section" id="blog">
-        <div class="container">
-            <h2 class="section-title">Landing Page Analysis: The <span class="gold-text">Complete Guide</span></h2>
-            <p class="section-subtitle">Why every website needs a multi-perspective landing page audit — and what PageRX checks for you.</p>
-            <div style="background:var(--bg-card);border-radius:20px;border:1px solid var(--border);padding:36px;line-height:1.8;">
-                <h3 style="font-size:22px;font-weight:700;color:#fff;margin-bottom:16px;">Why Your Landing Page Needs a Professional Audit</h3>
-                <p style="color:var(--text);font-size:15px;margin-bottom:18px;">
-                    Your landing page is the digital front door of your business. It's where first impressions are made, trust is built, and conversions happen — or don't. Yet most website owners have no idea how their page performs across the dimensions that actually matter. A comprehensive <strong>landing page analysis</strong> goes far beyond a basic speed test or SEO checker. It evaluates your site from every angle that influences visitor behavior and search engine ranking.
-                </p>
-                <p style="color:var(--text);font-size:15px;margin-bottom:18px;">
-                    A proper <strong>website audit tool</strong> like PageRX examines five critical perspectives. First, <strong>security</strong> — does your page have Content-Security-Policy headers? Is it vulnerable to XSS or mixed content warnings? Visitors won't convert if they don't feel safe. Second, <strong>code quality</strong> — clean, semantic HTML and efficient CSS improve page speed, accessibility, and maintainability. Search engines reward well-structured code with better rankings.
-                </p>
-                <p style="color:var(--text);font-size:15px;margin-bottom:18px;">
-                    Third, <strong>user experience (UX)</strong> — is your page mobile-friendly? Does it load quickly? Are fonts legible and navigation intuitive? Google's Core Web Vitals make UX a direct ranking factor. Fourth, <strong>SEO completeness</strong> — are your meta tags, heading structure, alt text, and Open Graph tags in order? A <strong>landing page analyzer</strong> catches missing meta descriptions, duplicate titles, and broken schema markup that can silently tank your search visibility.
-                </p>
-                <p style="color:var(--text);font-size:15px;margin-bottom:18px;">
-                    Finally, <strong>business viability</strong> — the most overlooked dimension. Does your page have a clear call-to-action? Is there social proof (testimonials, case studies, trust badges)? Is your value proposition immediately obvious? These conversion optimization elements separate high-performing pages from those that leak visitors. A <strong>free website analyzer</strong> like PageRX checks all of this in under a minute.
-                </p>
-                <p style="color:var(--text);font-size:15px;margin-bottom:18px;">
-                    Regular landing page audits are essential for any business serious about online growth. Whether you're a startup validating your MVP, a SaaS company optimizing a sales page, or an e-commerce store improving checkout flow, the data-driven insights from a structured audit help you prioritize what to fix first. Start with a free scan today and see exactly where your landing page stands across all five dimensions.
-                </p>
-                <div style="margin-top:24px;padding:20px;background:var(--bg-input);border-radius:12px;border:1px solid var(--border);">
-                    <h4 style="font-size:16px;font-weight:600;color:var(--gold);margin-bottom:8px;">📊 What PageRX Checks In Your Landing Page Audit</h4>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;font-size:14px;color:var(--text);">
-                        <div>🔒 <strong>Security:</strong> CSP, XSS vectors, mixed content, HTTPS</div>
-                        <div>📐 <strong>Code:</strong> HTML semantics, CSS efficiency, JS performance</div>
-                        <div>🎨 <strong>UX:</strong> Mobile-friendliness, Core Web Vitals, accessibility</div>
-                        <div>📋 <strong>SEO:</strong> Meta tags, headings, alt text, Open Graph, schema</div>
-                        <div>💼 <strong>Business:</strong> CTA clarity, social proof, value proposition</div>
-                    </div>
                 </div>
             </div>
         </div>
