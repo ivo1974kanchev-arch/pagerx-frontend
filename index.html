@@ -715,10 +715,31 @@
             document.querySelector('.hero').scrollIntoView({ behavior: 'smooth' });
             resultsSection.style.display = 'block';
             loadingEl.style.display = 'block';
+            loadingEl.innerHTML = '<div style="width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 20px;"></div>'
+                + '<p style="color:var(--text-muted);">Running quick scan...</p>';
             resultsContent.style.display = 'none';
             errorEl.style.display = 'none';
             
             try {
+                // Step 1: Get instant score first (fast, <3s)
+                let instantData = null;
+                try {
+                    const instantResp = await fetch(API_BASE + '/score/instant', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ url: url })
+                    });
+                    if (instantResp.ok) {
+                        instantData = await instantResp.json();
+                    }
+                } catch (e) {
+                    // Ignore instant score failures - proceed to full analysis
+                }
+                
+                // Step 2: Get full analysis
+                loadingEl.innerHTML = '<div style="width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 20px;"></div>'
+                    + '<p style="color:var(--text-muted);">Running full analysis from 5 perspectives...</p>';
+                
                 const resp = await fetch(API_BASE + '/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -731,8 +752,15 @@
                 }
                 
                 const data = await resp.json();
+                // Attach instant score data if available (for quick score badge)
+                data._instant = instantData;
                 displayResults(data, url);
             } catch (err) {
+                // If full analysis fails but we have instant data, show it
+                if (instantData) {
+                    displayInstantOnly(instantData, url);
+                    return;
+                }
                 loadingEl.style.display = 'none';
                 errorEl.style.display = 'block';
                 errorMessage.textContent = err.message || 'Failed to analyze. Please check the URL and try again.';
@@ -748,6 +776,10 @@
             document.getElementById('analyzed-url').textContent = url + ' — Analyzed just now';
             document.getElementById('results-gauge-value').textContent = overall;
             
+            // Hide retry button if it exists
+            var retryBtn = document.getElementById('retry-full-analysis');
+            if (retryBtn) retryBtn.style.display = 'none';
+            
             const verdictEl = document.getElementById('results-verdict');
             if (data.verdict === 'PASS') {
                 verdictEl.textContent = '✅ PASSED';
@@ -758,6 +790,24 @@
             } else {
                 verdictEl.textContent = '❌ FAILED';
                 verdictEl.style.cssText = 'background:#dc354522;color:#dc3545;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #dc3545;';
+            }
+            
+            // Add instant score badge if available (quick check before full analysis)
+            var instantBadge = document.getElementById('instant-score-badge');
+            if (!instantBadge) {
+                instantBadge = document.createElement('div');
+                instantBadge.id = 'instant-score-badge';
+                instantBadge.style.cssText = 'margin-top:12px;padding:8px 16px;background:var(--bg-card);border-radius:8px;border:1px solid var(--border);display:inline-block;font-size:13px;';
+                verdictEl.parentNode.insertBefore(instantBadge, verdictEl.nextSibling);
+            }
+            if (data._instant && data._instant.score !== undefined) {
+                var instScore = Math.round(data._instant.score);
+                var instColor = instScore >= 70 ? '#28a745' : (instScore >= 40 ? '#ffc107' : '#dc3545');
+                instantBadge.innerHTML = '⚡ Quick Check Score: <strong style="color:' + instColor + ';">' + instScore + '/100</strong>'
+                    + ' <span style="color:var(--text-muted);font-size:11px;">(heuristic)</span>';
+                instantBadge.style.display = 'inline-block';
+            } else {
+                instantBadge.style.display = 'none';
             }
             
             // Categories
@@ -866,6 +916,131 @@
             urlInput.value = '';
             urlInput.focus();
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ── Display Instant-Only Results (fallback when full analysis fails) ──
+        function displayInstantOnly(data, url) {
+            loadingEl.style.display = 'none';
+            resultsContent.style.display = 'block';
+            errorEl.style.display = 'none';
+            
+            const overall = Math.round(data.score);
+            document.getElementById('analyzed-url').textContent = url + ' — Quick scan only';
+            document.getElementById('results-gauge-value').textContent = overall;
+            
+            const verdictEl = document.getElementById('results-verdict');
+            if (overall >= 70) {
+                verdictEl.textContent = '✅ GOOD (Quick Check)';
+                verdictEl.style.cssText = 'background:#28a74522;color:#28a745;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #28a745;';
+            } else if (overall >= 40) {
+                verdictEl.textContent = '⚠ NEEDS WORK (Quick Check)';
+                verdictEl.style.cssText = 'background:#ffc10722;color:#ffc107;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #ffc107;';
+            } else {
+                verdictEl.textContent = '❌ POOR (Quick Check)';
+                verdictEl.style.cssText = 'background:#dc354522;color:#dc3545;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #dc3545;';
+            }
+            
+            // Categories
+            const categoriesContainer = document.getElementById('results-categories');
+            const catLabels = {
+                'meta': { icon: '🔍', label: 'Meta Tags' },
+                'structure': { icon: '📐', label: 'Structure' },
+                'accessibility': { icon: '♿', label: 'Accessibility' },
+                'content': { icon: '📝', label: 'Content' },
+                'conversion': { icon: '🎯', label: 'Conversion' },
+                'technical': { icon: '⚙️', label: 'Technical' }
+            };
+            
+            categoriesContainer.innerHTML = '';
+            (data.breakdown || []).forEach(function(b) {
+                const info = catLabels[b.category] || { icon: '📊', label: b.category };
+                const score = b.score;
+                const max = b.max;
+                const pct = max > 0 ? (score / max) * 100 : 0;
+                let color = '#dc3545';
+                if (pct >= 80) color = '#28a745';
+                else if (pct >= 50) color = '#ffc107';
+                else if (pct >= 30) color = '#e07c3c';
+                
+                const div = document.createElement('div');
+                div.className = 'demo-category';
+                div.innerHTML = '<h4>' + info.icon + ' ' + info.label + '</h4>' +
+                    '<div class="score" style="color:' + color + ';">' + score +
+                    '<span style="font-size:14px;color:var(--text-muted);">/' + max + '</span></div>';
+                categoriesContainer.appendChild(div);
+            });
+            
+            // Issues from breakdown
+            const issuesList = document.getElementById('results-issues-list');
+            issuesList.innerHTML = '';
+            var allIssues = [];
+            (data.breakdown || []).forEach(function(b) {
+                (b.issues || []).forEach(function(issue) {
+                    allIssues.push(issue);
+                });
+            });
+            if (allIssues.length === 0) {
+                var li = document.createElement('li');
+                li.textContent = 'No issues found — great job! (Quick check)';
+                li.style.cssText = 'list-style:none;padding:8px 0;';
+                issuesList.appendChild(li);
+            } else {
+                allIssues.forEach(function(issue) {
+                    var li = document.createElement('li');
+                    li.innerHTML = '⚠ ' + issue;
+                    issuesList.appendChild(li);
+                });
+            }
+            
+            // Suggestions from breakdown
+            const suggestionsList = document.getElementById('results-suggestions-list');
+            suggestionsList.innerHTML = '';
+            var allSugs = [];
+            (data.breakdown || []).forEach(function(b) {
+                (b.suggestions || []).forEach(function(sug) {
+                    if (allSugs.indexOf(sug) === -1) allSugs.push(sug);
+                });
+            });
+            if (allSugs.length === 0) {
+                var li = document.createElement('li');
+                li.textContent = 'No suggestions available. Run a full analysis for detailed recommendations.';
+                li.style.cssText = 'list-style:none;padding:8px 0;';
+                suggestionsList.appendChild(li);
+            } else {
+                allSugs.slice(0, 10).forEach(function(s) {
+                    var li = document.createElement('li');
+                    li.innerHTML = '💡 ' + s;
+                    suggestionsList.appendChild(li);
+                });
+            }
+            
+            // Show retry button
+            var retryBtn = document.getElementById('retry-full-analysis');
+            if (!retryBtn) {
+                retryBtn = document.createElement('div');
+                retryBtn.id = 'retry-full-analysis';
+                retryBtn.style.cssText = 'padding:16px 32px;text-align:center;border-top:1px solid var(--border);';
+                retryBtn.innerHTML = '<p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">⚠ Full analysis failed — this is a quick heuristic check only</p>'
+                    + '<button onclick="retryAnalysis()" class="btn btn-primary">🔄 Retry Full Analysis</button>'
+                    + '<button onclick="startNewAnalysis()" class="btn btn-secondary" style="margin-left:8px;">New Analysis</button>';
+                document.getElementById('results-report').appendChild(retryBtn);
+            }
+            retryBtn.style.display = 'block';
+            
+            // Draw gauge
+            setTimeout(function() {
+                drawGauge('results-gauge-canvas', 'results-gauge-value', overall);
+            }, 100);
+            
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function retryAnalysis() {
+            var url = document.getElementById('url-input').value.trim() || _lastAnalyzedUrl;
+            if (url) {
+                urlInput.value = url;
+                form.dispatchEvent(new Event('submit'));
+            }
         }
 
         // Smooth scroll for all anchor links
@@ -982,14 +1157,5 @@
         };
     </script>
 
-</footer>
-<!-- Blog link added by distribution campaign -->
-<section style="text-align:center;padding:40px 20px;border-top:1px solid #1e1e35;background:#0a0a0f;">
-  <div style="max-width:600px;margin:0 auto;">
-    <h3 style="font-size:1.3em;font-weight:700;margin-bottom:12px;background:linear-gradient(135deg,#6c5ce7,#00cec9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">📊 I Analyzed 20 Show HN Landing Pages With AI</h3>
-    <p style="color:#8888aa;font-size:0.95em;margin-bottom:16px;">Average score: 79/100. Full rankings, security flaws, and what the top pages did right.</p>
-    <a href="blog/show-hn-landing-page-analysis.html" style="display:inline-block;background:linear-gradient(135deg,#6c5ce7,#8b7cf7);color:#fff;text-decoration:none;padding:10px 24px;border-radius:6px;font-weight:600;">Read the Analysis →</a>
-  </div>
-</section>
 </body>
 </html>
