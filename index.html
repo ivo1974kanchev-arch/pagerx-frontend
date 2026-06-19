@@ -1864,15 +1864,30 @@
             drawGauge('demo-gauge-canvas', 'demo-gauge-value', 67);
         });
 
-        // ── Analysis ──
-        const API_BASE = '/api';
+        // ── Detect Environment ──
+        const IS_GITHUB_PAGES = window.location.hostname.includes('github.io');
+        const API_BASE = IS_GITHUB_PAGES
+            ? 'https://116.203.180.240:8000/api'
+            : '/api';
+        const APP_URL = '//116.203.180.240:8000';
+
+        // ── Analysis handler ──
         const form = document.getElementById('analyze-form');
         const urlInput = document.getElementById('url-input');
         const resultsSection = document.getElementById('results');
-        const loadingEl = document.getElementById('loading');
+        const loadingSection = document.getElementById('loading');
         const resultsContent = document.getElementById('results-content');
-        const errorEl = document.getElementById('error');
+        const errorSection = document.getElementById('error');
         const errorMessage = document.getElementById('error-message');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // On GitHub Pages, redirect to the live app
+            if (IS_GITHUB_PAGES) {
+                window.location.href = 'http://116.203.180.240:8000/?url=' + encodeURIComponent(urlInput.value);
+                return;
+            }
+        });
 
         // ── Instant Score Preview (fires on blur + after submission) ──
         let instantPreviewTimeout = null;
