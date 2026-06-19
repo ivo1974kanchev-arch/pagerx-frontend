@@ -369,9 +369,9 @@
 
 ... [OUTPUT TRUNCATED -
 
-... [OUTPUT TRUNCATED - 2819 chars omitted out of 52819 total] ...
+... [OUTPUT TRUNCATED - 2826 chars omitted out of 52826 total] ...
 
-iv class="pricing-card">
+s="pricing-card">
                     <h3>Agency</h3>
                     <p class="subtitle">For agencies &amp; teams</p>
                     <div class="price">$99<span>/mo</span></div>
@@ -876,7 +876,7 @@ iv class="pricing-card">
 
         // ── Analytics Tracking (privacy-friendly, no cookies) ──
         function trackAnalytics(event, url) {
-            const pixelUrl = '/api/pixel.gif?event=' + encodeURIComponent(event || 'page_view')
+            const pixelUrl = API_BASE + '/pixel.gif?event=' + encodeURIComponent(event || 'page_view')
                 + '&url=' + encodeURIComponent(url || window.location.href);
             try {
                 // Use the tracking pixel image for fire-and-forget tracking
