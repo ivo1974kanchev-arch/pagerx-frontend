@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PageRX Bookmarklet — Analyze Any Page in One Click</title>
+    <meta name="description" content="Drag the PageRX bookmarklet to your bookmarks bar. Click it on any landing page to get an instant AI-powered 5-perspective analysis.">
+    <meta name="keywords" content="pagerx bookmarklet, landing page analyzer bookmark, one-click website audit, browser bookmarklet, instant page analysis">
+    <meta name="author" content="PageRX">
+    <meta name="robots" content="index, follow">
+    <!-- Open Graph -->
+    <meta property="og:title" content="PageRX Bookmarklet — Analyze Any Page in One Click">
+    <meta property="og:description" content="Drag to your bookmarks bar. Click on any landing page to get instant AI-powered 5-perspective analysis from PageRX.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ivo1974kanchev-arch.github.io/pagerx-frontend/bookmarklet.html">
+    <meta property="og:site_name" content="PageRX">
+    <meta property="og:image" content="https://ivo1974kanchev-arch.github.io/pagerx-frontend/og-bookmarklet.png">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PageRX Bookmarklet — Analyze Any Page in One Click">
+    <meta name="twitter:description" content="Drag to your bookmarks bar. Click on any landing page to get instant AI analysis from 5 expert perspectives.">
+    <link rel="canonical" href="https://ivo1974kanchev-arch.github.io/pagerx-frontend/bookmarklet.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ── Reset & Base ── */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0d0d1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        ::selection { background: #d4a84344; color: #d4a843; }
+
+        /* ── Gold Accent ── */
+        :root {
+            --gold: #d4a843;
+            --gold-light: #e8c46a;
+            --gold-dark: #b08a30;
+            --bg-dark: #0d0d1a;
+            --bg-card: #14142a;
+            --bg-card-hover: #1c1c3a;
+            --bg-input: #1a1a35;
+            --border: #2a2a50;
+            --text: #e0e0e0;
+            --text-muted: #8888aa;
+            --gradient: linear-gradient(135deg, #1a1a3e 0%, #0d0d1a 100%);
+            --gold-glow: 0 0 40px rgba(212,168,67,0.15);
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* ── Animations ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(212,168,67,0.1); }
+            50% { box-shadow: 0 0 40px rgba(212,168,67,0.25); }
+        }
+        @keyframes drawLine {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .animate-on-scroll.delay-1 { transition-delay: 0.1s; }
+        .animate-on-scroll.delay-2 { transition-delay: 0.2s; }
+        .animate-on-scroll.delay-3 { transition-delay: 0.3s; }
+        .animate-on-scroll.delay-4 { transition-delay: 0.4s; }
+
+        /* ── Utility ── */
+        .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+        .section { padding: 80px 0; }
+        .section-title {
+            font-size: 36px; font-weight: 800; text-align: center; margin-bottom: 12px; color: #fff;
+            letter-spacing: -0.5px;
+        }
+        .section-subtitle {
+            text-align: center; color: var(--text-muted); font-size: 17px;
+            max-width: 600px; margin: 0 auto 48px; line-height: 1.7;
+        }
+        .gold-text { color: var(--gold); }
+        .gold-gradient {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 15px;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: none; text-decoration: none; position: relative; overflow: hidden;
+        }
+        .btn::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .btn:hover::after { opacity: 1; }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            background-size: 200% 200%;
+            color: #0d0d1a;
+            animation: gradientShift 3s ease infinite;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(212,168,67,0.3), 0 0 0 1px rgba(212,168,67,0.2);
+        }
+        .btn-primary:active { transform: translateY(0); }
+        .btn-secondary {
+            background: transparent; color: var(--gold); border: 1px solid rgba(212,168,67,0.3);
+        }
+        .btn-secondary:hover {
+            background: rgba(212,168,67,0.08); border-color: var(--gold);
+            box-shadow: 0 0 0 1px rgba(212,168,67,0.2);
+        }
+        .btn-lg { padding: 18px 48px; font-size: 18px; border-radius: 14px; }
+        .btn-block { width: 100%; justify-content: center; }
+        .btn-glow {
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        /* ── Glass Card ── */
+        .glass-card {
+            background: rgba(20, 20, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(42, 42, 80, 0.5);
+            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(212, 168, 67, 0.3);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.3), var(--gold-glow);
+            transform: translateY(-4px);
+        }
+
+        /* ── Badge ── */
+        .badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 14px; border-radius: 100px;
+            font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .badge-gold {
+            background: linear-gradient(135deg, rgba(212,168,67,0.15), rgba(212,168,67,0.05));
+            color: var(--gold); border: 1px solid rgba(212,168,67,0.2);
+        }
+
+        /* ── Navigation ── */
+        nav {
+            padding: 18px 0;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(13,13,26,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(42,42,80,0.3);
+            transition: all 0.3s;
+        }
+        nav.scrolled {
+            background: rgba(13,13,26,0.95);
+            border-bottom-color: var(--border);
+        }
+        nav .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo {
+            font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+            display: flex; align-items: center; gap: 8px;
+            text-decoration: none; color: inherit;
+        }
+        .logo-icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            display: flex; align-items: center; justify-content: center;
+            color: #0d0d1a; font-size: 16px; font-weight: 700;
+        }
+        .logo span { color: var(--gold); }
+        .nav-links { display: flex; gap: 28px; align-items: center; }
+        .nav-links a {
+            color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500;
+            transition: all 0.2s; position: relative;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+            height: 2px; background: var(--gold); border-radius: 2px;
+            transform: scaleX(0); transition: transform 0.3s;
+        }
+        .nav-links a:hover { color: var(--gold); }
+        .nav-links a:hover::after { transform: scaleX(1); }
+        .nav-links a.active { color: var(--gold); }
+        .nav-links a.active::after { transform: scaleX(1); }
+
+        /* ── Hero ── */
+        .hero {
+            padding: 140px 0 60px;
+            background: var(--gradient);
+            position: relative; overflow: hidden;
+            min-height: 80vh;
+            display: flex; align-items: center;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -30%; right: -10%;
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(212,168,67,0.08) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .hero::after {
+            content: ''; position: absolute; bottom: -20%; left: -10%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(212,168,67,0.04) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .hero-content {
+            position: relative; z-index: 1;
+            text-align: center;
+            animation: fadeInUp 0.8s ease;
+        }
+        .hero h1 {
+            font-size: 52px; font-weight: 900; line-height: 1.15;
+            margin-bottom: 16px; letter-spacing: -1px;
+        }
+        .hero p {
+            font-size: 18px; color: var(--text-muted);
+            max-width: 600px; margin: 0 auto 32px; line-height: 1.7;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 16px 6px 8px;
+            background: rgba(212,168,67,0.08);
+            border: 1px solid rgba(212,168,67,0.15);
+            border-radius: 100px;
+            font-size: 13px; color: var(--gold);
+            margin-bottom: 20px;
+        }
+        .hero-badge .dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* ── Bookmarklet Drag Zone ── */
+        .bookmarklet-zone {
+            margin: 40px auto 24px;
+            padding: 48px 32px;
+            background: rgba(20, 20, 42, 0.5);
+            border: 2px dashed rgba(212,168,67,0.25);
+            border-radius: 24px;
+            text-align: center;
+            max-width: 520px;
+            transition: all 0.4s;
+            position: relative;
+        }
+        .bookmarklet-zone:hover {
+            border-color: rgba(212,168,67,0.5);
+            box-shadow: 0 0 60px rgba(212,168,67,0.08);
+        }
+        .bookmarklet-zone .drag-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+        }
+        .bookmarklet-btn {
+            display: inline-block;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            background-size: 200% 200%;
+            color: #0d0d1a;
+            font-size: 18px;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 14px;
+            cursor: grab;
+            animation: gradientShift 3s ease infinite;
+            transition: all 0.3s;
+            box-shadow: 0 8px 32px rgba(212,168,67,0.3);
+            position: relative;
+            letter-spacing: -0.3px;
+        }
+        .bookmarklet-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 16px 48px rgba(212,168,67,0.4);
+        }
+        .bookmarklet-btn:active {
+            cursor: grabbing;
+            transform: scale(0.98);
+        }
+        .bookmarklet-btn .sub-text {
+            display: block;
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.7;
+            margin-top: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .bookmarklet-hint {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 20px;
+            line-height: 1.8;
+        }
+        .bookmarklet-hint kbd {
+            background: rgba(212,168,67,0.12);
+            color: var(--gold);
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: inherit;
+            border: 1px solid rgba(212,168,67,0.2);
+        }
+
+        /* ── Steps ── */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 48px;
+        }
+        .step-card {
+            text-align: center;
+            padding: 32px 20px;
+            background: rgba(20, 20, 42, 0.4);
+            border: 1px solid rgba(42, 42, 80, 0.4);
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+        .step-card:hover {
+            border-color: rgba(212,168,67,0.2);
+            background: rgba(20, 20, 42, 0.6);
+            transform: translateY(-4px);
+        }
+        .step-number {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #0d0d1a;
+            font-size: 20px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px;
+        }
+        .step-card h3 {
+            font-size: 17px; font-weight: 700; margin-bottom: 8px; color: #fff;
+        }
+        .step-card p {
+            font-size: 14px; color: var(--text-muted); line-height: 1.7;
+        }
+
+        /* ── Demo Preview ── */
+        .demo-section {
+            background: var(--bg-dark);
+            border-top: 1px solid rgba(42,42,80,0.3);
+            border-bottom: 1px solid rgba(42,42,80,0.3);
+        }
+        .demo-wrapper {
+            max-width: 780px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .demo-browser {
+            background: #1a1a30;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        .demo-browser-bar {
+            display: flex; align-items: center;
+            padding: 12px 16px;
+            background: rgba(30, 30, 60, 0.8);
+            border-bottom: 1px solid rgba(42,42,80,0.3);
+            gap: 10px;
+        }
+        .demo-dots {
+            display: flex; gap: 6px;
+        }
+        .demo-dots span {
+            width: 10px; height: 10px; border-radius: 50%;
+        }
+        .demo-dots .r { background: #ff5f57; }
+        .demo-dots .y { background: #ffbd2e; }
+        .demo-dots .g { background: #28c840; }
+        .demo-url-bar {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+            padding: 6px 14px;
+            font-size: 13px;
+            color: var(--text-muted);
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .demo-content {
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .demo-site-preview {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #1a1a35, #252550);
+            border-radius: 10px;
+            border: 1px solid rgba(42,42,80,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .demo-site-preview .placeholder-text {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            opacity: 0.5;
+        }
+        .demo-site-preview .placeholder-text strong {
+            display: block;
+            font-size: 22px;
+            color: rgba(212,168,67,0.3);
+            margin-bottom: 4px;
+        }
+
+        /* Arrow overlay on demo */
+        .demo-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 8px 20px;
+            background: rgba(212,168,67,0.1);
+            border: 1px solid rgba(212,168,67,0.2);
+            border-radius: 100px;
+            font-size: 13px;
+            color: var(--gold);
+        }
+        .demo-arrow .arrow-icon {
+            font-size: 20px;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .demo-result-preview {
+            width: 100%;
+            background: rgba(20, 20, 42, 0.5);
+            border: 1px solid rgba(42,42,80,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .demo-result-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(42,42,80,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .demo-result-header h4 {
+            font-size: 14px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .demo-result-header .score-badge {
+            padding: 4px 14px;
+            background: rgba(212,168,67,0.15);
+            color: var(--gold);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .demo-result-body {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .demo-perspective {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .demo-perspective .p-icon { font-size: 16px; }
+        .demo-perspective .p-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(42,42,80,0.4);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .demo-perspective .p-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light));
+        }
+
+        /* ── Features ── */
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 32px;
+        }
+        .feature-item {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            padding: 20px;
+            background: rgba(20, 20, 42, 0.3);
+            border: 1px solid rgba(42, 42, 80, 0.3);
+            border-radius: 14px;
+            transition: all 0.3s;
+        }
+        .feature-item:hover {
+            border-color: rgba(212,168,67,0.15);
+            background: rgba(20, 20, 42, 0.5);
+        }
+        .feature-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            background: rgba(212,168,67,0.1);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .feature-text h4 {
+            font-size: 15px; font-weight: 600; margin-bottom: 4px; color: #fff;
+        }
+        .feature-text p {
+            font-size: 13px; color: var(--text-muted); line-height: 1.6;
+        }
+
+        /* ── CTA Section ── */
+        .cta-section {
+            text-align: center;
+            padding: 100px 0;
+            background: var(--gradient);
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(212,168,67,0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .cta-section h2 {
+            font-size: 36px; font-weight: 800;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .cta-section p {
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto 32px;
+            font-size: 17px;
+            position: relative;
+        }
+
+        /* ── Footer ── */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid rgba(42,42,80,0.3);
+            text-align: center;
+        }
+        footer .footer-links {
+            display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 16px;
+        }
+        footer .footer-links a {
+            color: var(--text-muted); text-decoration: none; font-size: 14px;
+            transition: color 0.2s;
+        }
+        footer .footer-links a:hover { color: var(--gold); }
+        footer p { font-size: 13px; color: var(--text-muted); }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .hero p { font-size: 16px; }
+            .bookmarklet-zone { padding: 32px 20px; margin: 24px 16px; }
+            .bookmarklet-btn { font-size: 16px; padding: 14px 28px; }
+            .steps-grid { grid-template-columns: 1fr; gap: 16px; }
+            .features-list { grid-template-columns: 1fr; }
+            .demo-result-body { grid-template-columns: 1fr; }
+            .demo-content { padding: 20px; }
+            .section-title { font-size: 28px; }
+            .nav-links { display: none; }
+            .bookmarklet-hint { font-size: 13px; }
+        }
+
+        /* ── Copy feedback ── */
+        .copy-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 12px 24px;
+            background: rgba(212,168,67,0.9);
+            color: #0d0d1a;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .copy-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ── Raw Code ── */
+        .code-block {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            overflow-x: auto;
+        }
+        .code-block code {
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.8;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Copy Toast -->
+    <div class="copy-toast" id="copy-toast">✓ Copied to clipboard!</div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">P</div>
+                <span>Page</span>RX
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="index.html#how-it-works">How It Works</a>
+                <a href="index.html#features">Features</a>
+                <a href="index.html#sample">Sample Report</a>
+                <a href="index.html#faq">FAQ</a>
+                <a href="bookmarklet.html" class="active">Bookmarklet</a>
+                <a href="index.html#analyze" class="btn btn-primary" style="padding:10px 20px;font-size:13px;">Analyze Your Site</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="dot"></span>
+                    One-Click Page Analysis
+                </div>
+                <h1>
+                    Analyze Any Landing Page<br>
+                    <span class="gold-gradient">With One Click</span>
+                </h1>
+                <p>
+                    Drag the PageRX bookmarklet to your browser's bookmarks bar. 
+                    Click it on any landing page — you'll get an instant AI-powered 
+                    audit from <strong>5 expert perspectives</strong> in a new tab.
+                </p>
+
+                <!-- Bookmarklet Drag Zone -->
+                <div class="bookmarklet-zone" id="bookmarklet-zone">
+                    <span class="drag-icon">📌</span>
+                    <a href="javascript:(function(){window.open('http://116.203.180.240:8000/?url='+encodeURIComponent(location.href),'_blank')})();" 
+                       class="bookmarklet-btn"
+                       onclick="event.stopPropagation();"
+                       title="Drag this to your bookmarks bar, then click it on any page"
+                       id="bookmarklet-link">
+                        ⚡ Analyze with PageRX
+                        <span class="sub-text">⋮⇰ Drag to Bookmarks Bar ⋮⇰</span>
+                    </a>
+                    <p class="bookmarklet-hint">
+                        Drag the button above to your bookmarks bar.<br>
+                        Then click it on <strong>any landing page</strong> to get instant AI analysis.<br>
+                        <small style="opacity:0.6;">(Works in Chrome, Firefox, Edge, Safari — desktop only)</small>
+                    </p>
+                </div>
+
+                <!-- Manual code fallback -->
+                <div style="margin-top:12px;">
+                    <button class="btn btn-secondary" style="font-size:12px;padding:8px 16px;" onclick="showManualInstall()">
+                        📋 Manual Install Instructions
+                    </button>
+                </div>
+                <div id="manual-install" style="display:none;margin-top:20px;max-width:580px;margin-left:auto;margin-right:auto;text-align:left;">
+                    <div class="code-block">
+                        <code id="bookmarklet-code">javascript:(function(){window.open('http://116.203.180.240:8000/?url='+encodeURIComponent(location.href),'_blank')})();</code>
+                    </div>
+                    <p style="color:var(--text-muted);font-size:13px;line-height:1.7;">
+                        1. Copy the code above<br>
+                        2. Right-click your browser's bookmarks bar → <strong>Add Page</strong><br>
+                        3. Paste the code into the <strong>URL</strong> field<br>
+                        4. Name it <strong>"PageRX Analyze"</strong> and save
+                    </p>
+                    <button class="btn btn-primary" style="font-size:13px;padding:10px 20px;margin-top:8px;" onclick="copyCode()">
+                        📋 Copy Code
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Steps -->
+    <section class="section" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title animate-on-scroll">
+                How It Works in <span class="gold-text">3 Steps</span>
+            </h2>
+            <p class="section-subtitle animate-on-scroll delay-1">
+                Add the bookmarklet once, then analyze any page with a single click — no typing URLs, no copy-paste.
+            </p>
+            <div class="steps-grid">
+                <div class="step-card animate-on-scroll delay-1">
+                    <div class="step-number">1</div>
+                    <h3>Drag to Bookmarks</h3>
+                    <p>Drag the gold <strong>"Analyze with PageRX"</strong> button to your browser's bookmarks bar.</p>
+                </div>
+                <div class="step-card animate-on-scroll delay-2">
+                    <div class="step-number">2</div>
+                    <h3>Click on Any Page</h3>
+                    <p>Navigate to any landing page or website you want to analyze, then click the bookmarklet.</p>
+                </div>
+                <div class="step-card animate-on-scroll delay-3">
+                    <div class="step-number">3</div>
+                    <h3>Get Instant Analysis</h3>
+                    <p>A new tab opens with a full PageRX audit — security, code quality, UX, completeness, and business insights.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Preview -->
+    <section class="demo-section section" id="demo">
+        <div class="container">
+            <h2 class="section-title animate-on-scroll">
+                See It in <span class="gold-text">Action</span>
+            </h2>
+            <p class="section-subtitle animate-on-scroll delay-1">
+                One click on any page instantly delivers a comprehensive multi-perspective analysis.
+            </p>
+            <div class="demo-wrapper animate-on-scroll delay-2">
+                <div class="demo-browser">
+                    <div class="demo-browser-bar">
+                        <div class="demo-dots">
+                            <span class="r"></span>
+                            <span class="y"></span>
+                            <span class="g"></span>
+                        </div>
+                        <div class="demo-url-bar">https://yoursite.com/landing-page</div>
+                    </div>
+                    <div class="demo-content">
+                        <div class="demo-site-preview">
+                            <div class="placeholder-text">
+                                <strong>Your Landing Page</strong>
+                                Any website you visit
+                            </div>
+                        </div>
+
+                        <div class="demo-arrow">
+                            <span class="arrow-icon">👇</span>
+                            Click PageRX bookmarklet
+                            <span class="arrow-icon">👉</span>
+                        </div>
+
+                        <div class="demo-result-preview">
+                            <div class="demo-result-header">
+                                <h4>📊 PageRX <span style="color:var(--gold);">Analysis Report</span></h4>
+                                <span class="score-badge">Score: 72/100</span>
+                            </div>
+                            <div class="demo-result-body">
+                                <div class="demo-perspective">
+                                    <span class="p-icon">🔒</span> Security
+                                    <div class="p-bar"><div class="p-bar-fill" style="width:85%;"></div></div>
+                                </div>
+                                <div class="demo-perspective">
+                                    <span class="p-icon">💻</span> Code Quality
+                                    <div class="p-bar"><div class="p-bar-fill" style="width:68%;"></div></div>
+                                </div>
+                                <div class="demo-perspective">
+                                    <span class="p-icon">🎨</span> User Experience
+                                    <div class="p-bar"><div class="p-bar-fill" style="width:78%;"></div></div>
+                                </div>
+                                <div class="demo-perspective">
+                                    <span class="p-icon">📋</span> Completeness
+                                    <div class="p-bar"><div class="p-bar-fill" style="width:55%;"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section" id="features">
+        <div class="container">
+            <h2 class="section-title animate-on-scroll">
+                Why Use the <span class="gold-text">Bookmarklet?</span>
+            </h2>
+            <p class="section-subtitle animate-on-scroll delay-1">
+                No more copy-pasting URLs. Analyze any page you're already browsing in one click.
+            </p>
+            <div class="features-list">
+                <div class="feature-item animate-on-scroll delay-1">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-text">
+                        <h4>One-Click Speed</h4>
+                        <p>No typing, no copy-paste. Click the bookmarklet and get results instantly.</p>
+                    </div>
+                </div>
+                <div class="feature-item animate-on-scroll delay-1">
+                    <div class="feature-icon">🔄</div>
+                    <div class="feature-text">
+                        <h4>Works on Any Page</h4>
+                        <p>Any website, any URL. Analyze competitors, clients, or your own pages.</p>
+                    </div>
+                </div>
+                <div class="feature-item animate-on-scroll delay-2">
+                    <div class="feature-icon">🔍</div>
+                    <div class="feature-text">
+                        <h4>5 Expert Perspectives</h4>
+                        <p>Security vulnerabilities, code quality, UX blind spots, SEO completeness, and business viability.</p>
+                    </div>
+                </div>
+                <div class="feature-item animate-on-scroll delay-2">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-text">
+                        <h4>Zero Configuration</h4>
+                        <p>No accounts, no sign-ups, no browser extensions. Just drag, click, analyze.</p>
+                    </div>
+                </div>
+                <div class="feature-item animate-on-scroll delay-3">
+                    <div class="feature-icon">🌐</div>
+                    <div class="feature-text">
+                        <h4>Cross-Browser</h4>
+                        <p>Works in Chrome, Firefox, Edge, Safari, Brave, and any modern browser.</p>
+                    </div>
+                </div>
+                <div class="feature-item animate-on-scroll delay-3">
+                    <div class="feature-icon">🔗</div>
+                    <div class="feature-text">
+                        <h4>Shareable Reports</h4>
+                        <p>Generate shareable PDF reports of any analysis to share with your team or clients.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section" id="analyze">
+        <div class="container">
+            <h2 class="animate-on-scroll">
+                Get Your Landing Page <span class="gold-gradient">Analyzed</span>
+            </h2>
+            <p class="animate-on-scroll delay-1">
+                Don't have a page in mind? Head to the main analyzer and enter any URL manually.
+            </p>
+            <a href="index.html" class="btn btn-primary btn-lg animate-on-scroll delay-2">
+                🚀 Launch PageRX Analyzer →
+            </a>
+            <p style="margin-top:16px;font-size:13px;color:var(--text-muted);">
+                Or drag the bookmarklet above and analyze any page in one click.
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="index.html#how-it-works">How It Works</a>
+                <a href="index.html#features">Features</a>
+                <a href="index.html#sample">Sample Report</a>
+                <a href="index.html#faq">FAQ</a>
+                <a href="bookmarklet.html">Bookmarklet</a>
+                <a href="index.html#analyze">Analyze Your Site</a>
+            </div>
+            <p>© 2026 PageRX. Built with AI by <strong style="color:var(--text);">Nous Research</strong>.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ── Scroll Effect ──
+        window.addEventListener('scroll', function() {
+            var nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // ── Intersection Observer for scroll animations ──
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(function(el) {
+            observer.observe(el);
+        });
+
+        // ── Manual Install Toggle ──
+        function showManualInstall() {
+            var el = document.getElementById('manual-install');
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // ── Copy Code ──
+        function copyCode() {
+            var code = document.getElementById('bookmarklet-code').textContent;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(code).then(function() {
+                    showCopyToast();
+                });
+            } else {
+                // Fallback
+                var textarea = document.createElement('textarea');
+                textarea.value = code;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showCopyToast();
+            }
+        }
+
+        function showCopyToast() {
+            var toast = document.getElementById('copy-toast');
+            toast.classList.add('show');
+            setTimeout(function() {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // ── Track bookmarklet drag (for analytics) ──
+        document.getElementById('bookmarklet-link').addEventListener('dragstart', function() {
+            // Bookmarklet is being dragged — track it
+            try {
+                var img = new Image();
+                img.src = 'http://116.203.180.240:8000/pixel.gif?event=bookmarklet_drag';
+            } catch(e) {}
+        });
+
+        // ── Also track clicks on the bookmarklet link ──
+        document.getElementById('bookmarklet-link').addEventListener('click', function(e) {
+            // When the bookmarklet is clicked (instead of dragged), 
+            // show a helpful message about dragging it
+            if (!e.detail || e.detail > 1) return; // ignore double clicks
+            var zone = document.getElementById('bookmarklet-zone');
+            zone.style.borderColor = 'rgba(212,168,67,0.7)';
+            zone.style.background = 'rgba(212,168,67,0.05)';
+            setTimeout(function() {
+                zone.style.borderColor = '';
+                zone.style.background = '';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
