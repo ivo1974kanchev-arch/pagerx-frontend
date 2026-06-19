@@ -1898,6 +1898,8 @@
         // ── Instant Score Preview (fires on blur + after submission) ──
         let instantPreviewTimeout = null;
         urlInput.addEventListener('input', function() {
+            // Skip instant preview on GitHub Pages (mixed content blocked)
+            if (IS_GITHUB_PAGES) return;
             clearTimeout(instantPreviewTimeout);
             const url = urlInput.value.trim();
             if (url.length < 5 || !url.includes('.')) {
