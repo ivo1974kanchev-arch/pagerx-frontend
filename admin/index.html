@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PageRX — Admin Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0a0a14;
+    color: #e0e0e0;
+    min-height: 100vh;
+}
+::selection { background: #d4a84344; color: #d4a843; }
+:root {
+    --gold: #d4a843;
+    --gold-light: #e8c46a;
+    --gold-dark: #b08a30;
+    --bg-dark: #0a0a14;
+    --bg-card: #12122a;
+    --bg-card-hover: #1a1a3a;
+    --border: #22224a;
+    --text: #e0e0e0;
+    --text-muted: #7878aa;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+/* ── Header ── */
+header {
+    background: linear-gradient(135deg, #0d0d1a 0%, #14142a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0; position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(12px);
+}
+header .container { display: flex; justify-content: space-between; align-items: center; }
+.logo { font-size: 22px; font-weight: 800; }
+.logo span { color: var(--gold); }
+.last-updated { font-size: 12px; color: var(--text-muted); }
+
+/* ── Status Bar ── */
+.status-bar {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+}
+.status-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 20px; border-radius: 8px;
+    font-size: 14px; font-weight: 600;
+}
+.status-good { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+.status-warn { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+.status-bad { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+
+/* ── Dashboard Grid ── */
+.dashboard { padding: 24px 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px; }
+.card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px; transition: all 0.2s;
+}
+.card:hover { border-color: rgba(212,168,67,0.3); }
+.card-title {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--text-muted); margin-bottom: 16px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+}
+.card-title .icon { font-size: 18px; }
+.card-value {
+    font-size: 36px; font-weight: 800; color: #fff; margin-bottom: 4px;
+}
+.card-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+
+/* ── Tables ── */
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; padding: 8px 4px; color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+td { padding: 8px 4px; border-bottom: 1px solid rgba(34,34,74,0.5); color: #ccc; }
+tr:last-child td { border-bottom: none; }
+td.num { text-align: right; font-weight: 600; color: var(--gold); }
+
+/* ── API Status ── */
+.api-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid rgba(34,34,74,0.5);
+}
+.api-item:last-child { border-bottom: none; }
+.api-method {
+    display: inline-block; padding: 2px 6px; border-radius: 4px;
+    font-size: 10px; font-weight: 700; margin-right: 6px;
+}
+.method-get { background: rgba(34,197,94,0.15); color: var(--green); }
+.method-post { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.api-status { font-size: 13px; font-weight: 600; }
+.api-detail { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.api-path { font-family: monospace; font-size: 12px; color: #ccc; }
+
+/* ── Controls ── */
+.control-group {
+    display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;
+}
+.btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 18px; border-radius: 8px; font-weight: 600;
+    font-size: 13px; cursor: pointer; transition: all 0.2s;
+    border: none; text-decoration: none; color: #fff;
+}
+.btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.btn-danger:hover { box-shadow: 0 4px 16px rgba(239,68,68,0.3); transform: translateY(-1px); }
+.btn-success { background: linear-gradient(135deg, #22c55e, #16a34a); }
+.btn-success:hover { box-shadow: 0 4px 16px rgba(34,197,94,0.3); transform: translateY(-1px); }
+.btn-warning { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #0d0d1a; }
+.btn-warning:hover { box-shadow: 0 4px 16px rgba(212,168,67,0.3); transform: translateY(-1px); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-outline {
+    background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+}
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+.toggle-indicator {
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+    margin-right: 6px;
+}
+.toggle-on { background: var(--green); }
+.toggle-off { background: var(--red); }
+
+/* ── Template Status ── */
+.template-item {
+    padding: 8px 0; border-bottom: 1px solid rgba(34,34,74,0.3);
+}
+.template-item:last-child { border-bottom: none; }
+.template-name { font-size: 13px; font-weight: 500; }
+.template-issues { font-size: 11px; color: var(--red); }
+
+/* ── Stripe ── */
+.stripe-link {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid rgba(34,34,74,0.3);
+}
+.stripe-link:last-child { border-bottom: none; }
+.stripe-url {
+    font-size: 11px; color: var(--text-muted); word-break: break-all;
+    max-width: 280px; display: block;
+}
+.stripe-status { font-size: 12px; font-weight: 600; }
+.stripe-ok { color: var(--green); }
+.stripe-fail { color: var(--red); }
+
+/* ── Config Details ── */
+.config-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 0; font-size: 13px;
+}
+.config-label { color: var(--text-muted); }
+.config-value { font-weight: 600; color: #fff; }
+
+/* ── Error Box ── */
+.error-box {
+    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 8px; padding: 12px; font-size: 12px; color: var(--red);
+}
+
+/* ── Full-width card ── */
+.card-full { grid-column: 1 / -1; }
+
+/* ── Footer ── */
+footer {
+    padding: 24px 0; border-top: 1px solid var(--border);
+    text-align: center; font-size: 12px; color: var(--text-muted);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .grid { grid-template-columns: 1fr; }
+    header .container { flex-direction: column; gap: 8px; text-align: center; }
+}
+
+/* ── Toast / Notification ── */
+.toast {
+    position: fixed; bottom: 20px; right: 20px;
+    padding: 12px 20px; border-radius: 10px;
+    font-size: 13px; font-weight: 500; z-index: 9999;
+    animation: slideUp 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.toast-success { background: rgba(34,197,94,0.9); color: #fff; border: 1px solid var(--green); }
+.toast-error { background: rgba(239,68,68,0.9); color: #fff; border: 1px solid var(--red); }
+.toast-info { background: rgba(212,168,67,0.9); color: #0d0d1a; border: 1px solid var(--gold); }
+@keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+</style>
+</head>
+<body>
+
+<header>
+<div class="container">
+    <div class="logo">PageRX <span>Admin</span></div>
+    <div class="last-updated">Last updated: 2026-06-19 07:55 UTC</div>
+</div>
+</header>
+
+<div class="status-bar">
+<div class="container">
+    <div class="status-badge status-warn">⚠️ Template Issues Detected</div>
+</div>
+</div>
+
+<main class="dashboard">
+<div class="container">
+<div class="grid">
+
+    <!-- API Health -->
+    <div class="card">
+        <div class="card-title"><span class="icon">🔌</span> API Endpoints</div>
+
+        <div class="api-item">
+            <div>
+                <span class="api-method method-get">GET</span>
+                <span class="api-path">/api/health</span>
+                <div class="api-detail">version=1.0.0, status=healthy</div>
+            </div>
+            <div class="api-status">🟢</div>
+        </div>
+        <div class="api-item">
+            <div>
+                <span class="api-method method-post">POST</span>
+                <span class="api-path">/api/analyze</span>
+                <div class="api-detail">score=68.0, reviews=5</div>
+            </div>
+            <div class="api-status">🟢</div>
+        </div>
+        <div class="api-item">
+            <div>
+                <span class="api-method method-post">POST</span>
+                <span class="api-path">/api/score/instant</span>
+                <div class="api-detail">score=45.0/100</div>
+            </div>
+            <div class="api-status">🟢</div>
+        </div>
+    </div>
+
+    <!-- Analytics: Visits -->
+    <div class="card">
+        <div class="card-title"><span class="icon">📊</span> Analytics</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div>
+                <div class="card-value" style="font-size:28px;">0</div>
+                <div class="card-subtitle">Visits Today</div>
+            </div>
+            <div>
+                <div class="card-value" style="font-size:28px;">9</div>
+                <div class="card-subtitle">All Time</div>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div>
+                <div class="card-value" style="font-size:28px;">5</div>
+                <div class="card-subtitle">Unique IPs</div>
+            </div>
+            <div>
+                <div class="card-value" style="font-size:28px;">5</div>
+                <div class="card-subtitle">Recent IPs</div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Analytics: Referrers & Pages -->
+    <div class="card">
+        <div class="card-title"><span class="icon">🔗</span> Top Referrers</div>
+        
+        <table>
+            <tr><th>Domain</th><th class="num">Visits</th></tr><tr><td>example.com</td><td class="num">4</td></tr><tr><td>116.203.180.240:8000</td><td class="num">3</td></tr><tr><td>ivo1974kanchev-arch.github.io</td><td class="num">2</td></tr></table>
+    </div>
+
+    <div class="card">
+        <div class="card-title"><span class="icon">📄</span> Top Pages</div>
+        
+        <table>
+            <tr><th>URL</th><th class="num">Views</th></tr><tr><td style="font-size:11px;word-break:break-all;">https://example.com</td><td class="num">4</td></tr><tr><td style="font-size:11px;word-break:break-all;">http://116.203.180.240:8000/</td><td class="num">3</td></tr><tr><td style="font-size:11px;word-break:break-all;">https://ivo1974kanchev-arch.github.io/pagerx-frontend/</td><td class="num">2</td></tr></table>
+    </div>
+
+    <!-- Leads -->
+    <div class="card">
+        <div class="card-title"><span class="icon">👤</span> Leads</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div>
+                <div class="card-value" style="font-size:28px;">4</div>
+                <div class="card-subtitle">Total Collected</div>
+            </div>
+            <div>
+                <div class="card-value" style="font-size:28px;">0</div>
+                <div class="card-subtitle">New Today</div>
+            </div>
+        </div>
+        <div class="card-title" style="font-size:11px;margin-top:12px;margin-bottom:8px;">By Source</div>
+        
+        <table>
+            <tr><th>Source</th><th class="num">Count</th></tr><tr><td>pagerx.com</td><td class="num">2</td></tr><tr><td>example.com</td><td class="num">2</td></tr></table>
+        
+    </div>
+
+    <!-- Kill Switch & Emergency Mode -->
+    <div class="card card-full">
+        <div class="card-title"><span class="icon">🔧</span> Site Controls</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+            <div>
+                <div style="font-size:15px;font-weight:600;margin-bottom:8px;">
+                    <span class="toggle-indicator toggle-on"></span>
+                    Signups: <span id="signup-status">ENABLED</span>
+                </div>
+                <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">
+                    Kill Switch prevents new lead capture and signups.
+                </p>
+                <div class="control-group">
+                    <button class="btn btn-danger btn-sm" onclick="toggleSignups(true)" disabled>
+                        🔓 Enable Signups
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="toggleSignups(false)" >
+                        🔒 Disable Signups
+                    </button>
+                </div>
+            </div>
+            <div>
+                <div style="font-size:15px;font-weight:600;margin-bottom:8px;">
+                    <span class="toggle-indicator toggle-off"></span>
+                    Emergency Mode: <span id="emergency-status">INACTIVE</span>
+                </div>
+                <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">
+                    Replaces CTA with "We'll be back shortly" message.
+                </p>
+                <div class="control-group">
+                    <button class="btn btn-warning btn-sm" onclick="toggleEmergency(true)" >
+                        🚨 Activate
+                    </button>
+                    <button class="btn btn-success btn-sm" onclick="toggleEmergency(false)" disabled>
+                        ✅ Deactivate
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Templates -->
+    <div class="card">
+        <div class="card-title"><span class="icon">📧</span> Email Templates</div>
+        <div style="margin-bottom:12px;">
+            <span class="card-value" style="font-size:24px;">7/8</span>
+            <span class="card-subtitle"> valid</span>
+        </div>
+        
+        <div class="template-item">
+            <div class="template-name">✅ email/templates/default.html</div>
+            
+            <div style="font-size:10px;color:var(--text-muted);">57 variables</div>
+        </div>
+        <div class="template-item">
+            <div class="template-name">✅ email/templates/followup.html</div>
+            
+            <div style="font-size:10px;color:var(--text-muted);">57 variables</div>
+        </div>
+        <div class="template-item">
+            <div class="template-name">❌ marketing/email_templates.txt</div>
+            <div class="template-issues">No Subject: line found</div>
+            <div style="font-size:10px;color:var(--text-muted);">25 variables</div>
+        </div>
+        <div class="template-item">
+            <div class="template-name">✅ marketing/email_templates.txt</div>
+            
+            <div style="font-size:10px;color:var(--text-muted);">25 variables</div>
+        </div>
+        <div class="template-item">
+            <div class="template-name">✅ marketing/email_templates.txt</div>
+            
+            <div style="font-size:10px;color:var(--text-muted);">25 variables</div>
+        </div>
+        <div class="template-item">
+            <div class="template-name">✅ marketing/email_templates.txt</div>
+            
+            <div style="font-size:10px;color:var(--text-muted);">25 variables</div>
+        </div>
+        <div class="template-item">
+            <div class="template-name">✅ marketing/email_templates.txt</div>
+            
+            <div style="font-size:10px;color:var(--text-muted);">25 variables</div>
+        </div>
+        <div class="template-item">
+            <div class="template-name">✅ marketing/email_templates.txt</div>
+            
+            <div style="font-size:10px;color:var(--text-muted);">52 variables</div>
+        </div>
+    </div>
+
+    <!-- Stripe Links -->
+    <div class="card">
+        <div class="card-title"><span class="icon">💳</span> Stripe Payments</div>
+        <div style="margin-bottom:12px;">
+            <span class="card-value" style="font-size:24px;">1/1</span>
+            <span class="card-subtitle"> reachable</span>
+        </div>
+        
+        <div class="stripe-link">
+            <div>
+                <div style="font-size:13px;font-weight:500;">monthly_pro</div>
+                <span class="stripe-url">https://buy.stripe.com/test_00w00lffB4AJ6g20mKcAo01</span>
+            </div>
+            <div class="stripe-status stripe-ok">✅ Live — Stripe checkout page loads successfully (TEST MODE)</div>
+        </div>
+    </div>
+
+    <!-- Config -->
+    <div class="card">
+        <div class="card-title"><span class="icon">⚙️</span> Configuration</div>
+        <div class="config-row">
+            <span class="config-label">Config File</span>
+            <span class="config-value" style="font-size:12px;font-family:monospace;">config.json</span>
+        </div>
+        <div class="config-row">
+            <span class="config-label">Signups</span>
+            <span class="config-value" style="color:var(--green)">ENABLED</span>
+        </div>
+        <div class="config-row">
+            <span class="config-label">Emergency Mode</span>
+            <span class="config-value" style="color:var(--text-muted)">Inactive</span>
+        </div>
+        <div class="config-row">
+            <span class="config-label">Last Updated</span>
+            <span class="config-value" style="font-size:11px;font-family:monospace;color:var(--text-muted);">2026-06-19T07:55:24.799384</span>
+        </div>
+    </div>
+
+</div>
+</div>
+</main>
+
+<footer>
+<div class="container">
+    PageRX Admin Dashboard — <a href="https://ivo1974kanchev-arch.github.io/pagerx-frontend/" style="color:var(--gold);text-decoration:none;">View Live Site</a>
+    &nbsp;·&nbsp; <a href="/api/health" style="color:var(--text-muted);text-decoration:none;">API Health</a>
+</div>
+</footer>
+
+<script>
+async function apiCall(action, data) {{
+    try {{
+        const resp = await fetch('/admin/api/' + action, {{
+            method: 'POST',
+            headers: {{ 'Content-Type': 'application/json' }},
+            body: JSON.stringify(data || {{}}),
+        }});
+        const result = await resp.json();
+        return result;
+    }} catch (e) {{
+        // Fallback: the dashboard.py handles actions via query params too
+        console.error('API call failed, using fallback', e);
+        return null;
+    }}
+}}
+
+function showToast(msg, type) {{
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-' + type;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}}
+
+async function toggleSignups(enable) {{
+    try {{
+        const resp = await fetch('/admin/api/toggle_signups', {{
+            method: 'POST',
+            headers: {{ 'Content-Type': 'application/json' }},
+            body: JSON.stringify({{ enable: enable }}),
+        }});
+        if (resp.ok) {{
+            location.reload();
+        }} else {{
+            // Try direct API
+            const altResp = await fetch('/admin/api?action=toggle_signups&enable=' + enable);
+            if (altResp.ok) location.reload();
+            else showToast('Failed to toggle signups', 'error');
+        }}
+    }} catch (e) {{
+        showToast('Failed: ' + e.message, 'error');
+    }}
+}}
+
+async function toggleEmergency(enable) {{
+    try {{
+        const resp = await fetch('/admin/api/toggle_emergency', {{
+            method: 'POST',
+            headers: {{ 'Content-Type': 'application/json' }},
+            body: JSON.stringify({{ enable: enable }}),
+        }});
+        if (resp.ok) {{
+            location.reload();
+        }} else {{
+            const altResp = await fetch('/admin/api?action=toggle_emergency&enable=' + enable);
+            if (altResp.ok) location.reload();
+            else showToast('Failed to toggle emergency mode', 'error');
+        }}
+    }} catch (e) {{
+        showToast('Failed: ' + e.message, 'error');
+    }}
+}}
+
+async function refreshDashboard() {{
+    showToast('Refreshing dashboard data...', 'info');
+    setTimeout(() => location.reload(), 500);
+}}
+</script>
+
+</body>
+</html>

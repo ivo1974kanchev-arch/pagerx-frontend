@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversion Rate Calculator — Free Revenue Estimator | PageRX</title>
+    <meta name="description" content="Calculate your landing page's revenue potential. Free conversion rate calculator: estimate monthly revenue, projected gains at 1%/2%/5% improvement, and annual impact. Built by PageRX.">
+    <meta name="keywords" content="conversion rate calculator, revenue calculator, landing page ROI calculator, conversion optimization calculator, ecommerce revenue calculator, CRO calculator, conversion rate optimization">
+    <meta name="author" content="PageRX">
+    <meta name="robots" content="index, follow">
+    <!-- Open Graph -->
+    <meta property="og:title" content="Conversion Rate Calculator — Free Revenue Estimator | PageRX">
+    <meta property="og:description" content="Estimate your monthly revenue, projected gains, and annual impact from conversion rate improvements. Free interactive tool by PageRX.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pagerx.nousresearch.com/tools/conversion-calculator.html">
+    <meta property="og:site_name" content="PageRX">
+    <meta property="og:image" content="https://pagerx.nousresearch.com/og-conversion-calculator.png">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Conversion Rate Calculator — Free Revenue Estimator | PageRX">
+    <meta name="twitter:description" content="See how improving your conversion rate by 1%, 2%, or 5% impacts your revenue. Free interactive calculator.">
+    <meta name="twitter:image" content="https://pagerx.nousresearch.com/og-conversion-calculator.png">
+    <link rel="canonical" href="https://pagerx.nousresearch.com/tools/conversion-calculator.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0d0d1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        ::selection { background: #d4a84344; color: #d4a843; }
+        :root {
+            --gold: #d4a843;
+            --gold-light: #e8c46a;
+            --gold-dark: #b08a30;
+            --bg-dark: #0d0d1a;
+            --bg-card: #14142a;
+            --bg-card-hover: #1c1c3a;
+            --bg-input: #1a1a35;
+            --border: #2a2a50;
+            --text: #e0e0e0;
+            --text-muted: #8888aa;
+            --gradient: linear-gradient(135deg, #1a1a3e 0%, #0d0d1a 100%);
+        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+        /* ── Header ── */
+        .tool-header {
+            padding: 20px 0;
+            background: rgba(13,13,26,0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .tool-header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .tool-header .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            text-decoration: none;
+        }
+        .tool-header .logo span { color: var(--gold); }
+        .tool-header .back-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .tool-header .back-link:hover { color: var(--gold); }
+
+        /* ── Hero ── */
+        .hero {
+            text-align: center;
+            padding: 64px 0 48px;
+            background: var(--gradient);
+        }
+        .hero h1 {
+            font-size: 40px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+        .hero h1 span { color: var(--gold); }
+        .hero p {
+            color: var(--text-muted);
+            font-size: 17px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ── Calculator ── */
+        .calc-section { padding: 48px 0; }
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+        @media (max-width: 768px) {
+            .calc-grid { grid-template-columns: 1fr; }
+        }
+
+        .input-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 36px;
+        }
+        .input-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 28px;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .form-group .input-wrap {
+            position: relative;
+        }
+        .form-group .input-wrap .prefix {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 15px;
+            pointer-events: none;
+        }
+        .form-group .input-wrap input {
+            width: 100%;
+            padding: 14px 16px;
+            padding-left: 30px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        .form-group .input-wrap input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212,168,67,0.15);
+        }
+        .form-group .input-wrap input::placeholder {
+            color: #555;
+        }
+        .form-group .input-wrap input[type="number"] { -moz-appearance: textfield; }
+        .form-group .input-wrap input::-webkit-outer-spin-button,
+        .form-group .input-wrap input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .form-group .hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .input-card .btn-calc {
+            width: 100%;
+            padding: 16px;
+            margin-top: 12px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #0d0d1a;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .input-card .btn-calc:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(212,168,67,0.3);
+        }
+
+        /* ── Results ── */
+        .results-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 36px;
+        }
+        .results-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 24px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        @media (max-width: 480px) {
+            .result-grid { grid-template-columns: 1fr; }
+        }
+        .result-item {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .result-item .label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .result-item .value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .result-item .value.gold { color: var(--gold); }
+        .result-item .value.green { color: #4ade80; }
+        .result-item .sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .improvement-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+        .improvement-table th {
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .improvement-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(42,42,80,0.5);
+            font-size: 14px;
+        }
+        .improvement-table tr:last-child td { border-bottom: none; }
+        .improvement-table .highlight {
+            color: var(--gold);
+            font-weight: 600;
+        }
+        .improvement-table .gain-positive { color: #4ade80; }
+
+        /* ── Chart ── */
+        .chart-wrap {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 28px;
+        }
+        .chart-wrap canvas { width: 100% !important; max-height: 300px; }
+
+        /* ── CTA Banner ── */
+        .cta-banner {
+            background: linear-gradient(135deg, rgba(212,168,67,0.08) 0%, rgba(176,138,48,0.04) 100%);
+            border: 1px solid rgba(212,168,67,0.25);
+            border-radius: 16px;
+            padding: 36px;
+            text-align: center;
+            margin-top: 48px;
+        }
+        .cta-banner h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .cta-banner p {
+            color: var(--text-muted);
+            font-size: 15px;
+            margin-bottom: 20px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .cta-banner .btn-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 36px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #0d0d1a;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        .cta-banner .btn-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(212,168,67,0.35);
+        }
+
+        /* ── Share ── */
+        .share-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+        .share-bar span {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-input);
+            color: var(--text);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .share-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(212,168,67,0.08);
+        }
+        .share-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+        /* ── Footer ── */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-muted);
+            font-size: 13px;
+            border-top: 1px solid var(--border);
+        }
+        .footer a { color: var(--gold); text-decoration: none; }
+
+        /* ── Default State ── */
+        .hidden { display: none; }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 28px; }
+            .input-card, .results-card { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="tool-header">
+        <div class="container">
+            <a href="https://page-rx.github.io" class="logo">Page<span>RX</span></a>
+            <a href="https://page-rx.github.io" class="back-link">&larr; Back to PageRX</a>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <h1>Conversion Rate <span>Calculator</span></h1>
+            <p>See exactly how much revenue you're leaving on the table — and what even a small improvement in conversion rate could mean for your business.</p>
+        </div>
+    </section>
+
+    <!-- Calculator -->
+    <section class="calc-section">
+        <div class="container">
+            <div class="calc-grid">
+                <!-- Inputs -->
+                <div class="input-card">
+                    <h2>Enter Your Numbers</h2>
+                    <div class="form-group">
+                        <label>Monthly Visitors</label>
+                        <div class="input-wrap">
+                            <input type="number" id="visitors" placeholder="10,000" min="0" step="100">
+                        </div>
+                        <div class="hint">How many people visit your landing page each month?</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Current Conversion Rate (%)</label>
+                        <div class="input-wrap">
+                            <input type="number" id="currentRate" placeholder="2.5" min="0" max="100" step="0.1">
+                        </div>
+                        <div class="hint">What percentage of visitors convert? (e.g., 2.5 for 2.5%)</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Average Order Value ($)</label>
+                        <div class="input-wrap">
+                            <span class="prefix">$</span>
+                            <input type="number" id="aov" placeholder="50" min="0" step="1" style="padding-left: 30px;">
+                        </div>
+                        <div class="hint">The average amount a customer spends per transaction.</div>
+                    </div>
+                    <button class="btn-calc" onclick="calculate()">Calculate Revenue Impact</button>
+                </div>
+
+                <!-- Results -->
+                <div class="results-card" id="results">
+                    <h2>Your Revenue Projections</h2>
+
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="label">Current Monthly Revenue</div>
+                            <div class="value gold" id="currentRevenue">$0</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="label">Current Annual Revenue</div>
+                            <div class="value gold" id="annualRevenue">$0</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="label">Monthly Conversions</div>
+                            <div class="value" id="monthlyConversions">0</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="label">Potential Annual Gain (5% lift)</div>
+                            <div class="value green" id="annualGain">$0</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-wrap">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+
+                    <table class="improvement-table">
+                        <thead>
+                            <tr>
+                                <th>Improvement</th>
+                                <th>New Rate</th>
+                                <th>Monthly Revenue</th>
+                                <th>Monthly Gain</th>
+                            </tr>
+                        </thead>
+                        <tbody id="improvementRows">
+                            <tr>
+                                <td class="highlight">Current</td>
+                                <td id="cr0">0%</td>
+                                <td id="mr0">$0</td>
+                                <td id="mg0">—</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">+1%</td>
+                                <td id="cr1">0%</td>
+                                <td id="mr1">$0</td>
+                                <td id="mg1" class="gain-positive">$0</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">+2%</td>
+                                <td id="cr2">0%</td>
+                                <td id="mr2">$0</td>
+                                <td id="mg2" class="gain-positive">$0</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">+5%</td>
+                                <td id="cr5">0%</td>
+                                <td id="mr5">$0</td>
+                                <td id="mg5" class="gain-positive">$0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="text-align:center;font-size:14px;color:var(--text-muted);">
+                        Enter your numbers above and click <strong style="color:var(--gold);">"Calculate Revenue Impact"</strong> to see projections.
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="cta-banner">
+                <h3>Ready to Improve Your Conversion Rate?</h3>
+                <p>Get a free AI-powered landing page analysis. We'll find exactly what's holding your conversions back.</p>
+                <a href="https://page-rx.github.io" class="btn-cta">
+                    Get Your Landing Page Analyzed
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+            </div>
+
+            <!-- Share -->
+            <div class="share-bar">
+                <span>Share this tool:</span>
+                <a href="#" onclick="shareTwitter()" class="share-btn" title="Share on Twitter/X">
+                    <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    Share on X
+                </a>
+                <a href="#" onclick="copyLink()" class="share-btn" title="Copy link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    Copy Link
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            &copy; 2025 <a href="https://page-rx.github.io">PageRX</a> &mdash; Free AI Landing Page Analyzer. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        let chartInstance = null;
+
+        function formatCurrency(val) {
+            return '$' + Number(val).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+
+        function calculate() {
+            const visitors = parseFloat(document.getElementById('visitors').value.replace(/,/g, '')) || 0;
+            const currentRate = parseFloat(document.getElementById('currentRate').value) || 0;
+            const aov = parseFloat(document.getElementById('aov').value) || 0;
+
+            // Current metrics
+            const currentRateDecimal = currentRate / 100;
+            const currentMonthlyConversions = visitors * currentRateDecimal;
+            const currentMonthlyRevenue = currentMonthlyConversions * aov;
+            const currentAnnualRevenue = currentMonthlyRevenue * 12;
+
+            // Update result boxes
+            document.getElementById('currentRevenue').textContent = formatCurrency(currentMonthlyRevenue);
+            document.getElementById('annualRevenue').textContent = formatCurrency(currentAnnualRevenue);
+            document.getElementById('monthlyConversions').textContent = Math.round(currentMonthlyConversions);
+            document.getElementById('annualGain').textContent = formatCurrency(currentAnnualRevenue * 0.05 / currentRateDecimal); // placeholder, recalc below
+
+            // Improvements
+            const improvements = [0, 1, 2, 5];
+            const labels = ['Current', '+1%', '+2%', '+5%'];
+            const revenueData = [];
+            const gainData = [];
+
+            let totalAnnualGain = 0;
+
+            improvements.forEach((imp, i) => {
+                const newRate = currentRate + imp;
+                const newRateDecimal = newRate / 100;
+                const monthlyRevenue = visitors * newRateDecimal * aov;
+                const monthlyGain = monthlyRevenue - currentMonthlyRevenue;
+                const annualGain = monthlyGain * 12;
+
+                document.getElementById('cr' + (imp === 0 ? 0 : imp)).textContent = newRate.toFixed(1) + '%';
+                document.getElementById('mr' + (imp === 0 ? 0 : imp)).textContent = formatCurrency(monthlyRevenue);
+                const gainEl = document.getElementById('mg' + (imp === 0 ? 0 : imp));
+                if (imp === 0) {
+                    gainEl.textContent = '—';
+                } else {
+                    gainEl.textContent = formatCurrency(monthlyGain);
+                }
+
+                revenueData.push(monthlyRevenue);
+                gainData.push(annualGain);
+                if (imp > 0) totalAnnualGain += annualGain;
+            });
+
+            // Annual gain display (show for +5%)
+            const gainAt5 = gainData[3];
+            document.getElementById('annualGain').textContent = formatCurrency(gainAt5);
+
+            // Build chart
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Monthly Revenue',
+                        data: revenueData,
+                        backgroundColor: [
+                            'rgba(136,136,170,0.7)',
+                            'rgba(212,168,67,0.7)',
+                            'rgba(212,168,67,0.85)',
+                            'rgba(212,168,67,1.0)'
+                        ],
+                        borderColor: [
+                            '#8888aa',
+                            '#d4a843',
+                            '#d4a843',
+                            '#d4a843'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1a1a35',
+                            titleColor: '#fff',
+                            bodyColor: '#d4a843',
+                            borderColor: '#2a2a50',
+                            borderWidth: 1,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    return formatCurrency(context.raw) + ' / month';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(42,42,80,0.4)' },
+                            ticks: {
+                                color: '#8888aa',
+                                callback: function(val) { return '$' + (val >= 1000 ? (val/1000).toFixed(0)+'k' : val); }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#8888aa' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function shareTwitter() {
+            const url = encodeURIComponent('https://pagerx.nousresearch.com/tools/conversion-calculator.html');
+            const text = encodeURIComponent('See how much revenue you\'re leaving on the table — calculate your conversion rate impact with PageRX');
+            window.open('https://twitter.com/intent/tweet?text=' + text + '&url=' + url, '_blank', 'width=600,height=400');
+        }
+
+        function copyLink() {
+            const url = 'https://pagerx.nousresearch.com/tools/conversion-calculator.html';
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(function() {
+                    const btn = document.querySelector('.share-btn:last-child');
+                    const orig = btn.innerHTML;
+                    btn.innerHTML = '✓ Copied!';
+                    setTimeout(function() { btn.innerHTML = orig; }, 2000);
+                });
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = url;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                alert('Link copied to clipboard!');
+            }
+        }
+
+        // Auto-calculate with example on load
+        window.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('visitors').value = 10000;
+            document.getElementById('currentRate').value = 2.5;
+            document.getElementById('aov').value = 50;
+            calculate();
+        });
+    </script>
+
+</body>
+</html>
