@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ivo1974kanchev-arch.github.io/pagerx-frontend/sitemap.xml
