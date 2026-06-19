@@ -1865,13 +1865,15 @@
 
         // Init demo gauge
         document.addEventListener('DOMContentLoaded', function() {
-            drawGauge('demo-gauge-canvas', 'demo-gauge-value', 67);
+            // Initialize demo gauge (silently skip if element doesn't exist)
+            const demoCanvas = document.getElementById('demo-gauge-canvas');
+            if (demoCanvas) drawGauge('demo-gauge-canvas', 'demo-gauge-value', 67);
         });
 
         // ── Detect Environment ──
         const IS_GITHUB_PAGES = window.location.hostname.includes('github.io');
         const API_BASE = IS_GITHUB_PAGES
-            ? 'https://116.203.180.240:8000/api'
+            ? 'http://116.203.180.240:8000/api'
             : '/api';
         const APP_URL = '//116.203.180.240:8000';
 
@@ -1965,11 +1967,11 @@
             // Show results section with loading
             document.querySelector('.hero').scrollIntoView({ behavior: 'smooth' });
             resultsSection.style.display = 'block';
-            loadingEl.style.display = 'block';
-            loadingEl.innerHTML = '<div class="spinner"></div>'
+            loadingSection.style.display = 'block';
+            loadingSection.innerHTML = '<div class="spinner"></div>'
                 + '<p style="color:var(--text-muted);">Running quick scan...</p>';
             resultsContent.style.display = 'none';
-            errorEl.style.display = 'none';
+            errorSection.style.display = 'none';
             
             try {
                 // Step 1: Get instant score first (fast, <3s)
@@ -1987,7 +1989,7 @@
                 } catch (e) {}
                 
                 // Step 2: Get full analysis
-                loadingEl.innerHTML = '<div class="spinner"></div>'
+                loadingSection.innerHTML = '<div class="spinner"></div>'
                     + '<p style="color:var(--text-muted);">Running full analysis from 5 perspectives...</p>';
                 
                 const resp = await fetch(API_BASE + '/analyze', {
@@ -2009,8 +2011,8 @@
                     displayInstantOnly(instantData, url);
                     return;
                 }
-                loadingEl.style.display = 'none';
-                errorEl.style.display = 'block';
+                loadingSection.style.display = 'none';
+                errorSection.style.display = 'block';
                 errorMessage.textContent = err.message || 'Failed to analyze. Please check the URL and try again.';
             }
         });
@@ -2070,9 +2072,9 @@
         }
 
         function displayResults(data, url) {
-            loadingEl.style.display = 'none';
+            loadingSection.style.display = 'none';
             resultsContent.style.display = 'block';
-            errorEl.style.display = 'none';
+            errorSection.style.display = 'none';
             
             const overall = Math.round(data.overall_score);
             document.getElementById('analyzed-url').textContent = url + ' — Analyzed just now';
@@ -2219,9 +2221,9 @@
 
         // ── Display Instant-Only Results (fallback) ──
         function displayInstantOnly(data, url) {
-            loadingEl.style.display = 'none';
+            loadingSection.style.display = 'none';
             resultsContent.style.display = 'block';
-            errorEl.style.display = 'none';
+            errorSection.style.display = 'none';
             
             const overall = Math.round(data.score);
             document.getElementById('analyzed-url').textContent = url + ' — Quick scan only';
