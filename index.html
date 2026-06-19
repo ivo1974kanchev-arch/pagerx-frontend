@@ -304,6 +304,8 @@
     </style>
 </head>
 <body>
+    <!-- Privacy-friendly analytics tracking pixel (no cookies) -->
+    <img src="/api/pixel.gif" style="display:none" alt="" width="1" height="1"/>
     <!-- Navigation -->
     <nav>
         <div class="container">
@@ -365,62 +367,11 @@
                         </div>
                         <div style="margin-top:4px;"><span id="re
 
-... [OUTPUT TRUNCATED - 16201 chars omitted out of 66201 total] ...
+... [OUTPUT TRUNCATED -
 
-                   <p class="subtitle">For agencies &amp; teams</p>
-                    <div class="price">$29<span>/mo</span></div>
-                    <p class="price-desc">Custom integrations &amp; API access</p>
-                    <ul>
-                        <li>Everything in Pro</li>
-                        <li>Custom reviewer prompts</li>
-                        <li>API access (1000 req/day)</li>
-                        <li>Priority support</li>
-                        <li>Team accounts (up to 5 seats)</li>
-                        <li>White-label reports</li>
-                    </ul>
-                    <a href="#" class="btn btn-secondary" style="width:100%;text-align:center;">Contact Sales</a>
-                </div>
-            </div>
-        </div>
-    </section>
+... [OUTPUT TRUNCATED - 2819 chars omitted out of 52819 total] ...
 
-    <!-- Pricing -->
-    <section class="section" id="pricing">
-        <div class="container">
-            <h2 class="section-title">Simple <span class="gold-text">Pricing</span></h2>
-            <p class="section-subtitle">Start free. Upgrade when you need deeper analysis. All plans include instant heuristic scoring.</p>
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <h3>Free</h3>
-                    <p class="subtitle">Quick scan</p>
-                    <div class="price">$0<span>/mo</span></div>
-                    <p class="price-desc">For quick checkups</p>
-                    <ul>
-                        <li>Instant heuristic score</li>
-                        <li>5-perspective analysis</li>
-                        <li>10 scans per month</li>
-                        <li>Email report</li>
-                        <li class="muted">PDF downloads</li>
-                        <li class="muted">Priority support</li>
-                    </ul>
-                    <a href="#analyze" class="btn btn-secondary" style="width:100%;text-align:center;">Get Started Free</a>
-                </div>
-                <div class="pricing-card featured">
-                    <h3>Pro</h3>
-                    <p class="subtitle">Deep analysis</p>
-                    <div class="price">$29<span>/mo</span></div>
-                    <p class="price-desc">For serious founders</p>
-                    <ul>
-                        <li>All Free features</li>
-                        <li>Unlimited scans</li>
-                        <li>PDF report downloads</li>
-                        <li>Weekly monitoring</li>
-                        <li>Priority queue</li>
-                        <li>Email support</li>
-                    </ul>
-                    <a href="https://buy.stripe.com/test_aFaeVf8Rd8QZ8oa4D0cAo00" class="btn btn-primary" style="width:100%;text-align:center;">Subscribe →</a>
-                </div>
-                <div class="pricing-card">
+iv class="pricing-card">
                     <h3>Agency</h3>
                     <p class="subtitle">For agencies &amp; teams</p>
                     <div class="price">$99<span>/mo</span></div>
@@ -923,17 +874,14 @@
             });
         });
 
-        // ── Analytics Tracking (local, no external services) ──
+        // ── Analytics Tracking (privacy-friendly, no cookies) ──
         function trackAnalytics(event, url) {
-            const data = new URLSearchParams({ event: event, url: url || window.location.href });
-            // Use sendBeacon for reliability, fallback to fetch
-            const endpoint = API_BASE + '/analytics/pixel?' + data.toString();
+            const pixelUrl = '/api/pixel.gif?event=' + encodeURIComponent(event || 'page_view')
+                + '&url=' + encodeURIComponent(url || window.location.href);
             try {
-                if (navigator.sendBeacon) {
-                    navigator.sendBeacon(endpoint);
-                } else {
-                    fetch(endpoint, { method: 'POST', keepalive: true }).catch(function(){});
-                }
+                // Use the tracking pixel image for fire-and-forget tracking
+                var img = new Image();
+                img.src = pixelUrl;
             } catch(e) {}
         }
 
