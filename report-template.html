@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{page_title}</title>
+    <meta name="description" content="{meta_description}">
+    <!-- Open Graph -->
+    <meta property="og:title" content="{og_title}">
+    <meta property="og:description" content="{og_description}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{og_url}">
+    <meta property="og:site_name" content="PageRX">
+    <meta property="og:image" content="{og_image}">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{og_title}">
+    <meta name="twitter:description" content="{og_description}">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0d0d1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        :root {
+            --gold: #d4a843;
+            --gold-light: #e8c46a;
+            --gold-dark: #b08a30;
+            --bg-dark: #0d0d1a;
+            --bg-card: #14142a;
+            --bg-card-hover: #1c1c3a;
+            --bg-input: #1a1a35;
+            --border: #2a2a50;
+            --text: #e0e0e0;
+            --text-muted: #8888aa;
+            --gold-glow: 0 0 40px rgba(212,168,67,0.15);
+        }
+        ::selection { background: #d4a84344; color: #d4a843; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes barFill {
+            from { width: 0%; }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(212,168,67,0.1); }
+            50% { box-shadow: 0 0 40px rgba(212,168,67,0.25); }
+        }
+        @keyframes countUp {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+        /* Header */
+        .report-header {
+            padding: 40px 0 24px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            animation: fadeInUp 0.6s ease;
+        }
+        .report-header .logo {
+            font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+            display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px;
+        }
+        .report-header .logo-icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            display: inline-flex; align-items: center; justify-content: center;
+            color: #0d0d1a; font-size: 16px; font-weight: 700;
+        }
+        .report-header .logo span { color: var(--gold); }
+        .report-header .report-url-badge {
+            display: inline-block;
+            padding: 6px 18px; border-radius: 100px;
+            background: rgba(212,168,67,0.08);
+            border: 1px solid rgba(212,168,67,0.15);
+            font-size: 13px; color: var(--gold); font-weight: 500;
+            margin-bottom: 24px;
+        }
+        .report-header h1 {
+            font-size: 28px; font-weight: 800; color: #fff;
+            margin-bottom: 8px; letter-spacing: -0.5px;
+        }
+        .report-header p {
+            font-size: 14px; color: var(--text-muted); max-width: 600px; margin: 0 auto;
+        }
+
+        /* Score Card */
+        .score-section {
+            padding: 40px 0;
+            text-align: center;
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }
+        .score-card {
+            display: inline-block;
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 40px 48px;
+            border: 1px solid var(--border);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.3), var(--gold-glow);
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+        .score-number {
+            font-size: 72px;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -2px;
+            margin-bottom: 4px;
+        }
+        .score-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        .score-verdict {
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .score-subtext {
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Category Breakdown */
+        .categories-section {
+            padding: 20px 0 40px;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+        .categories-section h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .category-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        .category-card:hover {
+            border-color: rgba(212,168,67,0.2);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            transform: translateY(-2px);
+        }
+        .category-card .cat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .category-card .cat-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .category-card .cat-score {
+            font-size: 20px;
+            font-weight: 800;
+        }
+        .category-card .cat-max {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+        .category-card .cat-bar-track {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .category-card .cat-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            animation: barFill 1.2s ease-out forwards;
+        }
+        .category-card .cat-issues {
+            list-style: none;
+        }
+        .category-card .cat-issues li {
+            font-size: 12px;
+            color: var(--text-muted);
+            padding: 3px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+        }
+        .category-card .cat-issues li::before {
+            content: '•';
+            color: var(--gold);
+            flex-shrink: 0;
+        }
+
+        /* Issues Section */
+        .issues-section {
+            padding: 20px 0 40px;
+            animation: fadeInUp 0.6s ease 0.3s both;
+        }
+        .issues-section h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .issues-section .section-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        .issue-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: 1px solid var(--border);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+        .issue-card:hover {
+            border-color: rgba(212,168,67,0.15);
+        }
+        .issue-card .issue-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .issue-card .issue-icon.critical { background: rgba(220,53,69,0.15); }
+        .issue-card .issue-icon.major { background: rgba(255,193,7,0.15); }
+        .issue-card .issue-icon.minor { background: rgba(13,202,240,0.15); }
+        .issue-card .issue-body { flex: 1; }
+        .issue-card .issue-body .issue-text {
+            font-size: 14px;
+            color: #ddd;
+            line-height: 1.5;
+        }
+        .issue-card .issue-body .issue-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 6px;
+        }
+        .issue-card .issue-body .issue-tag.critical-tag { background: rgba(220,53,69,0.12); color: #dc3545; }
+        .issue-card .issue-body .issue-tag.major-tag { background: rgba(255,193,7,0.12); color: #ffc107; }
+        .issue-card .issue-body .issue-tag.minor-tag { background: rgba(13,202,240,0.12); color: #0dcaf0; }
+        .issue-card .issue-body .issue-suggestion {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            padding-left: 0;
+            border-left: none;
+        }
+        .no-issues {
+            text-align: center;
+            padding: 32px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid rgba(40,167,69,0.2);
+        }
+        .no-issues .big-icon { font-size: 48px; margin-bottom: 12px; }
+        .no-issues p { color: var(--text-muted); font-size: 14px; }
+
+        /* Recommendations */
+        .recs-section {
+            padding: 20px 0 40px;
+            animation: fadeInUp 0.6s ease 0.35s both;
+        }
+        .recs-section h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .recs-section .section-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        .rec-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 14px 20px;
+            border: 1px solid var(--border);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+        .rec-card:hover {
+            border-color: rgba(212,168,67,0.15);
+        }
+        .rec-card .rec-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: rgba(212,168,67,0.12);
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .rec-card .rec-text {
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        /* CTA Buttons */
+        .cta-section {
+            padding: 32px 0 48px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            animation: fadeInUp 0.6s ease 0.4s both;
+        }
+        .cta-section h2 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .cta-section p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: none;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            background-size: 200% 200%;
+            color: #0d0d1a;
+            animation: gradientShift 3s ease infinite;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(212,168,67,0.3);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: var(--gold);
+            border: 1px solid rgba(212,168,67,0.3);
+        }
+        .btn-secondary:hover {
+            background: rgba(212,168,67,0.08);
+            border-color: var(--gold);
+        }
+        .btn-x {
+            background: #1da1f2;
+            color: #fff;
+        }
+        .btn-x:hover {
+            background: #1a8cd8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(29,161,242,0.3);
+        }
+
+        /* Footer */
+        .report-footer {
+            padding: 24px 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .report-footer a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+        .report-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Timestamp */
+        .report-timestamp {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .score-card { padding: 28px 24px; }
+            .score-number { font-size: 56px; }
+            .categories-grid { grid-template-columns: repeat(2, 1fr); }
+            .cta-buttons { flex-direction: column; align-items: center; }
+            .btn { width: 100%; justify-content: center; max-width: 320px; }
+            .report-header h1 { font-size: 22px; }
+        }
+        @media (max-width: 480px) {
+            .categories-grid { grid-template-columns: 1fr; }
+            .score-number { font-size: 48px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="report-header">
+            <div class="logo">
+                <div class="logo-icon">P</div>
+                <span>Page</span>RX Report
+            </div>
+            <div class="report-url-badge">{analyzed_url}</div>
+            <h1>{page_title}</h1>
+            <p>AI-powered analysis across 5 expert perspectives — security, code quality, UX, completeness, and business viability.</p>
+        </div>
+
+        <!-- Score Section -->
+        <div class="score-section">
+            <div class="score-card">
+                <div class="score-number" style="color:{score_color};">{score}</div>
+                <div class="score-label">Score / 100</div>
+                <div class="score-verdict" style="background:{verdict_bg};color:{verdict_color};border:1px solid {verdict_color};">{verdict_text}</div>
+                <div class="score-subtext">{score_subtext}</div>
+            </div>
+        </div>
+
+        <!-- Category Breakdown -->
+        <div class="categories-section">
+            <h2>📊 Category Breakdown</h2>
+            <div class="categories-grid">
+                {category_cards}
+            </div>
+        </div>
+
+        <!-- Issues Found -->
+        <div class="issues-section">
+            <h2>🚨 Issues Found</h2>
+            <p class="section-subtitle">{issues_count} issue(s) identified across all categories</p>
+            {issues_list}
+        </div>
+
+        <!-- Recommendations -->
+        <div class="recs-section">
+            <h2>💡 Recommendations</h2>
+            <p class="section-subtitle">Top {recs_count} actionable fix(es) to improve your score</p>
+            {recs_list}
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-section">
+            <h2>Ready to <span style="color:var(--gold);">optimize</span> your page?</h2>
+            <p>Get your own free PageRX analysis in seconds. No account required.</p>
+            <div class="cta-buttons">
+                <a href="{share_url}" target="_blank" rel="noopener noreferrer" class="btn btn-x">
+                    𝕏 Share on X/Twitter
+                </a>
+                <a href="{analyze_url_cta}" class="btn btn-primary">
+                    🚀 Analyze Your Page
+                </a>
+            </div>
+            <div class="report-timestamp">
+                Report generated on {timestamp} · PageRX by Nous Research
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="report-footer">
+            <p>© 2026 <a href="https://pagerx.nousresearch.com">PageRX</a>. Built with AI by <strong>Nous Research</strong>.</p>
+            <p style="margin-top:4px;">This report is a snapshot and may not reflect the current state of the analyzed page.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1708,6 +1708,7 @@
                     </div>
                     <div class="sample-footer" style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
                         <button onclick="openLeadModal()" class="btn btn-primary" style="font-size:13px;padding:10px 20px;">📥 Download Full PDF Report</button>
+                        <button onclick="createShareableReport()" class="btn btn-secondary" style="font-size:13px;padding:10px 20px;">🔗 Get Shareable Report</button>
                         <button onclick="startNewAnalysis()" class="btn btn-secondary" style="font-size:13px;padding:10px 20px;">🔄 Analyze Another Page</button>
                     </div>
                     <div id="retry-full-analysis" style="display:none;"></div>
@@ -2430,12 +2431,62 @@
             }
         });
 
-        // Store analyzed URL
+        // Store analyzed URL and data for shareable report
+        var _lastAnalysisData = null;
         var _origDisplayResults = displayResults;
         displayResults = function(data, url) {
             _lastAnalyzedUrl = url;
+            _lastAnalysisData = data;
             _origDisplayResults(data, url);
         };
+
+        // ── Create Shareable Report ──
+        async function createShareableReport() {
+            if (!_lastAnalysisData || !_lastAnalyzedUrl) {
+                alert('Please run an analysis first.');
+                return;
+            }
+            var btn = event && event.target ? event.target : document.querySelector('.sample-footer .btn-secondary');
+            var originalText = '🔗 Get Shareable Report';
+            if (btn) {
+                originalText = btn.textContent;
+                btn.disabled = true;
+                btn.textContent = '⏳ Generating...';
+            }
+            try {
+                var data = _lastAnalysisData;
+                var resp = await fetch(API_BASE + '/create-report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        url: _lastAnalyzedUrl,
+                        score: data.overall_score || (data.score || 0),
+                        verdict: data.verdict || (data.score >= 70 ? 'PASS' : 'FAIL'),
+                        reviews: data.reviews || [],
+                        issues: data.issues || [],
+                        suggestions: data.suggestions || [],
+                        instant_breakdown: data._instant ? data._instant.breakdown || [] : []
+                    })
+                });
+                if (!resp.ok) {
+                    var errData = await resp.json().catch(function() { return {}; });
+                    throw new Error(errData.detail || 'Failed to create report');
+                }
+                var result = await resp.json();
+                // Open the report in a new tab
+                window.open(result.report_url, '_blank');
+                trackAnalytics('shareable_report', result.report_url);
+            } catch (err) {
+                alert('Error creating report: ' + (err.message || 'Unknown error'));
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                }
+            }
+        }
+
+        function startNewAnalysis() {
     </script>
 </body>
 </html>
