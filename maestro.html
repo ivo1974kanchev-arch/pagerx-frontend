@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro — Verified AI Builds | CLI Tool for AI-Generated Code Verification</title>
+    <meta name="description" content="Maestro catches build failures before they happen. A CLI reliability layer for AI-generated code — Guardian verification, multi-LLM review, circuit breakers, and surgical editing.">
+    <meta name="keywords" content="AI code verification, LLM reliability, AI build tool, code quality, AI coding assistant verification, Maestro CLI">
+    <meta name="author" content="Nous Research">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Maestro — Verified AI Builds">
+    <meta property="og:description" content="AI generates code that looks right and breaks silently. Maestro catches the breakage before you ship.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://maestro-build.github.io/maestro">
+    <meta property="og:site_name" content="Maestro">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Maestro — Verified AI Builds">
+    <meta name="twitter:description" content="CLI tool for AI-generated code verification. 155 tests. 5 reviewer roles. Circuit breakers. No web service.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23d4a843'/%3E%3Ctext x='16' y='22' font-size='18' font-weight='bold' fill='%230d0d1a' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0d0d1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        ::selection { background: #d4a84344; color: #d4a843; }
+
+        :root {
+            --gold: #d4a843;
+            --gold-light: #e8c46a;
+            --gold-dark: #b08a30;
+            --bg-dark: #0d0d1a;
+            --bg-card: #14142a;
+            --bg-card-hover: #1c1c3a;
+            --bg-input: #1a1a35;
+            --border: #2a2a50;
+            --text: #e0e0e0;
+            --text-muted: #8888aa;
+            --gradient: linear-gradient(135deg, #1a1a3e 0%, #0d0d1a 100%);
+            --gold-glow: 0 0 40px rgba(212,168,67,0.15);
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        @keyframes countUp {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes barFill {
+            from { width: 0%; }
+        }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(212,168,67,0.1); }
+            50% { box-shadow: 0 0 40px rgba(212,168,67,0.25); }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .animate-on-scroll.delay-1 { transition-delay: 0.1s; }
+        .animate-on-scroll.delay-2 { transition-delay: 0.2s; }
+        .animate-on-scroll.delay-3 { transition-delay: 0.3s; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        .section { padding: 100px 0; }
+        .section-title {
+            font-size: 36px; font-weight: 800; text-align: center; margin-bottom: 12px; color: #fff;
+            letter-spacing: -0.5px;
+        }
+        .section-subtitle {
+            text-align: center; color: var(--text-muted); font-size: 17px;
+            max-width: 600px; margin: 0 auto 48px; line-height: 1.7;
+        }
+        .gold-text { color: var(--gold); }
+        .gold-gradient {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 15px;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: none; text-decoration: none; position: relative; overflow: hidden;
+        }
+        .btn::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .btn:hover::after { opacity: 1; }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #0d0d1a;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(212,168,67,0.3), 0 0 0 1px rgba(212,168,67,0.2);
+        }
+        .btn-secondary {
+            background: transparent; color: var(--gold); border: 1px solid rgba(212,168,67,0.3);
+        }
+        .btn-secondary:hover {
+            background: rgba(212,168,67,0.08); border-color: var(--gold);
+        }
+        .btn-lg { padding: 16px 40px; font-size: 16px; border-radius: 12px; }
+
+        .glass-card {
+            background: rgba(20, 20, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(42, 42, 80, 0.5);
+            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(212, 168, 67, 0.3);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.3), var(--gold-glow);
+            transform: translateY(-4px);
+        }
+
+        .badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 14px; border-radius: 100px;
+            font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .badge-gold {
+            background: linear-gradient(135deg, rgba(212,168,67,0.15), rgba(212,168,67,0.05));
+            color: var(--gold); border: 1px solid rgba(212,168,67,0.2);
+        }
+        .badge-green {
+            background: rgba(40, 167, 69, 0.12); color: #28a745; border: 1px solid rgba(40,167,69,0.2);
+        }
+
+        /* ── Navigation ── */
+        nav {
+            padding: 18px 0;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(13,13,26,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(42,42,80,0.3);
+            transition: all 0.3s;
+        }
+        nav.scrolled {
+            background: rgba(13,13,26,0.95);
+            border-bottom-color: var(--border);
+        }
+        nav .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo {
+            font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .logo-icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            display: flex; align-items: center; justify-content: center;
+            color: #0d0d1a; font-size: 16px; font-weight: 700;
+        }
+        .logo span { color: var(--gold); }
+        .nav-links { display: flex; gap: 28px; align-items: center; }
+        .nav-links a {
+            color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500;
+            transition: all 0.2s; position: relative;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+            height: 2px; background: var(--gold); border-radius: 2px;
+            transform: scaleX(0); transition: transform 0.3s;
+        }
+        .nav-links a:hover { color: var(--gold); }
+        .nav-links a:hover::after { transform: scaleX(1); }
+        .mobile-menu-btn {
+            display: none; background: none; border: none; color: var(--text);
+            font-size: 24px; cursor: pointer; padding: 4px;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            padding: 140px 0 80px;
+            background: var(--gradient);
+            position: relative; overflow: hidden;
+            min-height: 100vh;
+            display: flex; align-items: center;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -30%; right: -10%;
+            width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(212,168,67,0.08) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .hero::after {
+            content: ''; position: absolute; bottom: -20%; left: -10%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(212,168,67,0.04) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .hero-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 60px; align-items: center; position: relative; z-index: 1;
+        }
+        .hero-left { animation: fadeInUp 1s ease; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 16px 6px 8px;
+            border-radius: 100px; font-size: 13px; font-weight: 500;
+            margin-bottom: 20px; background: rgba(212,168,67,0.08);
+            border: 1px solid rgba(212,168,67,0.15); color: var(--gold);
+        }
+        .hero-badge .dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #28a745; display: inline-block;
+            animation: pulse 2s infinite;
+        }
+        .hero h1 {
+            font-size: 52px; font-weight: 900; line-height: 1.1;
+            margin-bottom: 16px; color: #fff;
+            letter-spacing: -1px;
+        }
+        .hero h1 .gold-gradient { display: block; margin-top: 4px; }
+        .hero p {
+            font-size: 17px; color: var(--text-muted);
+            max-width: 520px; margin-bottom: 32px; line-height: 1.8;
+        }
+        .hero-actions {
+            display: flex; gap: 16px; flex-wrap: wrap;
+        }
+
+        .hero-right {
+            animation: fadeInUp 1s ease 0.2s both;
+            position: relative;
+        }
+        .hero-terminal {
+            background: rgba(20,20,42,0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid rgba(42,42,80,0.5);
+            padding: 28px;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.4), var(--gold-glow);
+            animation: float 6s ease-in-out infinite;
+        }
+        .terminal-header {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 20px; padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .terminal-dots { display: flex; gap: 6px; }
+        .terminal-dots span {
+            width: 10px; height: 10px; border-radius: 50%;
+        }
+        .terminal-dots span:nth-child(1) { background: #ff5f57; }
+        .terminal-dots span:nth-child(2) { background: #ffbd2e; }
+        .terminal-dots span:nth-child(3) { background: #28c840; }
+        .terminal-title {
+            font-size: 12px; color: var(--text-muted);
+            margin-left: 8px;
+        }
+        .terminal-body {
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .terminal-body .prompt { color: var(--gold); }
+        .terminal-body .cmd { color: #e0e0e0; }
+        .terminal-body .pass { color: #28a745; }
+        .terminal-body .fail { color: #dc3545; }
+        .terminal-body .dim { color: var(--text-muted); }
+        .terminal-body .bar {
+            display: inline-block; width: 80px; vertical-align: middle;
+        }
+        .terminal-body .bar .fill {
+            display: inline-block; height: 10px; border-radius: 5px;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light));
+        }
+
+        .hero-stats {
+            display: flex; justify-content: center; gap: 56px; margin-top: 48px;
+            padding-top: 40px; border-top: 1px solid rgba(42,42,80,0.3);
+        }
+        .hero-stat { text-align: center; }
+        .hero-stat-number {
+            display: block; font-size: 30px; font-weight: 800; color: var(--gold);
+            letter-spacing: -0.5px;
+        }
+        .hero-stat .count-suffix { font-size: 20px; }
+        .hero-stat-number.pass { color: #28a745; }
+        .hero-stat-label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+        /* ── Steps / How It Works ── */
+        .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+        .step-card {
+            background: var(--bg-card); border-radius: 20px; padding: 36px 28px;
+            text-align: center; border: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); position: relative;
+        }
+        .step-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(212,168,67,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3), var(--gold-glow);
+        }
+        .step-icon {
+            width: 64px; height: 64px; border-radius: 18px;
+            background: linear-gradient(135deg, rgba(212,168,67,0.15), rgba(212,168,67,0.05));
+            border: 1px solid rgba(212,168,67,0.15);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px; font-size: 28px;
+            transition: all 0.3s;
+        }
+        .step-card:hover .step-icon {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, rgba(212,168,67,0.25), rgba(212,168,67,0.1));
+        }
+        .step-number {
+            position: absolute; top: 16px; right: 20px;
+            font-size: 48px; font-weight: 900; color: rgba(212,168,67,0.06);
+            line-height: 1;
+        }
+        .step-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+        .step-card p { font-size: 14px; color: var(--text-muted); line-height: 1.8; }
+
+        /* ── Features Grid ── */
+        .features-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
+        }
+        .feature-card {
+            background: var(--bg-card); border-radius: 20px; padding: 32px;
+            border: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(212,168,67,0.25);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+        }
+        .feature-icon {
+            width: 44px; height: 44px; border-radius: 12px;
+            background: linear-gradient(135deg, rgba(212,168,67,0.12), rgba(212,168,67,0.03));
+            border: 1px solid rgba(212,168,67,0.1);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 16px; font-size: 22px;
+        }
+        .feature-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+        .feature-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+        /* ── Check Table ── */
+        .check-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+        }
+        .check-item {
+            background: var(--bg-card); border-radius: 14px; padding: 20px 24px;
+            border: 1px solid var(--border);
+            display: flex; align-items: center; gap: 14px;
+            transition: all 0.3s;
+        }
+        .check-item:hover { border-color: rgba(212,168,67,0.2); }
+        .check-weight {
+            font-size: 24px; font-weight: 800; color: var(--gold);
+            min-width: 44px; text-align: center;
+            line-height: 1;
+        }
+        .check-weight-label {
+            display: block; font-size: 10px; font-weight: 600;
+            color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;
+        }
+        .check-info h4 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 2px; }
+        .check-info p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+        /* ── CTA ── */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(212,168,67,0.05) 0%, transparent 100%);
+            border-top: 1px solid var(--border);
+            text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .cta-section::before {
+            content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(212,168,67,0.04) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .cta-section h2 { font-size: 36px; font-weight: 800; margin-bottom: 12px; position: relative; }
+        .cta-section p { color: var(--text-muted); margin-bottom: 28px; font-size: 16px; position: relative; }
+
+        /* ── Footer ── */
+        footer {
+            padding: 40px 0; border-top: 1px solid var(--border);
+            text-align: center; color: var(--text-muted); font-size: 13px;
+        }
+        footer .footer-links {
+            display: flex; justify-content: center; gap: 24px; margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        footer .footer-links a {
+            color: var(--text-muted); text-decoration: none; font-size: 13px;
+            transition: color 0.2s;
+        }
+        footer .footer-links a:hover { color: var(--gold); }
+
+        /* ── Responsive ── */
+        @media (max-width: 1024px) {
+            .hero-grid { gap: 40px; }
+        }
+        @media (max-width: 900px) {
+            .hero h1 { font-size: 40px; }
+            .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+            .hero-right { max-width: 500px; margin: 0 auto; }
+            .hero-terminal { animation: none; }
+            .features-grid { grid-template-columns: 1fr; }
+            .check-grid { grid-template-columns: 1fr; }
+            .section-title { font-size: 30px; }
+        }
+        @media (max-width: 768px) {
+            .hero { padding: 120px 0 60px; min-height: auto; }
+            .hero h1 { font-size: 32px; letter-spacing: -0.5px; }
+            .hero h1 .gold-gradient { display: inline; }
+            .hero p { font-size: 15px; }
+            .hero-stats { flex-direction: column; gap: 20px; padding-top: 24px; margin-top: 32px; }
+            .steps { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .section { padding: 64px 0; }
+            .section-title { font-size: 26px; }
+            .hero-actions { flex-direction: column; }
+            .hero-actions .btn { width: 100%; justify-content: center; }
+        }
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 28px; }
+            .hero-terminal { padding: 16px; }
+            .terminal-body { font-size: 11px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">M</div>
+                <span>Maestro</span>
+            </div>
+            <div class="nav-links">
+                <a href="#how-it-works">How It Works</a>
+                <a href="#features">Features</a>
+                <a href="#checks">Checks</a>
+                <a href="https://github.com/maestro-build/maestro" class="btn btn-primary" style="padding:10px 20px;font-size:13px;">View on GitHub →</a>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">☰</button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu" style="display:none;">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#features">Features</a>
+        <a href="#checks">Checks</a>
+        <a href="https://github.com/maestro-build/maestro">GitHub →</a>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-left">
+                    <div class="hero-badge">
+                        <span class="dot"></span>
+                        155 passing tests
+                    </div>
+                    <h1>
+                        AI-generated code.
+                        <span class="gold-gradient">Actually verified.</span>
+                    </h1>
+                    <p>
+                        Every developer using Cursor, Claude Code, or Copilot has shipped 
+                        AI code that looked right but broke in production. Maestro catches 
+                        the breakage before you ship — build failures, broken DOM refs, 
+                        console.errors left in production code.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="https://github.com/maestro-build/maestro" class="btn btn-primary btn-lg">
+                            Try It Now →
+                        </a>
+                        <a href="#how-it-works" class="btn btn-secondary btn-lg">
+                            How It Works
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-right">
+                    <div class="hero-terminal">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <span></span><span></span><span></span>
+                            </div>
+                            <div class="terminal-title">maestro build —output ./dist</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div><span class="prompt">$</span> <span class="cmd">maestro build --spec spec.md --output ./dist</span></div>
+                            <div><span class="dim">  ╔════════════════════════════════╗</span></div>
+                            <div><span class="dim">  ║   MAESTRO — Verified AI Builds ║</span></div>
+                            <div><span class="dim">  ╚════════════════════════════════╝</span></div>
+                            <div><span class="dim">  Building from spec: spec.md</span></div>
+                            <div><span class="pass">  ✓ Surgical edit applied (12 lines)</span></div>
+                            <div><span class="pass">  ✓ Guardian check: js_syntax PASS</span></div>
+                            <div><span class="pass">  ✓ Guardian check: handlers PASS</span></div>
+                            <div><span class="pass">  ✓ Guardian check: dom_refs PASS</span></div>
+                            <div><span class="pass">  ✓ Guardian check: fulfillment PASS</span></div>
+                            <div><span class="pass">  ✓ 5-role review complete (86/100)</span></div>
+                            <div><span class="dim">  ────────────────────────</span></div>
+                            <div><span class="pass">  ✓ BUILD PASSED — Score: 100/100</span></div>
+                            <div><span class="prompt">$</span> <span class="cmd">maestro guard --file ./dist/index.html</span></div>
+                            <div><span class="pass">  ✓ ALL CHECKS PASSED — 100/100</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat animate-on-scroll">
+                    <span class="hero-stat-number"><span class="count-value" data-target="155">0</span></span>
+                    <span class="hero-stat-label">Passing Tests</span>
+                </div>
+                <div class="hero-stat animate-on-scroll">
+                    <span class="hero-stat-number"><span class="count-value" data-target="14">0</span></span>
+                    <span class="hero-stat-label">Verification Checks</span>
+                </div>
+                <div class="hero-stat animate-on-scroll">
+                    <span class="hero-stat-number"><span class="count-value" data-target="5">0</span></span>
+                    <span class="hero-stat-label">Reviewer Roles</span>
+                </div>
+                <div class="hero-stat animate-on-scroll">
+                    <span class="hero-stat-number pass"><span class="count-value" data-target="100">0</span>%</span>
+                    <span class="hero-stat-label">Pass Threshold</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="section">
+        <div class="container">
+            <h2 class="section-title">How It <span class="gold-text">Works</span></h2>
+            <p class="section-subtitle">
+                One command. One spec. Verified output.
+            </p>
+            <div class="steps">
+                <div class="step-card animate-on-scroll delay-1">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">📝</div>
+                    <h3>Write a Spec</h3>
+                    <p>Document what you want built. Maestro decomposes it into tasks and builds each one using surgical edits — one change at a time, verified immediately.</p>
+                </div>
+                <div class="step-card animate-on-scroll delay-2">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">🔍</div>
+                    <h3>Guardian Verifies</h3>
+                    <p>After every build phase, the Guardian runs 14 checks: JS syntax, DOM refs, handler definitions, console errors, spec fulfillment. Must score 100/100 to pass.</p>
+                </div>
+                <div class="step-card animate-on-scroll delay-3">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">🚀</div>
+                    <h3>Ship Confidently</h3>
+                    <p>If any check fails, the circuit breaker stops the build. No partial passes. No silent failures. Either it passes 100% or it doesn't ship.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="section" style="background:rgba(255,255,255,0.01);border-top:1px solid rgba(42,42,80,0.2);border-bottom:1px solid rgba(42,42,80,0.2);">
+        <div class="container">
+            <h2 class="section-title">Key <span class="gold-text">Features</span></h2>
+            <p class="section-subtitle">
+                What makes Maestro different from just running your AI tool and hoping for the best.
+            </p>
+            <div class="features-grid">
+                <div class="feature-card animate-on-scroll delay-1">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>14-Point Guardian Verification</h3>
+                    <p>Every build passes through mandatory checks: JS syntax, DOM reference integrity, handler definitions, console error detection, spec fulfillment, browser verification, and server validation. No gaps.</p>
+                </div>
+                <div class="feature-card animate-on-scroll delay-1">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Multi-LLM Review System</h3>
+                    <p>5 expert reviewer roles — Security Auditor, Code Quality Analyst, UX Reviewer, Completeness Checker, Business Viability Reviewer — each using a different model via OpenRouter. Scores and issues from every perspective.</p>
+                </div>
+                <div class="feature-card animate-on-scroll delay-2">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Circuit Breaker Protection</h3>
+                    <p>Prevents runaway builds from burning your API budget. Configurable max cost ($0.50 default), retry limits, cooldown periods, and automatic circuit state transitions. CLOSED → OPEN → HALF_OPEN.</p>
+                </div>
+                <div class="feature-card animate-on-scroll delay-2">
+                    <div class="feature-icon">🔧</div>
+                    <h3>Surgical Edit Engine</h3>
+                    <p>LLMs generate only old_string/new_string patch commands, not full files. Applied deterministically, verified immediately (page renders + no console errors), reverted automatically if verification fails.</p>
+                </div>
+                <div class="feature-card animate-on-scroll delay-3">
+                    <div class="feature-icon">📋</div>
+                    <h3>Spec Fulfillment Gates</h3>
+                    <p>Verifies every spec keyword appears in the output. If the spec says "dark theme with gold accents" and the output doesn't contain it, the Guardian fails the build. No silent omissions.</p>
+                </div>
+                <div class="feature-card animate-on-scroll delay-3">
+                    <div class="feature-icon">🔌</div>
+                    <h3>CI-Ready, Zero Web Service</h3>
+                    <p>JSON output, exit code 0/1. Pipe it anywhere. No database. No dashboard. No web service. Just a CLI tool that runs in your CI pipeline or on your laptop.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checks -->
+    <section id="checks" class="section">
+        <div class="container">
+            <h2 class="section-title">What Gets <span class="gold-text">Checked</span></h2>
+            <p class="section-subtitle">
+                Every check must score 100/100. No partial credit. No silent failures.
+            </p>
+            <div class="check-grid">
+                <div class="check-item">
+                    <div class="check-weight">20<span class="check-weight-label">pts</span></div>
+                    <div class="check-info">
+                        <h4>Fulfillment</h4>
+                        <p>Spec keywords present in output. If it's in the spec, it must be in the build.</p>
+                    </div>
+                </div>
+                <div class="check-item">
+                    <div class="check-weight">15<span class="check-weight-label">pts</span></div>
+                    <div class="check-info">
+                        <h4>JS Syntax</h4>
+                        <p>Unbalanced braces, broken strings, syntax errors — per block, precisely located.</p>
+                    </div>
+                </div>
+                <div class="check-item">
+                    <div class="check-weight">15<span class="check-weight-label">pts</span></div>
+                    <div class="check-info">
+                        <h4>Handlers Defined</h4>
+                        <p>Function stubs are real, not empty. Casing matches between definition and usage.</p>
+                    </div>
+                </div>
+                <div class="check-item">
+                    <div class="check-weight">8<span class="check-weight-label">pts</span></div>
+                    <div class="check-info">
+                        <h4>No Console Errors</h4>
+                        <p>No .error(), .warn(), or debug logs left in production code.</p>
+                    </div>
+                </div>
+                <div class="check-item">
+                    <div class="check-weight">8<span class="check-weight-label">pts</span></div>
+                    <div class="check-info">
+                        <h4>Browser Verified</h4>
+                        <p>Headless render with zero console errors. Real page load, real verification.</p>
+                    </div>
+                </div>
+                <div class="check-item">
+                    <div class="check-weight">5<span class="check-weight-label">pts</span></div>
+                    <div class="check-info">
+                        <h4>Server Responding</h4>
+                        <p>Dev server starts, responds, and serves the correct file.</p>
+                    </div>
+                </div>
+                <div class="check-item">
+                    <div class="check-weight">4<span class="check-weight-label">pts</span></div>
+                    <div class="check-info">
+                        <h4>i18n Complete</h4>
+                        <p>All translations present. No missing language blocks.</p>
+                    </div>
+                </div>
+                <div class="check-item">
+                    <div class="check-weight">2<span class="check-weight-label">pts</span></div>
+                    <div class="check-info">
+                        <h4>DOM References</h4>
+                        <p>getElementById('x') actually matches id="x" in the HTML.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section section">
+        <div class="container">
+            <h2>Stop shipping <span class="gold-text">broken AI code</span></h2>
+            <p>155 tests. 14 checks. 5 reviewer roles. One CLI tool. MIT licensed.</p>
+            <a href="https://github.com/maestro-build/maestro" class="btn btn-primary btn-lg" style="font-size:17px;padding:16px 44px;">
+                Try It Now on GitHub →
+            </a>
+            <p style="margin-top:16px;font-size:13px;color:#555;">
+                ⚡ `pip install maestro-guard` · Zero dependencies · CLI-only
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#how-it-works">How It Works</a>
+                <a href="#features">Features</a>
+                <a href="#checks">Checks</a>
+                <a href="https://github.com/maestro-build/maestro">GitHub</a>
+                <a href="https://pypi.org/project/maestro-guard/">PyPI</a>
+            </div>
+            <p>© 2026 Maestro. Built by <strong style="color:var(--text);">Nous Research</strong>.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Navbar Scroll
+        window.addEventListener('scroll', function() {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Scroll Animations
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    const countEls = entry.target.querySelectorAll('.count-value');
+                    countEls.forEach(function(el) {
+                        animateCountUp(el);
+                    });
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(function(el) {
+            observer.observe(el);
+        });
+
+        // Count-up Animation
+        function animateCountUp(el) {
+            if (el.dataset.animated) return;
+            el.dataset.animated = 'true';
+            const target = parseInt(el.dataset.target);
+            const duration = 1500;
+            const start = performance.now();
+            function step(now) {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const current = Math.round(eased * target);
+                el.textContent = current;
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    el.textContent = target;
+                }
+            }
+            if (parseInt(el.textContent) !== target) {
+                requestAnimationFrame(step);
+            }
+        }
+
+        // Init counters on load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.count-value').forEach(function(el) {
+                const rect = el.closest('.animate-on-scroll').getBoundingClientRect();
+                if (rect.top < window.innerHeight) {
+                    animateCountUp(el);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23d4a843%27/%3E%3Ctext x=%2716%27 y=%2722%27 font-size=%2718%27 font-weight=%27bold%27 fill=%27%230d0d1a%27 text-anchor=%27middle%27%3EP%3C/text%3E%3C/svg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PageRX — Admin Dashboard</title>
 <style>
@@ -442,73 +443,73 @@ footer {
 </footer>
 
 <script>
-async function apiCall(action, data) {{
-    try {{
-        const resp = await fetch('/admin/api/' + action, {{
+async function apiCall(action, data) {
+    try {
+        const resp = await fetch('/api/admin/' + action, {
             method: 'POST',
-            headers: {{ 'Content-Type': 'application/json' }},
-            body: JSON.stringify(data || {{}}),
-        }});
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data || {}),
+        });
         const result = await resp.json();
         return result;
-    }} catch (e) {{
+    } catch (e) {
         // Fallback: the dashboard.py handles actions via query params too
         console.error('API call failed, using fallback', e);
         return null;
-    }}
-}}
+    }
+}
 
-function showToast(msg, type) {{
+function showToast(msg, type) {
     const toast = document.createElement('div');
     toast.className = 'toast toast-' + type;
     toast.textContent = msg;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
-}}
+}
 
-async function toggleSignups(enable) {{
-    try {{
-        const resp = await fetch('/admin/api/toggle_signups', {{
+async function toggleSignups(enable) {
+    try {
+        const resp = await fetch('/api/admin/signups/toggle', {
             method: 'POST',
-            headers: {{ 'Content-Type': 'application/json' }},
-            body: JSON.stringify({{ enable: enable }}),
-        }});
-        if (resp.ok) {{
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ enable: enable }),
+        });
+        if (resp.ok) {
             location.reload();
-        }} else {{
+        } else {
             // Try direct API
-            const altResp = await fetch('/admin/api?action=toggle_signups&enable=' + enable);
+            const altResp = await fetch('/api/admin/signups/toggle?enable=' + enable);
             if (altResp.ok) location.reload();
             else showToast('Failed to toggle signups', 'error');
-        }}
-    }} catch (e) {{
+        }
+    } catch (e) {
         showToast('Failed: ' + e.message, 'error');
-    }}
-}}
+    }
+}
 
-async function toggleEmergency(enable) {{
-    try {{
-        const resp = await fetch('/admin/api/toggle_emergency', {{
+async function toggleEmergency(enable) {
+    try {
+        const resp = await fetch('/api/admin/emergency/toggle', {
             method: 'POST',
-            headers: {{ 'Content-Type': 'application/json' }},
-            body: JSON.stringify({{ enable: enable }}),
-        }});
-        if (resp.ok) {{
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ enable: enable }),
+        });
+        if (resp.ok) {
             location.reload();
-        }} else {{
-            const altResp = await fetch('/admin/api?action=toggle_emergency&enable=' + enable);
+        } else {
+            const altResp = await fetch('/api/admin/emergency/toggle?enable=' + enable);
             if (altResp.ok) location.reload();
             else showToast('Failed to toggle emergency mode', 'error');
-        }}
-    }} catch (e) {{
+        }
+    } catch (e) {
         showToast('Failed: ' + e.message, 'error');
-    }}
-}}
+    }
+}
 
-async function refreshDashboard() {{
+async function refreshDashboard() {
     showToast('Refreshing dashboard data...', 'info');
     setTimeout(() => location.reload(), 500);
-}}
+}
 </script>
 
 </body>
