@@ -1,177 +1,199 @@
-     1|<!DOCTYPE html>
-     2|<html lang="en">
-     3|<head>
-     4|<meta charset="UTF-8">
-     5|    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23d4a843%27/%3E%3Ctext x=%2716%27 y=%2722%27 font-size=%2718%27 font-weight=%27bold%27 fill=%27%230d0d1a%27 text-anchor=%27middle%27%3EP%3C/text%3E%3C/svg%3E">
-     6|<meta name="viewport" content="width=device-width, initial-scale=1.0">
-     7|<title>PageRX Blog — Landing Page Research, Conversion Data & AI Analysis</title>
-     8|<meta name="description" content="Landing page conversion research backed by AI analysis. Data-driven articles on CRO, UX, page speed, and what actually makes landing pages convert.">
-     9|<meta name="keywords" content="landing page blog, conversion optimization, CRO, AI landing page analysis, conversion rate research, SaaS landing pages">
-    10|<meta name="author" content="PageRX">
-    11|<meta name="robots" content="index, follow">
-    12|<!-- Open Graph -->
-    13|<meta property="og:title" content="PageRX Blog — Landing Page Research & Conversion Data">
-    14|<meta property="og:description" content="Data-driven articles on what makes landing pages convert. Research-backed insights, AI-powered analysis, and practical fixes for better conversion rates.">
-    15|<meta property="og:type" content="website">
-    16|<meta property="og:url" content="https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/">
-    17|<meta property="og:site_name" content="PageRX">
-    18|<!-- Twitter -->
-    19|<meta name="twitter:card" content="summary_large_image">
-    20|<meta name="twitter:title" content="PageRX Blog — Landing Page Research & Conversion Data">
-    21|<meta name="twitter:description" content="Data-driven landing page research. AI analysis, conversion data, and practical fixes.">
-    22|<!-- JSON-LD -->
-    23|<script type="application/ld+json">
-    24|{
-    25|  "@context": "https://schema.org",
-    26|  "@type": "CollectionPage",
-    27|  "name": "PageRX Blog",
-    28|  "description": "Landing page conversion research backed by AI-powered analysis.",
-    29|  "url": "https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/",
-    30|  "mainEntity": {
-    31|    "@type": "ItemList",
-    32|    "itemListElement": [
-    33|      {"@type": "ListItem", "position": 1, "url": "https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/5-landing-page-mistakes.html"},
-    34|      {"@type": "ListItem", "position": 2, "url": "https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/analyzed-100-landing-pages-conversions.html"},
-    35|      {"@type": "ListItem", "position": 3, "url": "https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/show-hn-landing-page-analysis.html"},
-    36|      {"@type": "ListItem", "position": 4, "url": "https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/7-deadly-sins-saas-landing-pages.html"},
-    37|      {"@type": "ListItem", "position": 5, "url": "https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/page-speed-vs-conversion-rate.html"},
-    38|      {"@type": "ListItem", "position": 6, "url": "https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/10-landing-page-mistakes.html"}
-    39|    ]
-    40|  }
-    41|}
-    42|</script>
-    43|<style>
-    44|:root {
-    45|  --bg: #0a0a0f;
-    46|  --bg-card: #13131f;
-    47|  --border: #1e1e35;
-    48|  --text: #e0e0f0;
-    49|  --text-muted: #8888aa;
-    50|  --accent: #d4a843;
-    51|  --green: #00b894;
-    52|}
-    53|* { margin: 0; padding: 0; box-sizing: border-box; }
-    54|body {
-    55|  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    56|  background: var(--bg);
-    57|  color: var(--text);
-    58|  line-height: 1.6;
-    59|  min-height: 100vh;
-    60|}
-    61|.container { max-width: 780px; margin: 0 auto; padding: 40px 20px; }
-    62|header { text-align: center; margin-bottom: 60px; }
-    63|header h1 { font-size: 2.2rem; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
-    64|header h1 .accent { color: var(--accent); }
-    65|header p { color: var(--text-muted); margin-top: 12px; font-size: 1.05rem; max-width: 600px; margin-left: auto; margin-right: auto; }
-    66|.post { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 20px; transition: border-color .2s; }
-    67|.post:hover { border-color: var(--accent); }
-    68|.post .meta { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px; }
-    69|.post h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 8px; }
-    70|.post h2 a { color: #fff; text-decoration: none; }
-    71|.post h2 a:hover { color: var(--accent); }
-    72|.post p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; }
-    73|.post .tags { margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap; }
-    74|.post .tag { background: #1a1a2e; color: var(--text-muted); padding: 2px 10px; border-radius: 4px; font-size: 0.78rem; border: 1px solid var(--border); }
-    75|.back-link { display: inline-block; margin-bottom: 30px; color: var(--accent); text-decoration: none; font-size: 0.9rem; }
-    76|.back-link:hover { text-decoration: underline; }
-    77|.footer { text-align: center; margin-top: 60px; padding: 20px; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
-    78|.footer a { color: var(--accent); text-decoration: none; }
-    79|hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
-    80|</style>
-    81|</head>
-    82|<body>
-    83|<div class="container">
-    84|  <a href="/" class="back-link">&larr; Back to PageRX</a>
-    85|  <header>
-    86|    <h1><span class="accent">PageRX</span> Blog</h1>
-    87|    <p>Landing page conversion research backed by AI-powered analysis. Data-driven insights, real fixes.</p>
-    88|  </header>
-    89|
-    90|    <div class="post">
-    <div class="meta">June 20, 2026 &middot; 10 min read</div>
-    <h2><a href="landing-page-conversion-benchmarks-2026.html">Landing Page Conversion Benchmarks 2026: Real Data From 100 Pages</a></h2>
-    <p>Real conversion benchmarks from analyzing 100 landing pages with a 5-perspective AI analyzer. Average scores, category breakdowns, top performer secrets, and what separates a 38/100 from an 88/100.</p>
+     1|     1|<!DOCTYPE html>
+     2|     2|<html lang="en">
+     3|     3|<head>
+     4|     4|<meta charset="UTF-8">
+     5|     5|    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23d4a843%27/%3E%3Ctext x=%2716%27 y=%2722%27 font-size=%2718%27 font-weight=%27bold%27 fill=%27%230d0d1a%27 text-anchor=%27middle%27%3EP%3C/text%3E%3C/svg%3E">
+     6|     6|<meta name="viewport" content="width=device-width, initial-scale=1.0">
+     7|     7|<title>PageRX Blog — Landing Page Research, Conversion Data & AI Analysis</title>
+     8|     8|<meta name="description" content="Landing page conversion research backed by AI analysis. Data-driven articles on CRO, UX, page speed, and what actually makes landing pages convert.">
+     9|     9|<meta name="keywords" content="landing page blog, conversion optimization, CRO, AI landing page analysis, conversion rate research, SaaS landing pages">
+    10|    10|<meta name="author" content="PageRX">
+    11|    11|<meta name="robots" content="index, follow">
+    12|    12|<!-- Open Graph -->
+    13|    13|<meta property="og:title" content="PageRX Blog — Landing Page Research & Conversion Data">
+    14|    14|<meta property="og:description" content="Data-driven articles on what makes landing pages convert. Research-backed insights, AI-powered analysis, and practical fixes for better conversion rates.">
+    15|    15|<meta property="og:type" content="website">
+    16|    16|<meta property="og:url" content="https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/">
+    17|    17|<meta property="og:site_name" content="PageRX">
+    18|    18|<!-- Twitter -->
+    19|    19|<meta name="twitter:card" content="summary_large_image">
+    20|    20|<meta name="twitter:title" content="PageRX Blog — Landing Page Research & Conversion Data">
+    21|    21|<meta name="twitter:description" content="Data-driven landing page research. AI analysis, conversion data, and practical fixes.">
+    22|    22|<!-- JSON-LD -->
+    23|    23|<script type="application/ld+json">
+    24|    24|{
+    25|    25|  "@context": "https://schema.org",
+    26|    26|  "@type": "CollectionPage",
+    27|    27|  "name": "PageRX Blog",
+    28|    28|  "description": "Landing page conversion research backed by AI-powered analysis.",
+    29|    29|  "url": "https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/",
+    30|    30|  "mainEntity": {
+    31|    31|    "@type": "ItemList",
+    32|    32|    "itemListElement": [
+    33|    33|      {"@type": "ListItem", "position": 1, "url": "https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/5-landing-page-mistakes.html"},
+    34|    34|      {"@type": "ListItem", "position": 2, "url": "https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/analyzed-100-landing-pages-conversions.html"},
+    35|    35|      {"@type": "ListItem", "position": 3, "url": "https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/show-hn-landing-page-analysis.html"},
+    36|    36|      {"@type": "ListItem", "position": 4, "url": "https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/7-deadly-sins-saas-landing-pages.html"},
+    37|    37|      {"@type": "ListItem", "position": 5, "url": "https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/page-speed-vs-conversion-rate.html"},
+    38|    38|      {"@type": "ListItem", "position": 6, "url": "https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/10-landing-page-mistakes.html"}
+    39|    39|    ]
+    40|    40|  }
+    41|    41|}
+    42|    42|</script>
+    43|    43|<style>
+    44|    44|:root {
+    45|    45|  --bg: #0a0a0f;
+    46|    46|  --bg-card: #13131f;
+    47|    47|  --border: #1e1e35;
+    48|    48|  --text: #e0e0f0;
+    49|    49|  --text-muted: #8888aa;
+    50|    50|  --accent: #d4a843;
+    51|    51|  --green: #00b894;
+    52|    52|}
+    53|    53|* { margin: 0; padding: 0; box-sizing: border-box; }
+    54|    54|body {
+    55|    55|  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    56|    56|  background: var(--bg);
+    57|    57|  color: var(--text);
+    58|    58|  line-height: 1.6;
+    59|    59|  min-height: 100vh;
+    60|    60|}
+    61|    61|.container { max-width: 780px; margin: 0 auto; padding: 40px 20px; }
+    62|    62|header { text-align: center; margin-bottom: 60px; }
+    63|    63|header h1 { font-size: 2.2rem; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+    64|    64|header h1 .accent { color: var(--accent); }
+    65|    65|header p { color: var(--text-muted); margin-top: 12px; font-size: 1.05rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+    66|    66|.post { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 20px; transition: border-color .2s; }
+    67|    67|.post:hover { border-color: var(--accent); }
+    68|    68|.post .meta { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px; }
+    69|    69|.post h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 8px; }
+    70|    70|.post h2 a { color: #fff; text-decoration: none; }
+    71|    71|.post h2 a:hover { color: var(--accent); }
+    72|    72|.post p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; }
+    73|    73|.post .tags { margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap; }
+    74|    74|.post .tag { background: #1a1a2e; color: var(--text-muted); padding: 2px 10px; border-radius: 4px; font-size: 0.78rem; border: 1px solid var(--border); }
+    75|    75|.back-link { display: inline-block; margin-bottom: 30px; color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+    76|    76|.back-link:hover { text-decoration: underline; }
+    77|    77|.footer { text-align: center; margin-top: 60px; padding: 20px; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
+    78|    78|.footer a { color: var(--accent); text-decoration: none; }
+    79|    79|hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+    80|    80|</style>
+    81|    81|</head>
+    82|    82|<body>
+    83|    83|<div class="container">
+    84|    84|  <a href="/" class="back-link">&larr; Back to PageRX</a>
+    85|    85|  <header>
+    86|    86|    <h1><span class="accent">PageRX</span> Blog</h1>
+    87|    87|    <p>Landing page conversion research backed by AI-powered analysis. Data-driven insights, real fixes.</p>
+    88|    88|  </header>
+    89|    89|
+    90|    90|    <div class="post">
+    91|    <div class="meta">June 20, 2026 &middot; 10 min read</div>
+    92|    <h2><a href="landing-page-conversion-benchmarks-2026.html">Landing Page Conversion Benchmarks 2026: Real Data From 100 Pages</a></h2>
+    93|    <p>Real conversion benchmarks from analyzing 100 landing pages with a 5-perspective AI analyzer. Average scores, category breakdowns, top performer secrets, and what separates a 38/100 from an 88/100.</p>
+    94|    <div class="tags">
+    95|      <span class="tag">Benchmarks</span>
+    96|      <span class="tag">Research</span>
+    97|      <span class="tag">Data</span>
+    98|      <span class="tag">SEO</span>
+    99|    </div>
+   100|  </div>
+   101|
+   102|    <div class="post">
+    <div class="meta">June 20, 2026 &middot; 8 min read</div>
+    <h2><a href="show-hn-landing-page-analysis-2026.html">Show HN Landing Page Analysis: What I Learned From 20 Indie Products</a></h2>
+    <p>4 fictional indie hacker landing pages analyzed and scored. Before/after breakdowns, common patterns, and the 3 biggest mistakes founders make when launching on HN.</p>
     <div class="tags">
-      <span class="tag">Benchmarks</span>
-      <span class="tag">Research</span>
-      <span class="tag">Data</span>
-      <span class="tag">SEO</span>
+      <span class="tag">Show HN</span>
+      <span class="tag">Indie Hackers</span>
+      <span class="tag">Case Studies</span>
     </div>
   </div>
 
   <div class="post">
-    91|    <div class="meta">June 19, 2026 &middot; 8 min read</div>
-    92|    <h2><a href="5-landing-page-mistakes.html">5 Landing Page Mistakes That Kill Your Conversion Rate (And How to Fix Them)</a></h2>
-    93|    <p>From invisible value props to broken post-conversion flows — these 5 mistakes are bleeding your conversion rate dry. Data-backed fixes for each one, based on analyzing 100+ landing pages.</p>
-    94|    <div class="tags">
-    95|      <span class="tag">Conversion</span>
-    96|      <span class="tag">CRO</span>
-    97|      <span class="tag">Quick Wins</span>
-    98|    </div>
-    99|  </div>
-   100|
-   101|  <div class="post">
-   102|    <div class="meta">June 19, 2026 &middot; 10 min read</div>
-   103|    <h2><a href="analyzed-100-landing-pages-conversions.html">How We Analyzed 100 Landing Pages to Find What Actually Converts</a></h2>
-   104|    <p>We ran 100 landing pages through a 5-perspective AI analysis. The findings on value proposition clarity, CTA placement, social proof, and pricing transparency will change how you build landing pages.</p>
-   105|    <div class="tags">
-   106|      <span class="tag">Research</span>
-   107|      <span class="tag">Data</span>
-   108|      <span class="tag">Benchmarks</span>
-   109|    </div>
-   110|  </div>
-   111|
-   112|  <div class="post">
-   113|    <div class="meta">June 19, 2026 &middot; 7 min read</div>
-   114|    <h2><a href="show-hn-landing-page-analysis.html">I Analyzed 20 Show HN Landing Pages With AI — Here Are The Results</a></h2>
-   115|    <p>Ran 20 real Show HN landing pages through our 5-perspective AI analyzer. Average score: 79/100. See the full rankings, category breakdowns, and what the best pages do differently.</p>
-   116|    <div class="tags">
-   117|      <span class="tag">Show HN</span>
-   118|      <span class="tag">Indie Hackers</span>
-   119|      <span class="tag">Rankings</span>
-   120|    </div>
-   121|  </div>
-   122|
-   123|  <div class="post">
-   124|    <div class="meta">June 19, 2026 &middot; 9 min read</div>
-   125|    <h2><a href="7-deadly-sins-saas-landing-pages.html">The 7 Deadly Sins of SaaS Landing Pages (And How AI Fixes Them)</a></h2>
-   126|    <p>Most SaaS landing pages commit the same sins: no social proof, buried CTAs, vague headlines. Here's how to fix each one with specific, data-backed improvements.</p>
-   127|    <div class="tags">
-   128|      <span class="tag">SaaS</span>
-   129|      <span class="tag">Landing Pages</span>
-   130|      <span class="tag">Fixes</span>
-   131|    </div>
-   132|  </div>
-   133|
-   134|  <div class="post">
-   135|    <div class="meta">June 19, 2026 &middot; 6 min read</div>
-   136|    <h2><a href="page-speed-vs-conversion-rate.html">Page Speed vs Conversion Rate: What the Data Actually Says</a></h2>
-   137|    <p>We tested whether page speed actually correlates with conversion rates. The results might surprise you — speed matters, but not in the way most CRO articles claim.</p>
-   138|    <div class="tags">
-   139|      <span class="tag">Performance</span>
-   140|      <span class="tag">Data</span>
-   141|      <span class="tag">Myths</span>
-   142|    </div>
-   143|  </div>
-   144|
-   145|  <div class="post">
-   146|    <div class="meta">June 18, 2026 &middot; 11 min read</div>
-   147|    <h2><a href="10-landing-page-mistakes.html">10 Landing Page Mistakes That Kill Conversions (And How AI Can Fix Them)</a></h2>
-   148|    <p>The definitive guide to landing page mistakes. From headline clarity to mobile optimization to trust signals — 10 concrete problems and their fixes, analyzed by AI.</p>
-   149|    <div class="tags">
-   150|      <span class="tag">Comprehensive</span>
-   151|      <span class="tag">Guide</span>
-   152|      <span class="tag">AI</span>
-   153|    </div>
-   154|  </div>
-   155|
-   156|  <hr>
-   157|  <p style="text-align:center;color:var(--text-muted);font-size:0.9rem;">Try PageRX &mdash; <a href="/" style="color:var(--accent);">analyze your landing page in 30 seconds</a></p>
-   158|
-   159|  <div class="footer">
-   160|    <a href="/">PageRX</a> &mdash; Conversion-First AI Landing Page Analysis
-   161|  </div>
-   162|</div>
-   163|</body>
-   164|</html>
-   165|
+   103|    91|    <div class="meta">June 19, 2026 &middot; 8 min read</div>
+   104|    92|    <h2><a href="5-landing-page-mistakes.html">5 Landing Page Mistakes That Kill Your Conversion Rate (And How to Fix Them)</a></h2>
+   105|    93|    <p>From invisible value props to broken post-conversion flows — these 5 mistakes are bleeding your conversion rate dry. Data-backed fixes for each one, based on analyzing 100+ landing pages.</p>
+   106|    94|    <div class="tags">
+   107|    95|      <span class="tag">Conversion</span>
+   108|    96|      <span class="tag">CRO</span>
+   109|    97|      <span class="tag">Quick Wins</span>
+   110|    98|    </div>
+   111|    99|  </div>
+   112|   100|
+   113|   101|  <div class="post">
+   114|   102|    <div class="meta">June 19, 2026 &middot; 10 min read</div>
+   115|   103|    <h2><a href="analyzed-100-landing-pages-conversions.html">How We Analyzed 100 Landing Pages to Find What Actually Converts</a></h2>
+   116|   104|    <p>We ran 100 landing pages through a 5-perspective AI analysis. The findings on value proposition clarity, CTA placement, social proof, and pricing transparency will change how you build landing pages.</p>
+   117|   105|    <div class="tags">
+   118|   106|      <span class="tag">Research</span>
+   119|   107|      <span class="tag">Data</span>
+   120|   108|      <span class="tag">Benchmarks</span>
+   121|   109|    </div>
+   122|   110|  </div>
+   123|   111|
+   124|   112|  <div class="post">
+   125|   113|    <div class="meta">June 19, 2026 &middot; 7 min read</div>
+   126|   114|    <h2><a href="show-hn-landing-page-analysis.html">I Analyzed 20 Show HN Landing Pages With AI — Here Are The Results</a></h2>
+   127|   115|    <p>Ran 20 real Show HN landing pages through our 5-perspective AI analyzer. Average score: 79/100. See the full rankings, category breakdowns, and what the best pages do differently.</p>
+   128|   116|    <div class="tags">
+   129|   117|      <span class="tag">Show HN</span>
+   130|   118|      <span class="tag">Indie Hackers</span>
+   131|   119|      <span class="tag">Rankings</span>
+   132|   120|    </div>
+   133|   121|  </div>
+   134|   122|
+   135|   123|  <div class="post">
+   136|   124|    <div class="meta">June 19, 2026 &middot; 9 min read</div>
+   137|   125|    <h2><a href="7-deadly-sins-saas-landing-pages.html">The 7 Deadly Sins of SaaS Landing Pages (And How AI Fixes Them)</a></h2>
+   138|   126|    <p>Most SaaS landing pages commit the same sins: no social proof, buried CTAs, vague headlines. Here's how to fix each one with specific, data-backed improvements.</p>
+   139|   127|    <div class="tags">
+   140|   128|      <span class="tag">SaaS</span>
+   141|   129|      <span class="tag">Landing Pages</span>
+   142|   130|      <span class="tag">Fixes</span>
+   143|   131|    </div>
+   144|   132|  </div>
+   145|   133|
+   146|   134|  <div class="post">
+   147|   135|    <div class="meta">June 19, 2026 &middot; 6 min read</div>
+   148|   136|    <h2><a href="page-speed-vs-conversion-rate.html">Page Speed vs Conversion Rate: What the Data Actually Says</a></h2>
+   149|   137|    <p>We tested whether page speed actually correlates with conversion rates. The results might surprise you — speed matters, but not in the way most CRO articles claim.</p>
+   150|   138|    <div class="tags">
+   151|   139|      <span class="tag">Performance</span>
+   152|   140|      <span class="tag">Data</span>
+   153|   141|      <span class="tag">Myths</span>
+   154|   142|    </div>
+   155|   143|  </div>
+   156|   144|
+   157|   145|  <div class="post">
+   158|   146|    <div class="meta">June 18, 2026 &middot; 11 min read</div>
+   159|   147|    <h2><a href="10-landing-page-mistakes.html">10 Landing Page Mistakes That Kill Conversions (And How AI Can Fix Them)</a></h2>
+   160|   148|    <p>The definitive guide to landing page mistakes. From headline clarity to mobile optimization to trust signals — 10 concrete problems and their fixes, analyzed by AI.</p>
+   161|   149|    <div class="tags">
+   162|   150|      <span class="tag">Comprehensive</span>
+   163|   151|      <span class="tag">Guide</span>
+   164|   152|      <span class="tag">AI</span>
+   165|   153|    </div>
+   166|   154|  </div>
+   167|   155|
+   168|   156|  <hr>
+   169|   157|  <p style="text-align:center;color:var(--text-muted);font-size:0.9rem;">Try PageRX &mdash; <a href="/" style="color:var(--accent);">analyze your landing page in 30 seconds</a></p>
+   170|   158|
+   171|   159|  <div class="footer">
+   172|   160|    <a href="/">PageRX</a> &mdash; Conversion-First AI Landing Page Analysis
+   173|   161|  </div>
+   174|   162|</div>
+   175|   163|</body>
+   176|   164|</html>
+   177|   165|  <div class="post">
+    <div class="meta">June 20, 2026 &middot; 12 min read</div>
+    <h2><a href="seo-checklist-landing-pages.html">The 10-Point Landing Page SEO Checklist: Rank Higher, Convert Better</a></h2>
+    <p>10 actionable SEO checks for your landing page. From title tags to structured data to page speed — each item explains what to check, why it matters, and how to fix it. Includes a priority matrix.</p>
+    <div class="tags">
+      <span class="tag">SEO</span>
+      <span class="tag">Checklist</span>
+      <span class="tag">Technical</span>
+    </div>
+  </div>
+
+  
