@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23d4a843%27/%3E%3Ctext x=%2716%27 y=%2722%27 font-size=%2718%27 font-weight=%27bold%27 fill=%27%230d0d1a%27 text-anchor=%27middle%27%3EP%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PageRX Changelog — Product Updates & Releases</title>
+<meta name="description" content="PageRX product updates, new features, and improvements. See what's changed in the AI landing page analyzer.">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="PageRX Changelog">
+<meta property="og:description" content="See what's new in PageRX — the AI landing page analyzer.">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg-card: #13131f;
+  --border: #1e1e35;
+  --text: #e0e0f0;
+  --text-muted: #8888aa;
+  --accent: #d4a843;
+  --green: #00b894;
+  --yellow: #fdcb6e;
+  --red: #e17055;
+  --purple: #a29bfe;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 40px 20px; }
+header { margin-bottom: 40px; }
+.back-link { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+.back-link:hover { text-decoration: underline; }
+h1 { font-size: 2rem; font-weight: 700; color: #fff; margin-top: 20px; letter-spacing: -0.5px; }
+.subtitle { color: var(--text-muted); font-size: 1.05rem; margin-top: 8px; }
+
+/* Timeline */
+.timeline { position: relative; }
+.timeline::before { content: ''; position: absolute; left: 20px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+.entry { position: relative; padding-left: 60px; margin-bottom: 40px; }
+.entry .dot { position: absolute; left: 12px; top: 6px; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); border: 3px solid var(--bg); z-index: 1; }
+.entry .dot.new { background: var(--green); }
+.entry .dot.fix { background: var(--yellow); }
+.entry .date { color: var(--text-muted); font-size: 0.82rem; font-family: monospace; margin-bottom: 6px; }
+.entry .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.entry .tag.feature { background: rgba(0, 184, 148, 0.15); color: var(--green); }
+.entry .tag.ux { background: rgba(162, 155, 254, 0.15); color: var(--purple); }
+.entry .tag.fix { background: rgba(253, 203, 110, 0.15); color: var(--yellow); }
+.entry .tag.content { background: rgba(212, 168, 67, 0.15); color: var(--accent); }
+.entry h3 { color: #fff; font-size: 1.1rem; margin-top: 6px; margin-bottom: 8px; }
+.entry ul { padding-left: 18px; margin: 8px 0; }
+.entry li { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 4px; }
+.entry p { color: var(--text-muted); font-size: 0.92rem; }
+.footer { text-align: center; margin-top: 60px; padding: 20px; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
+.footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="/" class="back-link">&larr; Back to PageRX</a>
+  <header>
+    <h1>Changelog</h1>
+    <p class="subtitle">Every update to PageRX, from first commit to latest feature.</p>
+  </header>
+
+  <div class="timeline">
+
+    <div class="entry">
+      <div class="dot new"></div>
+      <div class="date">2026-06-20</div>
+      <span class="tag feature">New</span>
+      <h3>Demo Page + Maestro Guard Landing Page</h3>
+      <ul>
+        <li>Added <a href="/demo.html" style="color:var(--accent);">interactive demo page</a> showing the full analysis flow with real stripe.com data</li>
+        <li>Published <a href="/maestro-guard.html" style="color:var(--accent);">Maestro Guard</a> — standalone marketing site for the AI code verifier tool</li>
+        <li>2 new blog posts: SEO Checklist and Show HN 2026 Analysis</li>
+        <li>Added related posts sections across all articles for better SEO</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="dot new"></div>
+      <div class="date">2026-06-19</div>
+      <span class="tag content">Content</span>
+      <h3>Blog Launch + Conversion Benchmarks</h3>
+      <ul>
+        <li>Published "Landing Page Conversion Benchmarks 2026" — data from 100 analyzed pages</li>
+        <li>Blog index page launched with all 6 articles</li>
+        <li>Sitemap updated with new posts and blog index</li>
+        <li>All articles have JSON-LD structured data, OG tags, Twitter cards</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="dot new"></div>
+      <div class="date">2026-06-19</div>
+      <span class="tag feature">Feature</span>
+      <h3>SEO Infrastructure</h3>
+      <ul>
+        <li>Blog index page created at /blog/</li>
+        <li>Sitemap.xml with all pages and priorities</li>
+        <li>Robots.txt pointing to sitemap</li>
+        <li>All blog posts have meta descriptions, OG tags, Twitter cards, JSON-LD</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="dot new"></div>
+      <div class="date">2026-06-18</div>
+      <span class="tag feature">Feature</span>
+      <h3>5-Perspective AI Analysis Live</h3>
+      <ul>
+        <li>Full LLM-powered analysis with 5 expert perspectives (Security, Code Quality, UX, Completeness, Business)</li>
+        <li>Severity-weighted scoring (critical=-3, major=-2, minor=-1)</li>
+        <li>Business viability analysis as the core differentiator</li>
+        <li>Conversion scoring with actionable recommendations</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="dot new"></div>
+      <div class="date">2026-06-17</div>
+      <span class="tag feature">Feature</span>
+      <h3>Instant Heuristic Score</h3>
+      <ul>
+        <li>Sub-3-second heuristic analysis scoring pages across 6 dimensions</li>
+        <li>Meta, Content, Structure, Trust, Conversion, Technical categories</li>
+        <li>Each category has specific issues with fix suggestions</li>
+        <li>Works without API key — pure HTML analysis</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="dot new"></div>
+      <div class="date">2026-06-16</div>
+      <span class="tag ux">UX</span>
+      <h3>Initial Launch</h3>
+      <ul>
+        <li>PageRX v1.0 live — AI landing page analyzer</li>
+        <li>Dark theme landing page with instant score preview</li>
+        <li>Free tier: 10 analyses/month</li>
+        <li>Analytics pixel tracking for pageviews</li>
+        <li>Admin dashboard with stats</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <a href="/">PageRX</a> &mdash; Conversion-First AI Landing Page Analysis &middot; <a href="/blog/">Blog</a>
+  </div>
+</div>
+</body>
+</html>

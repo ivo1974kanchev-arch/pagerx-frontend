@@ -1,94 +1,99 @@
-     1|     1|<?xml version="1.0" encoding="UTF-8"?>
-     2|     2|<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-     3|     3|  <url>
-     4|     4|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/</loc>
-     5|     5|    <changefreq>weekly</changefreq>
-     6|     6|    <priority>1.0</priority>
-     7|     7|  </url>
-     8|     8|  <url>
-     9|     9|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/</loc>
-    10|    10|    <changefreq>weekly</changefreq>
-    11|    11|    <priority>0.9</priority>
-    12|    12|  </url>
-    13|    13|  <url>
-    14|    14|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/5-landing-page-mistakes.html</loc>
-    15|    15|    <changefreq>monthly</changefreq>
-    16|    16|    <priority>0.9</priority>
-    17|    17|  </url>
-    18|    18|  <url>
-    19|    19|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/show-hn-landing-page-analysis.html</loc>
-    20|    20|    <changefreq>monthly</changefreq>
-    21|    21|    <priority>0.9</priority>
-    22|    22|  </url>
-    23|    23|  <url>
-    24|    24|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/10-landing-page-mistakes.html</loc>
-    25|    25|    <changefreq>monthly</changefreq>
-    26|    26|    <priority>0.9</priority>
-    27|    27|  </url>
-    28|    28|  <url>
-    29|    29|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/7-deadly-sins-saas-landing-pages.html</loc>
-    30|    30|    <changefreq>monthly</changefreq>
-    31|    31|    <priority>0.9</priority>
-    32|    32|  </url>
-    33|    33|  <url>
-    34|    34|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/analyzed-100-landing-pages-conversions.html</loc>
-    35|    35|    <changefreq>monthly</changefreq>
-    36|    36|    <priority>0.9</priority>
-    37|    37|  </url>
-    38|    38|  <url>
-    39|    39|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/page-speed-vs-conversion-rate.html</loc>
-    40|    40|    <changefreq>monthly</changefreq>
-    41|    41|    <priority>0.9</priority>
-    42|    42|  </url>
-    43|    43|  <url>
-    44|    44|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/tools/conversion-calculator.html</loc>
-    45|    45|    <changefreq>monthly</changefreq>
-    46|    46|    <priority>0.7</priority>
-    47|    47|  </url>
-    48|    48|  <url>
-    49|    49|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/tools/checklist.html</loc>
-    50|    50|    <changefreq>monthly</changefreq>
-    51|    51|    <priority>0.7</priority>
-    52|    52|  </url>
-    53|    53|  <url>
-    54|    54|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/bookmarklet.html</loc>
-    55|    55|    <changefreq>monthly</changefreq>
-    56|    56|    <priority>0.8</priority>
-    57|    57|  </url>
-    58|    58|  <url>
-    59|    59|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/admin/index.html</loc>
-    60|    60|    <changefreq>daily</changefreq>
-    61|    61|    <priority>0.3</priority>
-    62|    62|  </url>
-    63|    63|  <url>
-    64|    64|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/thanks.html</loc>
-    65|    65|    <changefreq>never</changefreq>
-    66|    66|    <priority>0.3</priority>
-    67|    67|  </url>
-    68|    68|  <url>
-    69|    69|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/demo.html</loc>
-    70|    70|    <changefreq>monthly</changefreq>
-    71|    71|    <priority>0.8</priority>
-    72|    72|  </url>
-    73|    73|    <url>
-    74|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/landing-page-conversion-benchmarks-2026.html</loc>
-    75|    <changefreq>monthly</changefreq>
-    76|    <priority>0.9</priority>
-    77|  </url>
-    78|    <url>
-    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/seo-checklist-landing-pages.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+     1|     1|     1|<?xml version="1.0" encoding="UTF-8"?>
+     2|     2|     2|<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+     3|     3|     3|  <url>
+     4|     4|     4|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/</loc>
+     5|     5|     5|    <changefreq>weekly</changefreq>
+     6|     6|     6|    <priority>1.0</priority>
+     7|     7|     7|  </url>
+     8|     8|     8|  <url>
+     9|     9|     9|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/</loc>
+    10|    10|    10|    <changefreq>weekly</changefreq>
+    11|    11|    11|    <priority>0.9</priority>
+    12|    12|    12|  </url>
+    13|    13|    13|  <url>
+    14|    14|    14|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/5-landing-page-mistakes.html</loc>
+    15|    15|    15|    <changefreq>monthly</changefreq>
+    16|    16|    16|    <priority>0.9</priority>
+    17|    17|    17|  </url>
+    18|    18|    18|  <url>
+    19|    19|    19|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/show-hn-landing-page-analysis.html</loc>
+    20|    20|    20|    <changefreq>monthly</changefreq>
+    21|    21|    21|    <priority>0.9</priority>
+    22|    22|    22|  </url>
+    23|    23|    23|  <url>
+    24|    24|    24|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/10-landing-page-mistakes.html</loc>
+    25|    25|    25|    <changefreq>monthly</changefreq>
+    26|    26|    26|    <priority>0.9</priority>
+    27|    27|    27|  </url>
+    28|    28|    28|  <url>
+    29|    29|    29|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/7-deadly-sins-saas-landing-pages.html</loc>
+    30|    30|    30|    <changefreq>monthly</changefreq>
+    31|    31|    31|    <priority>0.9</priority>
+    32|    32|    32|  </url>
+    33|    33|    33|  <url>
+    34|    34|    34|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/analyzed-100-landing-pages-conversions.html</loc>
+    35|    35|    35|    <changefreq>monthly</changefreq>
+    36|    36|    36|    <priority>0.9</priority>
+    37|    37|    37|  </url>
+    38|    38|    38|  <url>
+    39|    39|    39|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/page-speed-vs-conversion-rate.html</loc>
+    40|    40|    40|    <changefreq>monthly</changefreq>
+    41|    41|    41|    <priority>0.9</priority>
+    42|    42|    42|  </url>
+    43|    43|    43|  <url>
+    44|    44|    44|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/tools/conversion-calculator.html</loc>
+    45|    45|    45|    <changefreq>monthly</changefreq>
+    46|    46|    46|    <priority>0.7</priority>
+    47|    47|    47|  </url>
+    48|    48|    48|  <url>
+    49|    49|    49|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/tools/checklist.html</loc>
+    50|    50|    50|    <changefreq>monthly</changefreq>
+    51|    51|    51|    <priority>0.7</priority>
+    52|    52|    52|  </url>
+    53|    53|    53|  <url>
+    54|    54|    54|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/bookmarklet.html</loc>
+    55|    55|    55|    <changefreq>monthly</changefreq>
+    56|    56|    56|    <priority>0.8</priority>
+    57|    57|    57|  </url>
+    58|    58|    58|  <url>
+    59|    59|    59|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/admin/index.html</loc>
+    60|    60|    60|    <changefreq>daily</changefreq>
+    61|    61|    61|    <priority>0.3</priority>
+    62|    62|    62|  </url>
+    63|    63|    63|  <url>
+    64|    64|    64|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/thanks.html</loc>
+    65|    65|    65|    <changefreq>never</changefreq>
+    66|    66|    66|    <priority>0.3</priority>
+    67|    67|    67|  </url>
+    68|    68|    68|  <url>
+    69|    69|    69|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/demo.html</loc>
+    70|    70|    70|    <changefreq>monthly</changefreq>
+    71|    71|    71|    <priority>0.8</priority>
+    72|    72|    72|  </url>
+    73|    73|    73|    <url>
+    74|    74|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/landing-page-conversion-benchmarks-2026.html</loc>
+    75|    75|    <changefreq>monthly</changefreq>
+    76|    76|    <priority>0.9</priority>
+    77|    77|  </url>
+    78|    78|    <url>
+    79|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/seo-checklist-landing-pages.html</loc>
+    80|    <changefreq>monthly</changefreq>
+    81|    <priority>0.9</priority>
+    82|  </url>
+    83|  <url>
+    84|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/show-hn-landing-page-analysis-2026.html</loc>
+    85|    <changefreq>monthly</changefreq>
+    86|    <priority>0.9</priority>
+    87|  </url>
+    88|    <url>
+    89|    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/maestro-guard.html</loc>
+    90|    <changefreq>monthly</changefreq>
+    91|    <priority>0.8</priority>
+    92|  </url>
+    93|  <url>
+    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/changelog.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
-  <url>
-    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/show-hn-landing-page-analysis-2026.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-    <url>
-    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/maestro-guard.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-</urlset>
-    79|    74|
+  </urlset>
+    94|    79|    74|
