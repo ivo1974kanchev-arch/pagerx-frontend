@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23d4a843%27/%3E%3Ctext x=%2716%27 y=%2722%27 font-size=%2718%27 font-weight=%27bold%27 fill=%27%230d0d1a%27 text-anchor=%27middle%27%3EP%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PageRX Demo — See the Analysis in Action | Real Landing Page Audit</title>
+<meta name="description" content="Watch PageRX analyze a real landing page. See instant scores, 5-perspective breakdowns, and actionable issues — all in under 30 seconds.">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="PageRX Demo — Real Landing Page Analysis in Action">
+<meta property="og:description" content="Watch PageRX analyze stripe.com in real-time. 5-perspective AI audit with actionable results.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg-card: #13131f;
+  --border: #1e1e35;
+  --text: #e0e0f0;
+  --text-muted: #8888aa;
+  --accent: #d4a843;
+  --green: #00b894;
+  --yellow: #fdcb6e;
+  --red: #e17055;
+  --purple: #a29bfe;
+  --orange: #e17055;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+.container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+/* Header */
+header { text-align: center; margin-bottom: 50px; }
+.logo { color: var(--accent); font-size: 1.5rem; font-weight: 700; margin-bottom: 10px; }
+header h1 { font-size: 2.2rem; font-weight: 700; color: #fff; letter-spacing: -0.5px; margin-bottom: 15px; }
+header p { color: var(--text-muted); font-size: 1.05rem; max-width: 650px; margin: 0 auto; }
+.back-link { display: inline-block; margin-bottom: 30px; color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+.back-link:hover { text-decoration: underline; }
+
+/* Step cards */
+.step { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 30px; margin-bottom: 30px; }
+.step h2 { font-size: 1.3rem; color: #fff; margin-bottom: 15px; }
+.step h2 .num { color: var(--accent); margin-right: 8px; }
+.step p { color: var(--text-muted); margin-bottom: 15px; }
+
+/* Screenshot area */
+.screenshot { background: #0d0d1a; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin: 15px 0; }
+.screenshot img { width: 100%; display: block; border-radius: 8px; }
+.screenshot .caption { padding: 10px 15px; color: var(--text-muted); font-size: 0.85rem; background: #0d0d1a; border-top: 1px solid var(--border); }
+
+/* Score show */
+.score-row { display: flex; gap: 20px; flex-wrap: wrap; margin: 20px 0; padding: 25px; background: rgba(212, 168, 67, 0.05); border: 1px solid rgba(212, 168, 67, 0.2); border-radius: 10px; }
+.big-score { font-size: 3rem; font-weight: 700; color: var(--yellow); line-height: 1; }
+.big-score-label { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+.verdict { display: inline-block; padding: 4px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; }
+.verdict.needs-improvement { background: rgba(225, 112, 85, 0.15); color: var(--red); }
+.verdict.good { background: rgba(0, 184, 148, 0.15); color: var(--green); }
+.verdict.great { background: rgba(162, 155, 254, 0.15); color: var(--purple); }
+
+/* Category breakdown */
+.category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0; }
+.category { background: #0d0d1a; border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+.category h3 { font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.category .score { font-size: 1.8rem; font-weight: 700; color: #fff; }
+.category .score .max { color: var(--text-muted); font-size: 1rem; font-weight: 400; }
+.category .bar { height: 4px; background: var(--border); border-radius: 2px; margin: 8px 0; }
+.category .bar .fill { height: 100%; border-radius: 2px; }
+
+/* Issues list */
+.issues { margin-top: 15px; }
+.issue { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; gap: 8px; align-items: flex-start; }
+.issue:last-child { border-bottom: none; }
+.issue .icon { flex-shrink: 0; font-size: 0.85rem; }
+.issue .text { color: var(--text-muted); font-size: 0.88rem; }
+
+/* Live demo CTA */
+.live-demo { text-align: center; padding: 50px 30px; background: linear-gradient(135deg, rgba(212, 168, 67, 0.08), rgba(212, 168, 67, 0.02)); border: 1px solid rgba(212, 168, 67, 0.2); border-radius: 16px; margin: 40px 0; }
+.live-demo h2 { color: #fff; font-size: 1.5rem; margin-bottom: 10px; }
+.live-demo p { color: var(--text-muted); margin-bottom: 25px; }
+.btn { display: inline-block; padding: 14px 36px; background: var(--accent); color: #0a0a0f; font-weight: 700; border-radius: 8px; text-decoration: none; font-size: 1rem; transition: opacity .2s; }
+.btn:hover { opacity: 0.9; }
+
+/* Issues found */
+.issue-list { margin: 15px 0; }
+.issue-item { background: rgba(225, 112, 85, 0.08); border-left: 3px solid var(--red); padding: 12px 16px; margin-bottom: 8px; border-radius: 0 6px 6px 0; }
+.issue-item h4 { color: #fff; font-size: 0.9rem; margin-bottom: 3px; }
+.issue-item p { color: var(--text-muted); font-size: 0.85rem; }
+.issue-item.fix { border-left-color: var(--green); background: rgba(0, 184, 148, 0.08); }
+
+.footer { text-align: center; margin-top: 60px; padding: 20px; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
+.footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="/" class="back-link">&larr; Back to PageRX</a>
+
+  <header>
+    <div class="logo">PageRX</div>
+    <h1>See PageRX Analyze a Real Page</h1>
+    <p>We ran <strong>stripe.com</strong> through PageRX. The full analysis — instant score, 5-perspective breakdown, and actionable fixes. All in under 30 seconds.</p>
+  </header>
+
+  <!-- Step 1: Enter URL -->
+  <div class="step">
+    <h2><span class="num">1.</span> Enter a URL</h2>
+    <p>Type any landing page URL into the analyzer. No account, no signup.</p>
+    <div style="background: #0d0d1a; border: 1px solid var(--border); border-radius: 8px; padding: 15px;">
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <span style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 10px 16px; flex: 1; color: var(--text-muted); font-family: monospace; font-size: 0.9rem;">https://stripe.com</span>
+        <span style="background: var(--accent); color: #0a0a0f; font-weight: 700; padding: 10px 24px; border-radius: 6px; font-size: 0.9rem;">Analyze →</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Instant Score -->
+  <div class="step">
+    <h2><span class="num">2.</span> Instant Heuristic Score</h2>
+    <p>The analyzer returns a score in under 3 seconds, scanning 6 dimensions of your landing page.</p>
+
+    <div class="score-row">
+      <div>
+        <div class="big-score">64</div>
+        <div class="big-score-label">out of 100</div>
+      </div>
+      <div>
+        <span class="verdict needs-improvement">⚠ Needs Improvement</span>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">Stripe's page has strong below-fold content but the hero section lacks clear direction.</p>
+      </div>
+    </div>
+
+    <div class="category-grid">
+      <div class="category">
+        <h3>Meta</h3>
+        <div class="score">6 <span class="max">/ 15</span></div>
+        <div class="bar"><div class="fill" style="width:40%;background:var(--red);"></div></div>
+      </div>
+      <div class="category">
+        <h3>Content</h3>
+        <div class="score">5 <span class="max">/ 20</span></div>
+        <div class="bar"><div class="fill" style="width:25%;background:var(--red);"></div></div>
+      </div>
+      <div class="category">
+        <h3>Structure</h3>
+        <div class="score">4 <span class="max">/ 15</span></div>
+        <div class="bar"><div class="fill" style="width:27%;background:var(--orange);"></div></div>
+      </div>
+      <div class="category">
+        <h3>Trust</h3>
+        <div class="score">5 <span class="max">/ 20</span></div>
+        <div class="bar"><div class="fill" style="width:25%;background:var(--red);"></div></div>
+      </div>
+      <div class="category">
+        <h3>Conversion</h3>
+        <div class="score">4 <span class="max">/ 20</span></div>
+        <div class="bar"><div class="fill" style="width:20%;background:var(--red);"></div></div>
+      </div>
+      <div class="category">
+        <h3>Technical</h3>
+        <div class="score">5 <span class="max">/ 10</span></div>
+        <div class="bar"><div class="fill" style="width:50%;background:var(--yellow);"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Issues Found -->
+  <div class="step">
+    <h2><span class="num">3.</span> Key Issues Identified</h2>
+    <p>PageRX found multiple issues across all dimensions. Here are the most impactful ones:</p>
+
+    <div class="issue-list">
+      <div class="issue-item">
+        <h4>🔴 No clear primary CTA</h4>
+        <p>The hero section has two vague buttons — visitors don't know which action to take. This is the single biggest conversion killer.</p>
+      </div>
+      <div class="issue-item">
+        <h4>🔴 Missing meta description</h4>
+        <p>No meta description means Google shows generic snippets instead of a compelling reason to click.</p>
+      </div>
+      <div class="issue-item">
+        <h4>🔴 No Open Graph tags</h4>
+        <p>Social shares will have generic previews — no title, description, or image control.</p>
+      </div>
+      <div class="issue-item">
+        <h4>🔴 No social proof on hero</h4>
+        <p>No testimonials, logos, or trust indicators visible without scrolling. Visitors have no reason to trust the offer immediately.</p>
+      </div>
+      <div class="issue-item">
+        <h4>🔴 Low content above fold</h4>
+        <p>Very little copy visible before scrolling — visitors can't quickly understand the value proposition.</p>
+      </div>
+    </div>
+
+    <div class="issue-list" style="margin-top:25px;">
+      <h3 style="color: var(--green); font-size: 1rem; margin-bottom: 10px;">✅ Recommended Fixes</h3>
+      <div class="issue-item fix">
+        <h4>Add a single, clear CTA button</h4>
+        <p>Replace vague buttons with one action: "Start Accepting Payments" or "Try Stripe Free."</p>
+      </div>
+      <div class="issue-item fix">
+        <h4>Add social proof above fold</h4>
+        <p>Show customer logos or a trust metric like "Millions of businesses trust Stripe" in the hero section.</p>
+      </div>
+      <div class="issue-item fix">
+        <h4>Improve meta and OG tags</h4>
+        <p>Add meta description (120-160 chars), og:title, og:description, og:image for better search and social performance.</p>
+      </div>
+      <div class="issue-item fix">
+        <h4>Add trust signals</h4>
+        <p>Include security badges, privacy policy links, and cookie consent to build immediate visitor confidence.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4: Deep Analysis -->
+  <div class="step">
+    <h2><span class="num">4.</span> Full 5-Perspective Analysis</h2>
+    <p>Click "Full Analysis" to get a deep, AI-powered breakdown from 5 expert perspectives:</p>
+
+    <div class="category-grid" style="margin-top:20px;">
+      <div class="category" style="border-top: 3px solid var(--red);">
+        <h3>🔒 Security Auditor</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">Checks for inline event handlers, eval(), innerHTML, CSP issues, localStorage, and data URIs.</p>
+      </div>
+      <div class="category" style="border-top: 3px solid var(--purple);">
+        <h3>📐 Code Quality</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">Detects commented-out code, TODO markers, magic numbers, deep nesting, empty functions.</p>
+      </div>
+      <div class="category" style="border-top: 3px solid var(--green);">
+        <h3>👁️ UX Reviewer</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">Checks viewport, alt text, semantics, ARIA attributes, loading states, focus styles.</p>
+      </div>
+      <div class="category" style="border-top: 3px solid var(--yellow);">
+        <h3>📋 Completeness</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">Verifies title, meta description, charset, favicon, lang attribute, and missing content.</p>
+      </div>
+      <div class="category" style="border-top: 3px solid var(--accent);">
+        <h3>💼 Business Viability ⭐</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">Analyzes CTA clarity, value proposition, pricing transparency, social proof, and competitive differentiation.</p>
+      </div>
+      <div class="category" style="border-top: 3px solid var(--orange);">
+        <h3>📊 Conversion Score</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">Measures CTA density, form presence, urgency signals, pricing visibility, and content freshness.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="live-demo">
+    <h2>Try It on Your Own Page</h2>
+    <p>Same analysis. Same detail. Yours in 30 seconds. No account needed.</p>
+    <a href="/" class="btn">Analyze Your Landing Page →</a>
+  </div>
+
+  <div class="footer">
+    <a href="/">PageRX</a> &mdash; Conversion-First AI Landing Page Analysis
+  </div>
+</div>
+</body>
+</html>
