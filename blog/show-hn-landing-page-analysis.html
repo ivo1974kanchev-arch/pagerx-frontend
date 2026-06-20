@@ -1,447 +1,457 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23d4a843%27/%3E%3Ctext x=%2716%27 y=%2722%27 font-size=%2718%27 font-weight=%27bold%27 fill=%27%230d0d1a%27 text-anchor=%27middle%27%3EP%3C/text%3E%3C/svg%3E">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>I Analyzed 20 Show HN Landing Pages With AI — Here Are The Results</title>
-<meta name="description" content="I ran 20 Show HN landing pages through a 5-perspective AI analyzer. Average score: 79/100. See the full rankings and what separates the best from the rest.">
-<meta name="keywords" content="landing page analysis, Show HN, indie hackers, AI analysis, conversion optimization, landing page best practices">
-<meta name="author" content="PageRX">
-<!-- Open Graph -->
-<meta property="og:title" content="I Analyzed 20 Show HN Landing Pages With AI — Here Are The Results">
-<meta property="og:description" content="Average score: 79/100. See the full rankings and insights from analyzing 20 real indie hacker landing pages with 5 different AI expert perspectives.">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/show-hn-landing-page-analysis.html">
-<!-- Twitter -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="I Analyzed 20 Show HN Landing Pages With AI">
-<meta name="twitter:description" content="Average score: 79/100. Full rankings and insights from analyzing 20 indie hacker landing pages with 5 AI expert perspectives.">
-<style>
-:root {
-  --bg: #0a0a0f;
-  --bg-card: #13131f;
-  --bg-table: #0f0f1a;
-  --border: #1e1e35;
-  --text: #e0e0f0;
-  --text-muted: #8888aa;
-  --accent: #6c5ce7;
-  --accent2: #00cec9;
-  --green: #00b894;
-  --yellow: #fdcb6e;
-  --red: #e17055;
-  --purple: #a29bfe;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.7;
-  padding: 0;
-}
-.container { max-width: 820px; margin: 0 auto; padding: 0 24px; }
-.hero {
-  background: linear-gradient(135deg, #0a0a1f 0%, #1a1a3f 50%, #0a0a1f 100%);
-  padding: 80px 0 60px;
-  text-align: center;
-  border-bottom: 1px solid var(--border);
-}
-.hero h1 { font-size: 2.4em; font-weight: 800; margin-bottom: 16px; line-height: 1.3; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.hero p { font-size: 1.15em; color: var(--text-muted); max-width: 600px; margin: 0 auto 8px; }
-.hero .meta { font-size: 0.85em; color: #5555aa; margin-top: 20px; }
-.stats-bar {
-  display: flex; justify-content: center; gap: 48px;
-  padding: 32px 0; border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
-}
-.stat { text-align: center; }
-.stat-num { font-size: 2.2em; font-weight: 800; color: var(--accent); }
-.stat-label { font-size: 0.85em; color: var(--text-muted); margin-top: 4px; }
-section { padding: 48px 0; border-bottom: 1px solid var(--border); }
-section:last-child { border-bottom: none; }
-h2 { font-size: 1.6em; font-weight: 700; margin-bottom: 24px; color: #fff; }
-h2 .emoji { margin-right: 10px; }
-h3 { font-size: 1.15em; font-weight: 600; margin: 24px 0 12px; color: #ccc; }
-p { margin-bottom: 16px; color: var(--text-muted); }
-p strong { color: var(--text); }
-ul { margin: 0 0 16px 24px; color: var(--text-muted); }
-li { margin-bottom: 8px; }
-.key-insight {
-  background: var(--bg-card);
-  border-left: 3px solid var(--accent);
-  padding: 20px 24px;
-  margin: 24px 0;
-  border-radius: 0 8px 8px 0;
-}
-.key-insight p { margin: 0; color: var(--text); }
-.key-insight strong { color: var(--accent); }
-
-/* Table */
-.table-wrap { overflow-x: auto; margin: 24px 0; border-radius: 12px; border: 1px solid var(--border); }
-table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
-thead { background: var(--bg-card); }
-th { padding: 14px 16px; text-align: left; font-weight: 600; color: var(--text-muted); font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
-td { padding: 13px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: rgba(108,92,231,0.05); }
-.score-circle {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 40px; height: 40px; border-radius: 50%;
-  font-weight: 700; font-size: 0.9em;
-}
-.score-high { background: rgba(0,184,148,0.15); color: var(--green); }
-.score-mid { background: rgba(253,203,110,0.15); color: var(--yellow); }
-.score-low { background: rgba(225,112,85,0.15); color: var(--red); }
-.hn-badge { display: inline-block; background: rgba(255,102,0,0.15); color: #ff6600; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
-.domain-link { color: var(--accent2); text-decoration: none; font-weight: 500; }
-.domain-link:hover { text-decoration: underline; }
-.issue-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; margin: 2px; }
-.tag-security { background: rgba(225,112,85,0.15); color: var(--red); }
-.tag-ux { background: rgba(108,92,231,0.15); color: var(--accent); }
-.tag-seo { background: rgba(0,206,201,0.15); color: var(--accent2); }
-.tag-code { background: rgba(253,203,110,0.15); color: var(--yellow); }
-.tag-business { background: rgba(0,184,148,0.15); color: var(--green); }
-
-/* CTA */
-.cta-section {
-  background: linear-gradient(135deg, rgba(108,92,231,0.1) 0%, rgba(0,206,201,0.1) 100%);
-  border: 1px solid rgba(108,92,231,0.3);
-  border-radius: 12px;
-  padding: 40px;
-  text-align: center;
-  margin: 48px 0;
-}
-.cta-section h3 { font-size: 1.4em; margin: 0 0 12px; color: #fff; }
-.cta-section p { margin: 0 0 24px; color: var(--text-muted); }
-.cta-btn {
-  display: inline-block;
-  background: linear-gradient(135deg, var(--accent), #8b7cf7);
-  color: #fff;
-  text-decoration: none;
-  padding: 14px 36px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1.05em;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(108,92,231,0.4); }
-
-/* Pattern cards */
-.pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-@media (max-width: 600px) { .pattern-grid { grid-template-columns: 1fr; } }
-.pattern-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 20px;
-}
-.pattern-card h4 { font-size: 1em; margin-bottom: 8px; color: #fff; }
-.pattern-card p { font-size: 0.9em; margin: 0; }
-
-/* Footer */
-.footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 0.85em; }
-.footer a { color: var(--accent2); text-decoration: none; }
-</style>
-</head>
-<body>
-
-<div class="hero">
-  <div class="container">
-    <h1>I Analyzed 20 Show HN Landing Pages With AI<br>Here Are The Results</h1>
-    <p>I built an AI that evaluates landing pages from 5 expert perspectives (Security, UX, Code Quality, SEO, Business). Then I ran 20 real Show HN launches through it. The findings surprised me.</p>
-    <div class="meta">📅 June 2026 · <a href="https://ivo1974kanchev-arch.github.io/pagerx-frontend/" style="color:#6c5ce7; text-decoration:none;">Built with PageRX</a></div>
-  </div>
+     1|<!DOCTYPE html>
+     2|<html lang="en">
+     3|<head>
+     4|<meta charset="UTF-8">
+     5|    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23d4a843%27/%3E%3Ctext x=%2716%27 y=%2722%27 font-size=%2718%27 font-weight=%27bold%27 fill=%27%230d0d1a%27 text-anchor=%27middle%27%3EP%3C/text%3E%3C/svg%3E">
+     6|<meta name="viewport" content="width=device-width, initial-scale=1.0">
+     7|<title>I Analyzed 20 Show HN Landing Pages With AI — Here Are The Results</title>
+     8|<meta name="description" content="I ran 20 Show HN landing pages through a 5-perspective AI analyzer. Average score: 79/100. See the full rankings and what separates the best from the rest.">
+     9|<meta name="keywords" content="landing page analysis, Show HN, indie hackers, AI analysis, conversion optimization, landing page best practices">
+    10|<meta name="author" content="PageRX">
+    11|<!-- Open Graph -->
+    12|<meta property="og:title" content="I Analyzed 20 Show HN Landing Pages With AI — Here Are The Results">
+    13|<meta property="og:description" content="Average score: 79/100. See the full rankings and insights from analyzing 20 real indie hacker landing pages with 5 different AI expert perspectives.">
+    14|<meta property="og:type" content="article">
+    15|<meta property="og:url" content="https://ivo1974kanchev-arch.github.io/pagerx-frontend/blog/show-hn-landing-page-analysis.html">
+    16|<!-- Twitter -->
+    17|<meta name="twitter:card" content="summary_large_image">
+    18|<meta name="twitter:title" content="I Analyzed 20 Show HN Landing Pages With AI">
+    19|<meta name="twitter:description" content="Average score: 79/100. Full rankings and insights from analyzing 20 indie hacker landing pages with 5 AI expert perspectives.">
+    20|<style>
+    21|:root {
+    22|  --bg: #0a0a0f;
+    23|  --bg-card: #13131f;
+    24|  --bg-table: #0f0f1a;
+    25|  --border: #1e1e35;
+    26|  --text: #e0e0f0;
+    27|  --text-muted: #8888aa;
+    28|  --accent: #6c5ce7;
+    29|  --accent2: #00cec9;
+    30|  --green: #00b894;
+    31|  --yellow: #fdcb6e;
+    32|  --red: #e17055;
+    33|  --purple: #a29bfe;
+    34|}
+    35|* { margin: 0; padding: 0; box-sizing: border-box; }
+    36|body {
+    37|  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    38|  background: var(--bg);
+    39|  color: var(--text);
+    40|  line-height: 1.7;
+    41|  padding: 0;
+    42|}
+    43|.container { max-width: 820px; margin: 0 auto; padding: 0 24px; }
+    44|.hero {
+    45|  background: linear-gradient(135deg, #0a0a1f 0%, #1a1a3f 50%, #0a0a1f 100%);
+    46|  padding: 80px 0 60px;
+    47|  text-align: center;
+    48|  border-bottom: 1px solid var(--border);
+    49|}
+    50|.hero h1 { font-size: 2.4em; font-weight: 800; margin-bottom: 16px; line-height: 1.3; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    51|.hero p { font-size: 1.15em; color: var(--text-muted); max-width: 600px; margin: 0 auto 8px; }
+    52|.hero .meta { font-size: 0.85em; color: #5555aa; margin-top: 20px; }
+    53|.stats-bar {
+    54|  display: flex; justify-content: center; gap: 48px;
+    55|  padding: 32px 0; border-bottom: 1px solid var(--border);
+    56|  flex-wrap: wrap;
+    57|}
+    58|.stat { text-align: center; }
+    59|.stat-num { font-size: 2.2em; font-weight: 800; color: var(--accent); }
+    60|.stat-label { font-size: 0.85em; color: var(--text-muted); margin-top: 4px; }
+    61|section { padding: 48px 0; border-bottom: 1px solid var(--border); }
+    62|section:last-child { border-bottom: none; }
+    63|h2 { font-size: 1.6em; font-weight: 700; margin-bottom: 24px; color: #fff; }
+    64|h2 .emoji { margin-right: 10px; }
+    65|h3 { font-size: 1.15em; font-weight: 600; margin: 24px 0 12px; color: #ccc; }
+    66|p { margin-bottom: 16px; color: var(--text-muted); }
+    67|p strong { color: var(--text); }
+    68|ul { margin: 0 0 16px 24px; color: var(--text-muted); }
+    69|li { margin-bottom: 8px; }
+    70|.key-insight {
+    71|  background: var(--bg-card);
+    72|  border-left: 3px solid var(--accent);
+    73|  padding: 20px 24px;
+    74|  margin: 24px 0;
+    75|  border-radius: 0 8px 8px 0;
+    76|}
+    77|.key-insight p { margin: 0; color: var(--text); }
+    78|.key-insight strong { color: var(--accent); }
+    79|
+    80|/* Table */
+    81|.table-wrap { overflow-x: auto; margin: 24px 0; border-radius: 12px; border: 1px solid var(--border); }
+    82|table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+    83|thead { background: var(--bg-card); }
+    84|th { padding: 14px 16px; text-align: left; font-weight: 600; color: var(--text-muted); font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+    85|td { padding: 13px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    86|tr:last-child td { border-bottom: none; }
+    87|tr:hover td { background: rgba(108,92,231,0.05); }
+    88|.score-circle {
+    89|  display: inline-flex; align-items: center; justify-content: center;
+    90|  width: 40px; height: 40px; border-radius: 50%;
+    91|  font-weight: 700; font-size: 0.9em;
+    92|}
+    93|.score-high { background: rgba(0,184,148,0.15); color: var(--green); }
+    94|.score-mid { background: rgba(253,203,110,0.15); color: var(--yellow); }
+    95|.score-low { background: rgba(225,112,85,0.15); color: var(--red); }
+    96|.hn-badge { display: inline-block; background: rgba(255,102,0,0.15); color: #ff6600; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
+    97|.domain-link { color: var(--accent2); text-decoration: none; font-weight: 500; }
+    98|.domain-link:hover { text-decoration: underline; }
+    99|.issue-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; margin: 2px; }
+   100|.tag-security { background: rgba(225,112,85,0.15); color: var(--red); }
+   101|.tag-ux { background: rgba(108,92,231,0.15); color: var(--accent); }
+   102|.tag-seo { background: rgba(0,206,201,0.15); color: var(--accent2); }
+   103|.tag-code { background: rgba(253,203,110,0.15); color: var(--yellow); }
+   104|.tag-business { background: rgba(0,184,148,0.15); color: var(--green); }
+   105|
+   106|/* CTA */
+   107|.cta-section {
+   108|  background: linear-gradient(135deg, rgba(108,92,231,0.1) 0%, rgba(0,206,201,0.1) 100%);
+   109|  border: 1px solid rgba(108,92,231,0.3);
+   110|  border-radius: 12px;
+   111|  padding: 40px;
+   112|  text-align: center;
+   113|  margin: 48px 0;
+   114|}
+   115|.cta-section h3 { font-size: 1.4em; margin: 0 0 12px; color: #fff; }
+   116|.cta-section p { margin: 0 0 24px; color: var(--text-muted); }
+   117|.cta-btn {
+   118|  display: inline-block;
+   119|  background: linear-gradient(135deg, var(--accent), #8b7cf7);
+   120|  color: #fff;
+   121|  text-decoration: none;
+   122|  padding: 14px 36px;
+   123|  border-radius: 8px;
+   124|  font-weight: 600;
+   125|  font-size: 1.05em;
+   126|  transition: transform 0.2s, box-shadow 0.2s;
+   127|}
+   128|.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(108,92,231,0.4); }
+   129|
+   130|/* Pattern cards */
+   131|.pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+   132|@media (max-width: 600px) { .pattern-grid { grid-template-columns: 1fr; } }
+   133|.pattern-card {
+   134|  background: var(--bg-card);
+   135|  border: 1px solid var(--border);
+   136|  border-radius: 10px;
+   137|  padding: 20px;
+   138|}
+   139|.pattern-card h4 { font-size: 1em; margin-bottom: 8px; color: #fff; }
+   140|.pattern-card p { font-size: 0.9em; margin: 0; }
+   141|
+   142|/* Footer */
+   143|.footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 0.85em; }
+   144|.footer a { color: var(--accent2); text-decoration: none; }
+   145|</style>
+   146|</head>
+   147|<body>
+   148|
+   149|<div class="hero">
+   150|  <div class="container">
+   151|    <h1>I Analyzed 20 Show HN Landing Pages With AI<br>Here Are The Results</h1>
+   152|    <p>I built an AI that evaluates landing pages from 5 expert perspectives (Security, UX, Code Quality, SEO, Business). Then I ran 20 real Show HN launches through it. The findings surprised me.</p>
+   153|    <div class="meta">📅 June 2026 · <a href="https://ivo1974kanchev-arch.github.io/pagerx-frontend/" style="color:#6c5ce7; text-decoration:none;">Built with PageRX</a></div>
+   154|  </div>
+   155|</div>
+   156|
+   157|<div class="stats-bar">
+   158|  <div class="stat"><div class="stat-num">79</div><div class="stat-label">Average Score</div></div>
+   159|  <div class="stat"><div class="stat-num">5</div><div class="stat-label">Expert Views</div></div>
+   160|  <div class="stat"><div class="stat-num">20</div><div class="stat-label">Sites Analyzed</div></div>
+   161|  <div class="stat"><div class="stat-num">92</div><div class="stat-label">Highest Score</div></div>
+   162|</div>
+   163|
+   164|<section>
+   165|  <div class="container">
+   166|    <h2><span class="emoji">📊</span>The Rankings</h2>
+   167|    <p>Each page was analyzed from 5 perspectives: Security, UX/Design, Code Quality, SEO/Completeness, and Business Viability. Here's how they scored.</p>
+   168|    <div class="table-wrap">
+   169|      <table>
+   170|        <thead>
+   171|          <tr>
+   172|            <th>#</th>
+   173|            <th>Score</th>
+   174|            <th>Site</th>
+   175|            <th>Product</th>
+   176|            <th>🔥 HN</th>
+   177|          </tr>
+   178|        </thead>
+   179|        <tbody>
+   180|          <tr>
+   181|            <td>1</td>
+   182|            <td><span class="score-circle score-high">92</span></td>
+   183|            <td><a class="domain-link" href="https://www.versowriter.app" target="_blank">versowriter.app</a></td>
+   184|            <td style="max-width:250px;">Mac word processor, no subscription</td>
+   185|            <td><span class="hn-badge">▲36</span></td>
+   186|          </tr>
+   187|          <tr>
+   188|            <td>2</td>
+   189|            <td><span class="score-circle score-high">92</span></td>
+   190|            <td><a class="domain-link" href="https://mimicscribe.app" target="_blank">mimicscribe.app</a></td>
+   191|            <td style="max-width:250px;">On-device transcriber, 97% speaker accuracy</td>
+   192|            <td><span class="hn-badge">▲32</span></td>
+   193|          </tr>
+   194|          <tr>
+   195|            <td>3</td>
+   196|            <td><span class="score-circle score-high">90</span></td>
+   197|            <td><a class="domain-link" href="https://alexandrefrancois.org/Resonate/" target="_blank">alexandrefrancois.org</a></td>
+   198|            <td style="max-width:250px;">Low-latency spectral analysis</td>
+   199|            <td><span class="hn-badge">▲46</span></td>
+   200|          </tr>
+   201|          <tr>
+   202|            <td>4</td>
+   203|            <td><span class="score-circle score-high">90</span></td>
+   204|            <td><a class="domain-link" href="https://traceapp.info" target="_blank">traceapp.info</a></td>
+   205|            <td style="max-width:250px;">Offline Mac meeting transcripts</td>
+   206|            <td><span class="hn-badge">▲204</span></td>
+   207|          </tr>
+   208|          <tr>
+   209|            <td>5</td>
+   210|            <td><span class="score-circle score-high">88</span></td>
+   211|            <td><a class="domain-link" href="https://machine0.io" target="_blank">machine0.io</a></td>
+   212|            <td style="max-width:250px;">Persistent NixOS VMs from CLI</td>
+   213|            <td><span class="hn-badge">▲95</span></td>
+   214|          </tr>
+   215|          <tr>
+   216|            <td>6</td>
+   217|            <td><span class="score-circle score-high">86</span></td>
+   218|            <td><a class="domain-link" href="https://www.cc.dev" target="_blank">cc.dev</a></td>
+   219|            <td style="max-width:250px;">AI coding environment for quality</td>
+   220|            <td><span class="hn-badge">▲68</span></td>
+   221|          </tr>
+   222|          <tr>
+   223|            <td>7</td>
+   224|            <td><span class="score-circle score-high">86</span></td>
+   225|            <td><a class="domain-link" href="https://www.extend.ai/ui" target="_blank">extend.ai</a></td>
+   226|            <td style="max-width:250px;">Open-source UI kit for doc apps</td>
+   227|            <td><span class="hn-badge">▲252</span></td>
+   228|          </tr>
+   229|          <tr>
+   230|            <td>8</td>
+   231|            <td><span class="score-circle score-mid">84</span></td>
+   232|            <td><a class="domain-link" href="https://brew.sh/2026/06/11/homebrew-6.0.0/" target="_blank">brew.sh</a></td>
+   233|            <td style="max-width:250px;">Homebrew 6.0.0 launch</td>
+   234|            <td><span class="hn-badge">▲1477</span></td>
+   235|          </tr>
+   236|          <tr>
+   237|            <td>9</td>
+   238|            <td><span class="score-circle score-mid">84</span></td>
+   239|            <td><a class="domain-link" href="https://fablepool.com" target="_blank">fablepool.com</a></td>
+   240|            <td style="max-width:250px;">Pool money behind a prompt, builds in public</td>
+   241|            <td><span class="hn-badge">▲525</span></td>
+   242|          </tr>
+   243|          <tr>
+   244|            <td>10</td>
+   245|            <td><span class="score-circle score-mid">84</span></td>
+   246|            <td><a class="domain-link" href="https://fata.dev" target="_blank">fata.dev</a></td>
+   247|            <td style="max-width:250px;">Spaced repetition for AI coding skill rot</td>
+   248|            <td><span class="hn-badge">▲118</span></td>
+   249|          </tr>
+   250|          <tr>
+   251|            <td>11</td>
+   252|            <td><span class="score-circle score-mid">82</span></td>
+   253|            <td><a class="domain-link" href="https://srijanshukla.com/artifacts/spin-lab/" target="_blank">srijanshukla.com</a></td>
+   254|            <td style="max-width:250px;">Spin Lab interactive demo</td>
+   255|            <td><span class="hn-badge">▲36</span></td>
+   256|          </tr>
+   257|          <tr>
+   258|            <td>12</td>
+   259|            <td><span class="score-circle score-mid">82</span></td>
+   260|            <td><a class="domain-link" href="https://www.blockchainednovel.com" target="_blank">blockchainednovel.com</a></td>
+   261|            <td style="max-width:250px;">Startup sci-fi novel, 5 years writing</td>
+   262|            <td><span class="hn-badge">▲27</span></td>
+   263|          </tr>
+   264|          <tr>
+   265|            <td>13</td>
+   266|            <td><span class="score-circle score-mid">82</span></td>
+   267|            <td><a class="domain-link" href="https://putt.day" target="_blank">putt.day</a></td>
+   268|            <td style="max-width:250px;">Daily mini golf game</td>
+   269|            <td><span class="hn-badge">▲318</span></td>
+   270|          </tr>
+   271|          <tr>
+   272|            <td>14</td>
+   273|            <td><span class="score-circle score-mid">80</span></td>
+   274|            <td><a class="domain-link" href="https://bastion.computer" target="_blank">bastion.computer</a></td>
+   275|            <td style="max-width:250px;">Isolated Linux VMs for coding agents</td>
+   276|            <td><span class="hn-badge">▲32</span></td>
+   277|          </tr>
+   278|          <tr>
+   279|            <td>15</td>
+   280|            <td><span class="score-circle score-mid">80</span></td>
+   281|            <td><a class="domain-link" href="https://gitdot.io" target="_blank">gitdot.io</a></td>
+   282|            <td style="max-width:250px;">A better GitHub, open-source Rust</td>
+   283|            <td><span class="hn-badge">▲334</span></td>
+   284|          </tr>
+   285|          <tr>
+   286|            <td>16</td>
+   287|            <td><span class="score-circle score-mid">78</span></td>
+   288|            <td><a class="domain-link" href="https://hallucinate.site/gallery" target="_blank">hallucinate.site</a></td>
+   289|            <td style="max-width:250px;">AI hallucination photo gallery</td>
+   290|            <td><span class="hn-badge">▲73</span></td>
+   291|          </tr>
+   292|          <tr>
+   293|            <td>17</td>
+   294|            <td><span class="score-circle score-mid">78</span></td>
+   295|            <td><a class="domain-link" href="https://www.orangecrumbs.com" target="_blank">orangecrumbs.com</a></td>
+   296|            <td style="max-width:250px;">Wikipedia articles popular on HN</td>
+   297|            <td><span class="hn-badge">▲138</span></td>
+   298|          </tr>
+   299|          <tr>
+   300|            <td>18</td>
+   301|            <td><span class="score-circle score-low">76</span></td>
+   302|            <td><a class="domain-link" href="https://www.absurdlyoptimized.com/recipes/pancakes/" target="_blank">absurdlyoptimized.com</a></td>
+   303|            <td style="max-width:250px;">AI-optimized pancake recipe</td>
+   304|            <td><span class="hn-badge">▲340</span></td>
+   305|          </tr>
+   306|          <tr>
+   307|            <td>19</td>
+   308|            <td><span class="score-circle score-low">68</span></td>
+   309|            <td><a class="domain-link" href="https://new.roman-names.com" target="_blank">new.roman-names.com</a></td>
+   310|            <td style="max-width:250px;">Map of Roman Empire people</td>
+   311|            <td><span class="hn-badge">▲210</span></td>
+   312|          </tr>
+   313|          <tr>
+   314|            <td>20</td>
+   315|            <td><span class="score-circle score-low">0</span></td>
+   316|            <td><a class="domain-link" href="https://ribbie.tv/watch" target="_blank">ribbie.tv</a></td>
+   317|            <td style="max-width:250px;">8-bit live baseball gamecast</td>
+   318|            <td><span class="hn-badge">▲238</span></td>
+   319|          </tr>
+   320|        </tbody>
+   321|      </table>
+   322|    </div>
+   323|    <p style="font-size:0.8em;color:#555;">Note: ribbie.tv scored 0 because it's an 8-bit gamecast — an intentionally retro experience that doesn't fit traditional landing page metrics. The AI recognized this but couldn't score it fairly against modern web standards.</p>
+   324|  </div>
+   325|</section>
+   326|
+   327|<section>
+   328|  <div class="container">
+   329|    <h2><span class="emoji">🔍</span>What The Average Landing Page Looks Like</h2>
+   330|    <p>After analyzing 20 pages, here are the patterns that emerged. These are the choke points most indie hackers miss:</p>
+   331|    
+   332|    <div class="pattern-grid">
+   333|      <div class="pattern-card">
+   334|        <h4>🔥 90% missing Content-Security-Policy</h4>
+   335|        <p>Nearly every page lacked a CSP header. This is the single most common security gap — and it's a one-line fix.</p>
+   336|      </div>
+   337|      <div class="pattern-card">
+   338|        <h4>📱 65% had mobile rendering issues</h4>
+   339|        <p>Fixed-width containers, tiny touch targets, and unresponsive layouts. Most of these were built on a Mac and never tested on mobile.</p>
+   340|      </div>
+   341|      <div class="pattern-card">
+   342|        <h4>📐 70% used magic numbers</h4>
+   343|        <p>Hardcoded pixel values, breakpoints, and timestamps embedded directly in CSS/JS instead of variables or constants.</p>
+   344|      </div>
+   345|      <div class="pattern-card">
+   346|        <h4>🧠 45% had weak CTAs</h4>
+   347|        <p>"Click here" or buried signup buttons instead of clear, actionable primary CTAs. The top scoring pages had exactly one primary action per viewport.</p>
+   348|      </div>
+   349|      <div class="pattern-card">
+   350|        <h4>⚡ 40% lacked loading states</h4>
+   351|        <p>No skeleton screens, no progress indicators, no feedback when content was loading. Users were left staring at blank space.</p>
+   352|      </div>
+   353|      <div class="pattern-card">
+   354|        <h4>🏷️ 55% had no social proof</h4>
+   355|        <p>Testimonials, usage stats, or social proof elements were missing from most pages. The top 5 scorers all had some form of social validation.</p>
+   356|      </div>
+   357|    </div>
+   358|  </div>
+   359|</section>
+   360|
+   361|<section>
+   362|  <div class="container">
+   363|    <h2><span class="emoji">📈</span>Does Landing Page Quality Predict HN Success?</h2>
+   364|    <p>I compared each site's PageRX score against its HN upvotes correlation coefficient.</p>
+   365|    
+   366|    <div class="key-insight">
+   367|      <p><strong>r = 0.12</strong> — There is <strong>almost zero correlation</strong> between landing page quality and HN upvotes.</p>
+   368|    </div>
+   369|    
+   370|    <p>The page with the highest HN score (Homebrew 6.0.0 at ▲1,477) scored 84/100 — solid but not top. The highest-scoring page (92/100) had only 36 upvotes.</p>
+   371|    
+   372|    <p><strong>What this means:</strong> HN upvotes primarily reflect the <em>idea</em>, not the <em>implementation</em>. A revolutionary concept on a mediocre page will still trend. But a great page with a confused value prop will go nowhere.</p>
+   373|    
+   374|    <p><strong>The real insight:</strong> The 80-90 score pages (machine0, cc.dev, extend.ai) all had one thing in common — their value proposition was immediately clear within 3 seconds. That's what the Business Viability perspective catches.</p>
+   375|  </div>
+   376|</section>
+   377|
+   378|<section>
+   379|  <div class="container">
+   380|    <h2><span class="emoji">🔒</span>The #1 Silent Killer: Security</h2>
+   381|    <p>The Security perspective flagged the most issues across all pages. The most common findings:</p>
+   382|    
+   383|    <ul>
+   384|      <li><strong>No Content-Security-Policy meta tag</strong> — present on 18 out of 20 pages</li>
+   385|      <li><strong>Inline event handlers (onerror, onclick)</strong> — XSS vectors on 40% of pages</li>
+   386|      <li><strong>innerHTML usage</strong> — DOM-based XSS opportunities on 30%</li>
+   387|      <li><strong>Client-side storage without encryption check</strong> — 25% stored data in localStorage</li>
+   388|    </ul>
+   389|    
+   390|    <p>The irony? These are the <em>easiest</em> issues to fix. A single CSP meta tag takes 10 seconds. Moving inline handlers to addEventListener takes 5 minutes. But most developers skip it entirely.</p>
+   391|  </div>
+   392|</section>
+   393|
+   394|<section>
+   395|  <div class="container">
+   396|    <h2><span class="emoji">🏆</span>What The Top 5 Did Right</h2>
+   397|    
+   398|    <p>The highest scorers (versowriter.app, mimicscribe.app, alexandrefrancois.org, traceapp.info, machine0.io) all shared these traits:</p>
+   399|    
+   400|    <ul>
+   401|      <li><strong>Single, clear value prop above the fold</strong> — No "everything app" claims. Each had one sentence that explained exactly what it does.</li>
+   402|      <li><strong>Clean, semantic HTML</strong> — Proper heading hierarchy, alt text on images, semantic elements (nav, main, section).</li>
+   403|      <li><strong>Mobile-responsive from the start</strong> — Not retrofitted. Font sizes, touch targets, and layouts all scaled properly.</li>
+   404|      <li><strong>No unnecessary JavaScript</strong> — Minimal dependencies, no bloated frameworks for a simple landing page.</li>
+   405|      <li><strong>Fast load times</strong> — Under 2 seconds to first contentful paint across all five.</li>
+   406|    </ul>
+   407|    
+   408|    <p>The single biggest differentiator? <strong>Clarity of purpose.</strong> Every top scorer communicated what the product does in under 3 seconds. That's not a CSS issue — it's a positioning issue, and the AI caught it every time.</p>
+   409|  </div>
+   410|</section>
+   411|
+   412|<div class="container">
+   413|  <div class="cta-section">
+   414|    <h3>⚡ Want To See How YOUR Landing Page Scores?</h3>
+   415|    <p>I built PageRX — an AI landing page analyzer that reviews your site from 5 expert perspectives in 60 seconds. No signup, no account, just paste your URL.</p>
+   416|    <a class="cta-btn" href="https://ivo1974kanchev-arch.github.io/pagerx-frontend/">Analyze Your Landing Page →</a>
+   417|    <p style="font-size:0.8em;margin-top:12px;">Free. No account needed. Results in 60 seconds.</p>
+   418|  </div>
+   419|</div>
+   420|
+   421|<section>
+   422|  <div class="container">
+   423|    <h2><span class="emoji">🛠️</span>About This Analysis</h2>
+   424|    <p>All pages were analyzed using <a href="https://ivo1974kanchev-arch.github.io/pagerx-frontend/" style="color:var(--accent2);">PageRX</a>, an AI landing page analyzer that reviews pages from 5 expert perspectives:</p>
+   425|    
+   426|    <ul>
+   427|      <li><strong>🔒 Security Auditor</strong> — CSP, XSS vectors, inline handlers, CORS config</li>
+   428|      <li><strong>🎨 UX Reviewer</strong> — CTAs, navigation, mobile responsiveness, accessibility</li>
+   429|      <li><strong>📐 Code Quality Analyst</strong> — Semantic HTML, magic numbers, nesting depth, minification</li>
+   430|      <li><strong>📋 SEO & Completeness</strong> — Meta tags, OG data, structured data, heading hierarchy</li>
+   431|      <li><strong>💼 Business Viability</strong> — Value proposition clarity, social proof, pricing, CTAs</li>
+   432|    </ul>
+   433|    
+   434|    <p>Each perspective generates a score out of 100, which is averaged for the overall rating. The analysis is purely automated — no human bias, no manual adjustments.</p>
+   435|    <p>These are real indie hacker projects from Show HN. No one asked for this analysis. I'm just sharing what the AI found because knowledge shared is knowledge multiplied. 🇷🇴</p>
+   436|  </div>
+   437|</section>
+   438|
+   439|
+<div class="related-posts">
+  <h3>Related Reading</h3>
+  <ul>
+    <li><a href="show-hn-landing-page-analysis-2026.html">Show HN Landing Page Analysis 2026</a> — New case studies with before/after breakdowns</li>
+    <li><a href="landing-page-conversion-benchmarks-2026.html">Landing Page Conversion Benchmarks 2026</a> — How Show HN pages rank against the broader dataset</li>
+    <li><a href="analyzed-100-landing-pages-conversions.html">How We Analyzed 100 Landing Pages</a> — Our scoring methodology explained</li>
+  </ul>
 </div>
-
-<div class="stats-bar">
-  <div class="stat"><div class="stat-num">79</div><div class="stat-label">Average Score</div></div>
-  <div class="stat"><div class="stat-num">5</div><div class="stat-label">Expert Views</div></div>
-  <div class="stat"><div class="stat-num">20</div><div class="stat-label">Sites Analyzed</div></div>
-  <div class="stat"><div class="stat-num">92</div><div class="stat-label">Highest Score</div></div>
-</div>
-
-<section>
-  <div class="container">
-    <h2><span class="emoji">📊</span>The Rankings</h2>
-    <p>Each page was analyzed from 5 perspectives: Security, UX/Design, Code Quality, SEO/Completeness, and Business Viability. Here's how they scored.</p>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Score</th>
-            <th>Site</th>
-            <th>Product</th>
-            <th>🔥 HN</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td><span class="score-circle score-high">92</span></td>
-            <td><a class="domain-link" href="https://www.versowriter.app" target="_blank">versowriter.app</a></td>
-            <td style="max-width:250px;">Mac word processor, no subscription</td>
-            <td><span class="hn-badge">▲36</span></td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td><span class="score-circle score-high">92</span></td>
-            <td><a class="domain-link" href="https://mimicscribe.app" target="_blank">mimicscribe.app</a></td>
-            <td style="max-width:250px;">On-device transcriber, 97% speaker accuracy</td>
-            <td><span class="hn-badge">▲32</span></td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td><span class="score-circle score-high">90</span></td>
-            <td><a class="domain-link" href="https://alexandrefrancois.org/Resonate/" target="_blank">alexandrefrancois.org</a></td>
-            <td style="max-width:250px;">Low-latency spectral analysis</td>
-            <td><span class="hn-badge">▲46</span></td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td><span class="score-circle score-high">90</span></td>
-            <td><a class="domain-link" href="https://traceapp.info" target="_blank">traceapp.info</a></td>
-            <td style="max-width:250px;">Offline Mac meeting transcripts</td>
-            <td><span class="hn-badge">▲204</span></td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td><span class="score-circle score-high">88</span></td>
-            <td><a class="domain-link" href="https://machine0.io" target="_blank">machine0.io</a></td>
-            <td style="max-width:250px;">Persistent NixOS VMs from CLI</td>
-            <td><span class="hn-badge">▲95</span></td>
-          </tr>
-          <tr>
-            <td>6</td>
-            <td><span class="score-circle score-high">86</span></td>
-            <td><a class="domain-link" href="https://www.cc.dev" target="_blank">cc.dev</a></td>
-            <td style="max-width:250px;">AI coding environment for quality</td>
-            <td><span class="hn-badge">▲68</span></td>
-          </tr>
-          <tr>
-            <td>7</td>
-            <td><span class="score-circle score-high">86</span></td>
-            <td><a class="domain-link" href="https://www.extend.ai/ui" target="_blank">extend.ai</a></td>
-            <td style="max-width:250px;">Open-source UI kit for doc apps</td>
-            <td><span class="hn-badge">▲252</span></td>
-          </tr>
-          <tr>
-            <td>8</td>
-            <td><span class="score-circle score-mid">84</span></td>
-            <td><a class="domain-link" href="https://brew.sh/2026/06/11/homebrew-6.0.0/" target="_blank">brew.sh</a></td>
-            <td style="max-width:250px;">Homebrew 6.0.0 launch</td>
-            <td><span class="hn-badge">▲1477</span></td>
-          </tr>
-          <tr>
-            <td>9</td>
-            <td><span class="score-circle score-mid">84</span></td>
-            <td><a class="domain-link" href="https://fablepool.com" target="_blank">fablepool.com</a></td>
-            <td style="max-width:250px;">Pool money behind a prompt, builds in public</td>
-            <td><span class="hn-badge">▲525</span></td>
-          </tr>
-          <tr>
-            <td>10</td>
-            <td><span class="score-circle score-mid">84</span></td>
-            <td><a class="domain-link" href="https://fata.dev" target="_blank">fata.dev</a></td>
-            <td style="max-width:250px;">Spaced repetition for AI coding skill rot</td>
-            <td><span class="hn-badge">▲118</span></td>
-          </tr>
-          <tr>
-            <td>11</td>
-            <td><span class="score-circle score-mid">82</span></td>
-            <td><a class="domain-link" href="https://srijanshukla.com/artifacts/spin-lab/" target="_blank">srijanshukla.com</a></td>
-            <td style="max-width:250px;">Spin Lab interactive demo</td>
-            <td><span class="hn-badge">▲36</span></td>
-          </tr>
-          <tr>
-            <td>12</td>
-            <td><span class="score-circle score-mid">82</span></td>
-            <td><a class="domain-link" href="https://www.blockchainednovel.com" target="_blank">blockchainednovel.com</a></td>
-            <td style="max-width:250px;">Startup sci-fi novel, 5 years writing</td>
-            <td><span class="hn-badge">▲27</span></td>
-          </tr>
-          <tr>
-            <td>13</td>
-            <td><span class="score-circle score-mid">82</span></td>
-            <td><a class="domain-link" href="https://putt.day" target="_blank">putt.day</a></td>
-            <td style="max-width:250px;">Daily mini golf game</td>
-            <td><span class="hn-badge">▲318</span></td>
-          </tr>
-          <tr>
-            <td>14</td>
-            <td><span class="score-circle score-mid">80</span></td>
-            <td><a class="domain-link" href="https://bastion.computer" target="_blank">bastion.computer</a></td>
-            <td style="max-width:250px;">Isolated Linux VMs for coding agents</td>
-            <td><span class="hn-badge">▲32</span></td>
-          </tr>
-          <tr>
-            <td>15</td>
-            <td><span class="score-circle score-mid">80</span></td>
-            <td><a class="domain-link" href="https://gitdot.io" target="_blank">gitdot.io</a></td>
-            <td style="max-width:250px;">A better GitHub, open-source Rust</td>
-            <td><span class="hn-badge">▲334</span></td>
-          </tr>
-          <tr>
-            <td>16</td>
-            <td><span class="score-circle score-mid">78</span></td>
-            <td><a class="domain-link" href="https://hallucinate.site/gallery" target="_blank">hallucinate.site</a></td>
-            <td style="max-width:250px;">AI hallucination photo gallery</td>
-            <td><span class="hn-badge">▲73</span></td>
-          </tr>
-          <tr>
-            <td>17</td>
-            <td><span class="score-circle score-mid">78</span></td>
-            <td><a class="domain-link" href="https://www.orangecrumbs.com" target="_blank">orangecrumbs.com</a></td>
-            <td style="max-width:250px;">Wikipedia articles popular on HN</td>
-            <td><span class="hn-badge">▲138</span></td>
-          </tr>
-          <tr>
-            <td>18</td>
-            <td><span class="score-circle score-low">76</span></td>
-            <td><a class="domain-link" href="https://www.absurdlyoptimized.com/recipes/pancakes/" target="_blank">absurdlyoptimized.com</a></td>
-            <td style="max-width:250px;">AI-optimized pancake recipe</td>
-            <td><span class="hn-badge">▲340</span></td>
-          </tr>
-          <tr>
-            <td>19</td>
-            <td><span class="score-circle score-low">68</span></td>
-            <td><a class="domain-link" href="https://new.roman-names.com" target="_blank">new.roman-names.com</a></td>
-            <td style="max-width:250px;">Map of Roman Empire people</td>
-            <td><span class="hn-badge">▲210</span></td>
-          </tr>
-          <tr>
-            <td>20</td>
-            <td><span class="score-circle score-low">0</span></td>
-            <td><a class="domain-link" href="https://ribbie.tv/watch" target="_blank">ribbie.tv</a></td>
-            <td style="max-width:250px;">8-bit live baseball gamecast</td>
-            <td><span class="hn-badge">▲238</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="font-size:0.8em;color:#555;">Note: ribbie.tv scored 0 because it's an 8-bit gamecast — an intentionally retro experience that doesn't fit traditional landing page metrics. The AI recognized this but couldn't score it fairly against modern web standards.</p>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <h2><span class="emoji">🔍</span>What The Average Landing Page Looks Like</h2>
-    <p>After analyzing 20 pages, here are the patterns that emerged. These are the choke points most indie hackers miss:</p>
-    
-    <div class="pattern-grid">
-      <div class="pattern-card">
-        <h4>🔥 90% missing Content-Security-Policy</h4>
-        <p>Nearly every page lacked a CSP header. This is the single most common security gap — and it's a one-line fix.</p>
-      </div>
-      <div class="pattern-card">
-        <h4>📱 65% had mobile rendering issues</h4>
-        <p>Fixed-width containers, tiny touch targets, and unresponsive layouts. Most of these were built on a Mac and never tested on mobile.</p>
-      </div>
-      <div class="pattern-card">
-        <h4>📐 70% used magic numbers</h4>
-        <p>Hardcoded pixel values, breakpoints, and timestamps embedded directly in CSS/JS instead of variables or constants.</p>
-      </div>
-      <div class="pattern-card">
-        <h4>🧠 45% had weak CTAs</h4>
-        <p>"Click here" or buried signup buttons instead of clear, actionable primary CTAs. The top scoring pages had exactly one primary action per viewport.</p>
-      </div>
-      <div class="pattern-card">
-        <h4>⚡ 40% lacked loading states</h4>
-        <p>No skeleton screens, no progress indicators, no feedback when content was loading. Users were left staring at blank space.</p>
-      </div>
-      <div class="pattern-card">
-        <h4>🏷️ 55% had no social proof</h4>
-        <p>Testimonials, usage stats, or social proof elements were missing from most pages. The top 5 scorers all had some form of social validation.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <h2><span class="emoji">📈</span>Does Landing Page Quality Predict HN Success?</h2>
-    <p>I compared each site's PageRX score against its HN upvotes correlation coefficient.</p>
-    
-    <div class="key-insight">
-      <p><strong>r = 0.12</strong> — There is <strong>almost zero correlation</strong> between landing page quality and HN upvotes.</p>
-    </div>
-    
-    <p>The page with the highest HN score (Homebrew 6.0.0 at ▲1,477) scored 84/100 — solid but not top. The highest-scoring page (92/100) had only 36 upvotes.</p>
-    
-    <p><strong>What this means:</strong> HN upvotes primarily reflect the <em>idea</em>, not the <em>implementation</em>. A revolutionary concept on a mediocre page will still trend. But a great page with a confused value prop will go nowhere.</p>
-    
-    <p><strong>The real insight:</strong> The 80-90 score pages (machine0, cc.dev, extend.ai) all had one thing in common — their value proposition was immediately clear within 3 seconds. That's what the Business Viability perspective catches.</p>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <h2><span class="emoji">🔒</span>The #1 Silent Killer: Security</h2>
-    <p>The Security perspective flagged the most issues across all pages. The most common findings:</p>
-    
-    <ul>
-      <li><strong>No Content-Security-Policy meta tag</strong> — present on 18 out of 20 pages</li>
-      <li><strong>Inline event handlers (onerror, onclick)</strong> — XSS vectors on 40% of pages</li>
-      <li><strong>innerHTML usage</strong> — DOM-based XSS opportunities on 30%</li>
-      <li><strong>Client-side storage without encryption check</strong> — 25% stored data in localStorage</li>
-    </ul>
-    
-    <p>The irony? These are the <em>easiest</em> issues to fix. A single CSP meta tag takes 10 seconds. Moving inline handlers to addEventListener takes 5 minutes. But most developers skip it entirely.</p>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <h2><span class="emoji">🏆</span>What The Top 5 Did Right</h2>
-    
-    <p>The highest scorers (versowriter.app, mimicscribe.app, alexandrefrancois.org, traceapp.info, machine0.io) all shared these traits:</p>
-    
-    <ul>
-      <li><strong>Single, clear value prop above the fold</strong> — No "everything app" claims. Each had one sentence that explained exactly what it does.</li>
-      <li><strong>Clean, semantic HTML</strong> — Proper heading hierarchy, alt text on images, semantic elements (nav, main, section).</li>
-      <li><strong>Mobile-responsive from the start</strong> — Not retrofitted. Font sizes, touch targets, and layouts all scaled properly.</li>
-      <li><strong>No unnecessary JavaScript</strong> — Minimal dependencies, no bloated frameworks for a simple landing page.</li>
-      <li><strong>Fast load times</strong> — Under 2 seconds to first contentful paint across all five.</li>
-    </ul>
-    
-    <p>The single biggest differentiator? <strong>Clarity of purpose.</strong> Every top scorer communicated what the product does in under 3 seconds. That's not a CSS issue — it's a positioning issue, and the AI caught it every time.</p>
-  </div>
-</section>
-
-<div class="container">
-  <div class="cta-section">
-    <h3>⚡ Want To See How YOUR Landing Page Scores?</h3>
-    <p>I built PageRX — an AI landing page analyzer that reviews your site from 5 expert perspectives in 60 seconds. No signup, no account, just paste your URL.</p>
-    <a class="cta-btn" href="https://ivo1974kanchev-arch.github.io/pagerx-frontend/">Analyze Your Landing Page →</a>
-    <p style="font-size:0.8em;margin-top:12px;">Free. No account needed. Results in 60 seconds.</p>
-  </div>
-</div>
-
-<section>
-  <div class="container">
-    <h2><span class="emoji">🛠️</span>About This Analysis</h2>
-    <p>All pages were analyzed using <a href="https://ivo1974kanchev-arch.github.io/pagerx-frontend/" style="color:var(--accent2);">PageRX</a>, an AI landing page analyzer that reviews pages from 5 expert perspectives:</p>
-    
-    <ul>
-      <li><strong>🔒 Security Auditor</strong> — CSP, XSS vectors, inline handlers, CORS config</li>
-      <li><strong>🎨 UX Reviewer</strong> — CTAs, navigation, mobile responsiveness, accessibility</li>
-      <li><strong>📐 Code Quality Analyst</strong> — Semantic HTML, magic numbers, nesting depth, minification</li>
-      <li><strong>📋 SEO & Completeness</strong> — Meta tags, OG data, structured data, heading hierarchy</li>
-      <li><strong>💼 Business Viability</strong> — Value proposition clarity, social proof, pricing, CTAs</li>
-    </ul>
-    
-    <p>Each perspective generates a score out of 100, which is averaged for the overall rating. The analysis is purely automated — no human bias, no manual adjustments.</p>
-    <p>These are real indie hacker projects from Show HN. No one asked for this analysis. I'm just sharing what the AI found because knowledge shared is knowledge multiplied. 🇷🇴</p>
-  </div>
-</section>
-
 <div class="footer">
-  <div class="container">
-    <p>Built with <a href="https://ivo1974kanchev-arch.github.io/pagerx-frontend/">PageRX</a> · Data collected June 2026 · <a href="https://github.com/ivo1974kanchev-arch/pagerx-frontend">GitHub</a></p>
-    <p style="margin-top:8px;">If you found this useful, share it with a founder who needs to fix their landing page.</p>
-  </div>
-</div>
-
-</body>
-</html>
+   440|  <div class="container">
+   441|    <p>Built with <a href="https://ivo1974kanchev-arch.github.io/pagerx-frontend/">PageRX</a> · Data collected June 2026 · <a href="https://github.com/ivo1974kanchev-arch/pagerx-frontend">GitHub</a></p>
+   442|    <p style="margin-top:8px;">If you found this useful, share it with a founder who needs to fix their landing page.</p>
+   443|  </div>
+   444|</div>
+   445|
+   446|</body>
+   447|</html>
+   448|
