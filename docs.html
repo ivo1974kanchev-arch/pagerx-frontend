@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PageRX API Documentation — Developer Integration Guide</title>
+  <meta name="description" content="Complete API documentation for integrating PageRX page analysis into your applications. Endpoints, code examples, rate limits, and interactive demo.">
+  <meta name="keywords" content="PageRX, API, page analysis, webpage scoring, accessibility, SEO, performance, developer docs">
+  <meta name="author" content="PageRX">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="PageRX API Documentation — Developer Integration Guide">
+  <meta property="og:description" content="Integrate PageRX page analysis into your apps. REST API with instant scoring, multi-perspective analysis, and LLM-powered deep analysis.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pagerx.dev/docs">
+  <meta property="og:site_name" content="PageRX">
+  <meta property="og:image" content="https://pagerx.dev/og-api-docs.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="PageRX API Documentation">
+  <meta name="twitter:description" content="REST API for page quality analysis. Instant scoring, multi-perspective analysis, LLM-powered insights.">
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "PageRX API Documentation — Developer Integration Guide",
+    "description": "Complete API documentation for integrating PageRX page analysis into your applications. Covers all REST endpoints, authentication, rate limits, and code examples in curl, Python, and JavaScript.",
+    "author": {
+      "@type": "Organization",
+      "name": "PageRX"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "PageRX"
+    },
+    "datePublished": "2026-06-20",
+    "dateModified": "2026-06-20",
+    "inLanguage": "en-US",
+    "about": {
+      "@type": "Thing",
+      "name": "PageRX API",
+      "description": "REST API for analyzing web page quality across accessibility, performance, SEO, content, and security dimensions."
+    },
+    "proficiencyLevel": "Intermediate",
+    "technical": ["REST API", "JSON", "cURL", "Python", "JavaScript", "Fetch API", "Web Scraping", "SEO Analysis"],
+    "audience": {
+      "@type": "Audience",
+      "audienceType": "Software Developers"
+    },
+    "isAccessibleForFree": true
+  }
+  </script>
+
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #161b22; }
+    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #484f58; }
+
+    /* ── Typography ── */
+    h1, h2, h3, h4 { font-weight: 600; line-height: 1.3; }
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 1.75rem; margin-top: 3rem; margin-bottom: 1rem; }
+    h3 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.75rem; }
+    h4 { font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+    p { margin-bottom: 1rem; }
+    a { color: #d4a843; text-decoration: none; transition: color 0.2s; }
+    a:hover { color: #e0b85a; text-decoration: underline; }
+    code { font-family: 'SF Mono', 'Fira Code', 'Consolas', 'Liberation Mono', monospace; }
+    ul, ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+
+    /* ── Layout ── */
+    .container { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      border-bottom: 1px solid #21262d;
+      padding: 1.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #e6edf3;
+    }
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #d4a843, #e0b85a);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #0d1117;
+    }
+    .header-nav { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+    .header-nav a {
+      color: #8b949e;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+    .header-nav a:hover {
+      color: #e6edf3;
+      background: #21262d;
+      text-decoration: none;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 4rem 0 3rem;
+      text-align: center;
+    }
+    .hero h1 { margin-bottom: 0.75rem; }
+    .hero h1 span { color: #d4a843; }
+    .hero p {
+      color: #8b949e;
+      font-size: 1.15rem;
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(212, 168, 67, 0.12);
+      border: 1px solid rgba(212, 168, 67, 0.3);
+      color: #d4a843;
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+    .hero .version {
+      color: #484f58;
+      font-size: 0.9rem;
+    }
+
+    /* ── Section ── */
+    .section { padding: 2rem 0; }
+
+    /* ── Endpoint Card ── */
+    .endpoint-card {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .endpoint-card:hover { border-color: #30363d; }
+    .endpoint-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid #21262d;
+      background: rgba(255,255,255,0.02);
+    }
+    .method {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-family: 'SF Mono', monospace;
+    }
+    .method-post { background: rgba(35, 134, 54, 0.25); color: #3fb950; border: 1px solid rgba(35, 134, 54, 0.4); }
+    .method-get  { background: rgba(56, 139, 253, 0.2);  color: #58a6ff; border: 1px solid rgba(56, 139, 253, 0.35); }
+    .endpoint-url {
+      font-family: 'SF Mono', monospace;
+      font-size: 0.95rem;
+      color: #e6edf3;
+      word-break: break-all;
+    }
+    .endpoint-body {
+      padding: 1.25rem;
+    }
+    .endpoint-body h4 {
+      color: #d4a843;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .endpoint-body h4:first-child { margin-top: 0; }
+    .endpoint-body .status-codes {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+    .status-code {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: 'SF Mono', monospace;
+    }
+    .status-2xx { background: rgba(35, 134, 54, 0.15); color: #3fb950; border: 1px solid rgba(35, 134, 54, 0.25); }
+    .status-4xx { background: rgba(210, 153, 34, 0.15); color: #d29922; border: 1px solid rgba(210, 153, 34, 0.25); }
+    .status-5xx { background: rgba(248, 81, 73, 0.15);  color: #f85149; border: 1px solid rgba(248, 81, 73, 0.25); }
+
+    /* ── Code Blocks ── */
+    pre {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+    pre code { color: #e6edf3; }
+    .code-label {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.75rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #484f58;
+      font-weight: 600;
+    }
+
+    /* syntax-highlighting-like colors */
+    .hl-kw { color: #ff7b72; }
+    .hl-str { color: #a5d6ff; }
+    .hl-num { color: #79c0ff; }
+    .hl-com { color: #8b949e; }
+    .hl-fn { color: #d2a8ff; }
+    .hl-var { color: #ffa657; }
+    .hl-prop { color: #79c0ff; }
+    .hl-tag { color: #7ee787; }
+    .hl-op { color: #ff7b72; }
+
+    /* ── Tabbed Code ── */
+    .code-tabs {
+      margin-bottom: 1rem;
+    }
+    .code-tab-btns {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid #21262d;
+      margin-bottom: 0;
+    }
+    .code-tab-btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: transparent;
+      border: none;
+      color: #8b949e;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .code-tab-btn:hover { color: #e6edf3; }
+    .code-tab-btn.active {
+      color: #d4a843;
+      border-bottom-color: #d4a843;
+    }
+    .code-tab-panel {
+      display: none;
+    }
+    .code-tab-panel.active {
+      display: block;
+    }
+    .code-tab-panel pre {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      margin-top: 0;
+    }
+
+    /* ── Auth Box ── */
+    .auth-box {
+      background: linear-gradient(135deg, rgba(212,168,67,0.06), rgba(212,168,67,0.02));
+      border: 1px solid rgba(212,168,67,0.25);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .auth-box h3 { margin-top: 0; color: #d4a843; }
+    .auth-box p:last-child { margin-bottom: 0; }
+
+    /* ── Rate Limit Table ── */
+    .rate-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .rate-card {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .rate-card h4 { margin-top: 0; margin-bottom: 0.25rem; }
+    .rate-card .tier { font-size: 1.3rem; font-weight: 700; }
+    .rate-card .price {
+      color: #d4a843;
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+    .rate-card .limit {
+      font-size: 1rem;
+      color: #8b949e;
+    }
+    .rate-card.free .tier { color: #8b949e; }
+    .rate-card.pro .tier { color: #d4a843; }
+    .rate-card.pro { border-color: rgba(212,168,67,0.3); }
+    .rate-card.agency .tier { color: #58a6ff; }
+    .rate-card.agency { border-color: rgba(56,139,253,0.25); }
+
+    /* ── Try It Now ── */
+    .try-section {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin: 2rem 0;
+    }
+    .try-section h3 { margin-top: 0; color: #d4a843; }
+    .try-input-group {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .try-input-group input {
+      flex: 1;
+      min-width: 200px;
+      padding: 0.7rem 1rem;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      color: #e6edf3;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .try-input-group input:focus { border-color: #d4a843; }
+    .try-input-group input::placeholder { color: #484f58; }
+    .try-input-group select {
+      padding: 0.7rem 1rem;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      color: #e6edf3;
+      font-size: 0.9rem;
+      outline: none;
+      cursor: pointer;
+    }
+    .try-btn {
+      padding: 0.7rem 1.5rem;
+      background: linear-gradient(135deg, #d4a843, #c49a3a);
+      border: none;
+      border-radius: 8px;
+      color: #0d1117;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .try-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(212,168,67,0.35); }
+    .try-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .try-result {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 8px;
+      padding: 1rem;
+      min-height: 60px;
+      font-family: 'SF Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #8b949e;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .try-result.success { color: #3fb950; }
+    .try-result.error { color: #f85149; }
+    .try-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #30363d;
+      border-top-color: #d4a843;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 0.5rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── FAQ ── */
+    .faq-item {
+      border-bottom: 1px solid #21262d;
+      padding: 1rem 0;
+    }
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 500;
+      color: #e6edf3;
+    }
+    .faq-question:hover { color: #d4a843; }
+    .faq-question .icon {
+      font-size: 1.2rem;
+      transition: transform 0.2s;
+      color: #8b949e;
+    }
+    .faq-question.open .icon { transform: rotate(45deg); }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      color: #8b949e;
+    }
+    .faq-answer.open {
+      max-height: 500px;
+      padding-top: 0.75rem;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      border-top: 1px solid #21262d;
+      padding: 2rem 0;
+      margin-top: 3rem;
+      text-align: center;
+      color: #484f58;
+      font-size: 0.85rem;
+    }
+    .footer a { color: #8b949e; }
+    .footer a:hover { color: #d4a843; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      html { font-size: 15px; }
+      h1 { font-size: 1.8rem; }
+      h2 { font-size: 1.4rem; }
+      .header-inner { flex-direction: column; gap: 0.75rem; }
+      .header-nav { justify-content: center; }
+      .hero { padding: 2.5rem 0 2rem; }
+      .endpoint-header { flex-wrap: wrap; }
+      .try-input-group { flex-direction: column; }
+      .try-input-group input { min-width: auto; }
+      .rate-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .code-tab-btns { flex-wrap: wrap; }
+      .code-tab-btn { flex: 1; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── HEADER ─── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">P</div>
+        <span>PageRX</span>
+      </div>
+      <nav class="header-nav">
+        <a href="#endpoints">Endpoints</a>
+        <a href="#auth">Auth</a>
+        <a href="#rates">Rate Limits</a>
+        <a href="#examples">Examples</a>
+        <a href="#try">Try It</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+
+      <!-- ─── HERO ─── -->
+      <section class="hero">
+        <div class="hero-badge">REST API &bull; v2.0</div>
+        <h1>PageRX <span>API</span> Documentation</h1>
+        <p>Integrate page quality analysis into your tools, dashboards, and workflows. Everything you need to start scoring and analyzing web pages programmatically.</p>
+        <div class="version">Base URL: <code>https://api.pagerx.dev</code></div>
+      </section>
+
+      <!-- ─── QUICK START ─── -->
+      <section class="section" id="quickstart">
+        <h2>Quick Start</h2>
+        <p>Analyze any public web page in seconds. All endpoints accept a <code>url</code> parameter in the JSON body and return structured analysis results.</p>
+        <pre><code><span class="hl-com"># Quickest way to test — returns a heuristic score</span>
+curl -X POST https://api.pagerx.dev/api/score/instant \
+  -H <span class="hl-str">"Content-Type: application/json"</span> \
+  -d <span class="hl-str">'{"url": "https://example.com"}'</span></code></pre>
+      </section>
+
+      <!-- ─── ENDPOINTS ─── -->
+      <section class="section" id="endpoints">
+        <h2>Endpoints</h2>
+        <p>Four REST endpoints give you progressively deeper analysis. Choose the one that fits your use case.</p>
+
+        <!-- 1. POST /api/score/instant -->
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-url">/api/score/instant</span>
+          </div>
+          <div class="endpoint-body">
+            <h4>Description</h4>
+            <p>Returns an instant heuristic page score. Evaluates the page based on structural signals, content presence, meta tags, and best practices. <strong>Fastest endpoint</strong> — typically completes in under a second.</p>
+
+            <h4>Request Body</h4>
+            <pre><code>{
+  <span class="hl-prop">"url"</span>: <span class="hl-str">"https://example.com"</span>
+}</code></pre>
+
+            <h4>Response</h4>
+            <pre><code>{
+  <span class="hl-prop">"score"</span>: <span class="hl-num">82</span>,
+  <span class="hl-prop">"categories"</span>: {
+    <span class="hl-prop">"seo"</span>:         { <span class="hl-prop">"score"</span>: <span class="hl-num">88</span>, <span class="hl-prop">"label"</span>: <span class="hl-str">"Good"</span> },
+    <span class="hl-prop">"accessibility"</span>: { <span class="hl-prop">"score"</span>: <span class="hl-num">76</span>, <span class="hl-prop">"label"</span>: <span class="hl-str">"Fair"</span> },
+    <span class="hl-prop">"performance"</span>:  { <span class="hl-prop">"score"</span>: <span class="hl-num">91</span>, <span class="hl-prop">"label"</span>: <span class="hl-str">"Excellent"</span> },
+    <span class="hl-prop">"content"</span>:     { <span class="hl-prop">"score"</span>: <span class="hl-num">74</span>, <span class="hl-prop">"label"</span>: <span class="hl-str">"Fair"</span> }
+  },
+  <span class="hl-prop">"breakdown"</span>: {
+    <span class="hl-prop">"has_title"</span>:       <span class="hl-kw">true</span>,
+    <span class="hl-prop">"has_meta_desc"</span>:   <span class="hl-kw">true</span>,
+    <span class="hl-prop">"has_h1"</span>:          <span class="hl-kw">true</span>,
+    <span class="hl-prop">"has_og_tags"</span>:     <span class="hl-kw">false</span>,
+    <span class="hl-prop">"load_time_ms"</span>:    <span class="hl-num">340</span>,
+    <span class="hl-prop">"word_count"</span>:      <span class="hl-num">1240</span>,
+    <span class="hl-prop">"img_alt_pct"</span>:     <span class="hl-num">67</span>,
+    <span class="hl-prop">"internal_links"</span>:  <span class="hl-num">12</span>,
+    <span class="hl-prop">"external_links"</span>:  <span class="hl-num">4</span>,
+    <span class="hl-prop">"has_schema"</span>:      <span class="hl-kw">false</span>
+  }
+}</code></pre>
+
+            <h4>Status Codes</h4>
+            <div class="status-codes">
+              <span class="status-code status-2xx">200 — Success</span>
+              <span class="status-code status-4xx">400 — Missing or invalid URL</span>
+              <span class="status-code status-4xx">422 — URL unreachable or invalid</span>
+              <span class="status-code status-5xx">500 — Server error</span>
+            </div>
+
+            <h4>Example</h4>
+            <pre><code>curl -X POST https://api.pagerx.dev/api/score/instant \
+  -H <span class="hl-str">"Content-Type: application/json"</span> \
+  -d <span class="hl-str">'{"url": "https://example.com"}'</span></code></pre>
+          </div>
+        </div>
+
+        <!-- 2. POST /api/analyze -->
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-url">/api/analyze</span>
+          </div>
+          <div class="endpoint-body">
+            <h4>Description</h4>
+            <p>Full 5-perspective page analysis. Evaluates <strong>SEO, Accessibility, Performance, Content Quality,</strong> and <strong>Security</strong>. Returns an overall score plus per-perspective issues and actionable suggestions.</p>
+
+            <h4>Request Body</h4>
+            <pre><code>{
+  <span class="hl-prop">"url"</span>: <span class="hl-str">"https://example.com"</span>
+}</code></pre>
+
+            <h4>Response</h4>
+            <pre><code>{
+  <span class="hl-prop">"overall_score"</span>: <span class="hl-num">78</span>,
+  <span class="hl-prop">"perspectives"</span>: {
+    <span class="hl-prop">"seo"</span>: {
+      <span class="hl-prop">"score"</span>: <span class="hl-num">85</span>,
+      <span class="hl-prop">"issues"</span>: [
+        { <span class="hl-prop">"severity"</span>: <span class="hl-str">"warning"</span>, <span class="hl-prop">"message"</span>: <span class="hl-str">"Missing Open Graph image"</span> },
+        { <span class="hl-prop">"severity"</span>: <span class="hl-str">"info"</span>,    <span class="hl-prop">"message"</span>: <span class="hl-str">"Meta description length is optimal"</span> }
+      ],
+      <span class="hl-prop">"suggestions"</span>: [<span class="hl-str">"Add og:image tag with a 1200×630 image"</span>]
+    },
+    <span class="hl-prop">"accessibility"</span>: {
+      <span class="hl-prop">"score"</span>: <span class="hl-num">72</span>,
+      <span class="hl-prop">"issues"</span>: [
+        { <span class="hl-prop">"severity"</span>: <span class="hl-str">"error"</span>, <span class="hl-prop">"message"</span>: <span class="hl-str">"3 images missing alt text"</span> }
+      ],
+      <span class="hl-prop">"suggestions"</span>: [<span class="hl-str">"Add descriptive alt attributes to all images"</span>]
+    },
+    <span class="hl-prop">"performance"</span>: {
+      <span class="hl-prop">"score"</span>: <span class="hl-num">91</span>,
+      <span class="hl-prop">"issues"</span>: [],
+      <span class="hl-prop">"suggestions"</span>: [<span class="hl-str">"Consider implementing lazy loading for below-fold images"</span>]
+    },
+    <span class="hl-prop">"content"</span>: {
+      <span class="hl-prop">"score"</span>: <span class="hl-num">70</span>,
+      <span class="hl-prop">"issues"</span>: [
+        { <span class="hl-prop">"severity"</span>: <span class="hl-str">"warning"</span>, <span class="hl-prop">"message"</span>: <span class="hl-str">"Low text-to-HTML ratio (14%)"</span> }
+      ],
+      <span class="hl-prop">"suggestions"</span>: [<span class="hl-str">"Add more substantive content to the page body"</span>]
+    },
+    <span class="hl-prop">"security"</span>: {
+      <span class="hl-prop">"score"</span>: <span class="hl-num">100</span>,
+      <span class="hl-prop">"issues"</span>: [],
+      <span class="hl-prop">"suggestions"</span>: [<span class="hl-str">"Ensure HTTPS is enforced server-wide"</span>]
+    }
+  }
+}</code></pre>
+
+            <h4>Status Codes</h4>
+            <div class="status-codes">
+              <span class="status-code status-2xx">200 — Success</span>
+              <span class="status-code status-4xx">400 — Missing or invalid URL</span>
+              <span class="status-code status-4xx">422 — URL unreachable or invalid</span>
+              <span class="status-code status-5xx">500 — Server error</span>
+            </div>
+
+            <h4>Example</h4>
+            <pre><code>curl -X POST https://api.pagerx.dev/api/analyze \
+  -H <span class="hl-str">"Content-Type: application/json"</span> \
+  -d <span class="hl-str">'{"url": "https://example.com"}'</span></code></pre>
+          </div>
+        </div>
+
+        <!-- 3. POST /api/analyze/llm -->
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-url">/api/analyze/llm</span>
+          </div>
+          <div class="endpoint-body">
+            <h4>Description</h4>
+            <p>LLM-powered deep analysis. Uses a language model to provide nuanced, context-aware evaluation of the page — including content quality, writing style, branding consistency, and semantic structure. <strong>Most thorough analysis</strong> — takes 3–8 seconds.</p>
+            <p><em>Available on Pro and Agency plans.</em></p>
+
+            <h4>Request Body</h4>
+            <pre><code>{
+  <span class="hl-prop">"url"</span>: <span class="hl-str">"https://example.com"</span>
+}</code></pre>
+
+            <h4>Response</h4>
+            <pre><code>{
+  <span class="hl-prop">"overall_score"</span>: <span class="hl-num">81</span>,
+  <span class="hl-prop">"summary"</span>: <span class="hl-str">"Well-structured landing page with clear value proposition. Content is informative but could benefit from stronger CTAs and more compelling headlines."</span>,
+  <span class="hl-prop">"perspectives"</span>: {
+    <span class="hl-prop">"content_quality"</span>: {
+      <span class="hl-prop">"score"</span>: <span class="hl-num">78</span>,
+      <span class="hl-prop">"feedback"</span>: <span class="hl-str">"Content is clear and well-organized. Consider adding more specific examples and data points to strengthen credibility."</span>
+    },
+    <span class="hl-prop">"branding"</span>: {
+      <span class="hl-prop">"score"</span>: <span class="hl-num">85</span>,
+      <span class="hl-prop">"feedback"</span>: <span class="hl-str">"Consistent voice and visual identity throughout. Tagline effectively communicates the core offering."</span>
+    },
+    <span class="hl-prop">"structure"</span>: {
+      <span class="hl-prop">"score"</span>: <span class="hl-num">80</span>,
+      <span class="hl-prop">"feedback"</span>: <span class="hl-str">"Good use of headings and sections. Consider adding a table of contents for longer pages."</span>
+    }
+  },
+  <span class="hl-prop">"action_items"</span>: [
+    <span class="hl-str">"Add a prominent call-to-action above the fold"</span>,
+    <span class="hl-str">"Include customer testimonials for social proof"</span>,
+    <span class="hl-str">"Optimize headline to include primary keyword"</span>
+  ]
+}</code></pre>
+
+            <h4>Status Codes</h4>
+            <div class="status-codes">
+              <span class="status-code status-2xx">200 — Success</span>
+              <span class="status-code status-4xx">400 — Missing or invalid URL</span>
+              <span class="status-code status-4xx">402 — Payment required (upgrade to use)</span>
+              <span class="status-code status-4xx">422 — URL unreachable or invalid</span>
+              <span class="status-code status-5xx">500 — Server error</span>
+            </div>
+
+            <h4>Example</h4>
+            <pre><code>curl -X POST https://api.pagerx.dev/api/analyze/llm \
+  -H <span class="hl-str">"Content-Type: application/json"</span> \
+  -d <span class="hl-str">'{"url": "https://example.com"}'</span></code></pre>
+          </div>
+        </div>
+
+        <!-- 4. GET /api/health -->
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-url">/api/health</span>
+          </div>
+          <div class="endpoint-body">
+            <h4>Description</h4>
+            <p>Health check endpoint. Returns the current status and version of the PageRX API. Use this to verify connectivity and uptime in your monitoring or before making analysis requests.</p>
+
+            <h4>Request</h4>
+            <p>No request body needed — just a GET request.</p>
+
+            <h4>Response</h4>
+            <pre><code>{
+  <span class="hl-prop">"status"</span>: <span class="hl-str">"healthy"</span>,
+  <span class="hl-prop">"version"</span>: <span class="hl-str">"2.0.0"</span>
+}</code></pre>
+
+            <h4>Status Codes</h4>
+            <div class="status-codes">
+              <span class="status-code status-2xx">200 — Service is healthy</span>
+              <span class="status-code status-5xx">503 — Service unavailable</span>
+            </div>
+
+            <h4>Example</h4>
+            <pre><code>curl https://api.pagerx.dev/api/health</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── AUTHENTICATION ─── -->
+      <section class="section" id="auth">
+        <h2>Authentication</h2>
+        <div class="auth-box">
+          <h3>No API Key Required (Free Tier)</h3>
+          <p>Currently no API key is needed for basic analysis. All <code>/api/score/instant</code> and <code>/api/analyze</code> requests can be made without authentication on the Free tier.</p>
+          <p>API keys are coming soon for rate-limited access. When introduced, you'll authenticate by passing your key in the <code>Authorization</code> header:</p>
+          <pre><code>Authorization: Bearer prx_live_xxxxxxxxxxxx</code></pre>
+          <p style="margin-bottom:0">Pro and Agency subscribers will receive API keys automatically. Until then, all analysis requests are open-access.</p>
+        </div>
+      </section>
+
+      <!-- ─── RATE LIMITS ─── -->
+      <section class="section" id="rates">
+        <h2>Rate Limits &amp; Plans</h2>
+        <p>Usage is tracked per IP address on the Free tier. Upgrade to unlock higher limits and premium features.</p>
+
+        <div class="rate-grid">
+          <div class="rate-card free">
+            <div class="tier">Free</div>
+            <div class="price">$0 / mo</div>
+            <div class="limit">10 analyses / month</div>
+            <div class="limit" style="margin-top:0.3rem;color:#484f58;font-size:0.85rem">Score + Analyze only</div>
+          </div>
+          <div class="rate-card pro">
+            <div class="tier">Pro</div>
+            <div class="price">$29 / mo</div>
+            <div class="limit">Unlimited analyses</div>
+            <div class="limit" style="margin-top:0.3rem;color:#484f58;font-size:0.85rem">LLM analysis, PDF reports</div>
+          </div>
+          <div class="rate-card agency">
+            <div class="tier">Agency</div>
+            <div class="price">$99 / mo</div>
+            <div class="limit">1,000 req / day</div>
+            <div class="limit" style="margin-top:0.3rem;color:#484f58;font-size:0.85rem">API access, priority support</div>
+          </div>
+        </div>
+
+        <h4>Rate Limit Headers</h4>
+        <p>All API responses include rate limit information in the response headers:</p>
+        <pre><code><span class="hl-var">X-RateLimit-Limit</span>: <span class="hl-num">10</span>
+<span class="hl-var">X-RateLimit-Remaining</span>: <span class="hl-num">7</span>
+<span class="hl-var">X-RateLimit-Reset</span>: <span class="hl-str">"2026-07-01T00:00:00Z"</span></code></pre>
+      </section>
+
+      <!-- ─── CODE EXAMPLES ─── -->
+      <section class="section" id="examples">
+        <h2>Code Examples</h2>
+        <p>Integrate PageRX into your application with these ready-to-use snippets. All examples use the <code>/api/analyze</code> endpoint.</p>
+
+        <!-- Tabbed examples -->
+        <div class="code-tabs">
+          <div class="code-tab-btns">
+            <button class="code-tab-btn active" data-tab="tab-curl">cURL</button>
+            <button class="code-tab-btn" data-tab="tab-python">Python</button>
+            <button class="code-tab-btn" data-tab="tab-js">JavaScript</button>
+          </div>
+
+          <div class="code-tab-panel active" id="tab-curl">
+            <pre><code><span class="hl-com">#!/bin/bash</span>
+<span class="hl-com"># Analyze a page with PageRX using cURL</span>
+
+URL=<span class="hl-str">"https://example.com"</span>
+
+curl -X POST https://api.pagerx.dev/api/analyze \
+  -H <span class="hl-str">"Content-Type: application/json"</span> \
+  -d <span class="hl-str">"{\"url\": \"$URL\"}"</span> \
+  | jq <span class="hl-str">'.'</span></code></pre>
+          </div>
+
+          <div class="code-tab-panel" id="tab-python">
+            <pre><code><span class="hl-com">#!/usr/bin/env python3</span>
+<span class="hl-str">"""PageRX API integration example."""</span>
+
+<span class="hl-kw">import</span> requests
+<span class="hl-kw">import</span> json
+
+<span class="hl-fn">def</span> <span class="hl-fn">analyze_page</span>(url: str) -> dict:
+    <span class="hl-str">"""Analyze a web page using PageRX API."""</span>
+    response = requests.post(
+        <span class="hl-str">"https://api.pagerx.dev/api/analyze"</span>,
+        json={<span class="hl-str">"url"</span>: url},
+        timeout=<span class="hl-num">30</span>
+    )
+    response.raise_for_status()
+    <span class="hl-kw">return</span> response.json()
+
+
+<span class="hl-com"># Example usage</span>
+<span class="hl-kw">if</span> __name__ == <span class="hl-str">"__main__"</span>:
+    result = <span class="hl-fn">analyze_page</span>(<span class="hl-str">"https://example.com"</span>)
+    <span class="hl-fn">print</span>(json.dumps(result, indent=<span class="hl-num">2</span>))
+    <span class="hl-fn">print</span>(<span class="hl-str">f"Overall score: <span class="hl-var">{result['overall_score']}</span>/100"</span>)</code></pre>
+          </div>
+
+          <div class="code-tab-panel" id="tab-js">
+            <pre><code><span class="hl-com">// PageRX API integration — JavaScript / Node.js</span>
+
+<span class="hl-kw">async</span> <span class="hl-kw">function</span> <span class="hl-fn">analyzePage</span>(url) {
+  <span class="hl-kw">const</span> response = <span class="hl-kw">await</span> <span class="hl-fn">fetch</span>(<span class="hl-str">"https://api.pagerx.dev/api/analyze"</span>, {
+    method: <span class="hl-str">"POST"</span>,
+    headers: { <span class="hl-str">"Content-Type"</span>: <span class="hl-str">"application/json"</span> },
+    body: JSON.stringify({ url }),
+  });
+
+  <span class="hl-kw">if</span> (!response.ok) {
+    <span class="hl-kw">throw</span> <span class="hl-kw">new</span> <span class="hl-fn">Error</span>(<span class="hl-str">`HTTP <span class="hl-var">${response.status}</span>`</span>);
+  }
+
+  <span class="hl-kw">return</span> <span class="hl-kw">await</span> response.json();
+}
+
+<span class="hl-com">// Example usage</span>
+<span class="hl-fn">analyzePage</span>(<span class="hl-str">"https://example.com"</span>)
+  .then(data => {
+    <span class="hl-fn">console</span>.log(<span class="hl-str">"Score:"</span>, data.overall_score);
+    <span class="hl-fn">console</span>.log(<span class="hl-str">"SEO issues:"</span>, data.perspectives.seo.issues.length);
+  })
+  .catch(err => <span class="hl-fn">console</span>.error(<span class="hl-str">"Analysis failed:"</span>, err));</code></pre>
+          </div>
+        </div>
+
+        <h4>Batch Analysis (Python)</h4>
+        <pre><code><span class="hl-kw">import</span> requests
+<span class="hl-kw">from</span> concurrent.futures <span class="hl-kw">import</span> ThreadPoolExecutor, as_completed
+
+urls = [
+    <span class="hl-str">"https://example.com"</span>,
+    <span class="hl-str">"https://example.org"</span>,
+    <span class="hl-str">"https://example.net"</span>,
+]
+
+<span class="hl-kw">def</span> <span class="hl-fn">score</span>(url):
+    r = requests.post(
+        <span class="hl-str">"https://api.pagerx.dev/api/score/instant"</span>,
+        json={<span class="hl-str">"url"</span>: url}, timeout=<span class="hl-num">15</span>
+    )
+    <span class="hl-kw">return</span> url, r.json()[<span class="hl-str">"score"</span>]
+
+<span class="hl-kw">with</span> ThreadPoolExecutor(max_workers=<span class="hl-num">5</span>) <span class="hl-kw">as</span> pool:
+    futures = {pool.submit(score, u): u <span class="hl-kw">for</span> u <span class="hl-kw">in</span> urls}
+    <span class="hl-kw">for</span> future <span class="hl-kw">in</span> as_completed(futures):
+        url, score = future.result()
+        <span class="hl-fn">print</span>(<span class="hl-str">f"<span class="hl-var">{url}</span>: <span class="hl-var">{score}</span>/100"</span>)</code></pre>
+      </section>
+
+      <!-- ─── TRY IT NOW ─── -->
+      <section class="section" id="try">
+        <h2>Try It Now</h2>
+        <p>Enter a URL below to call the <code>/api/score/instant</code> endpoint live. No API key needed.</p>
+
+        <div class="try-section">
+          <h3>Live Demo</h3>
+          <div class="try-input-group">
+            <input type="url" id="try-url" placeholder="https://example.com" value="https://example.com">
+            <select id="try-endpoint">
+              <option value="/api/score/instant">Score (Instant)</option>
+              <option value="/api/analyze">Analyze (Full)</option>
+            </select>
+            <button class="try-btn" id="try-btn" onclick="runTryDemo()">Analyze</button>
+          </div>
+          <div class="try-result" id="try-result">Click <strong>Analyze</strong> to see the API response here.</div>
+        </div>
+      </section>
+
+      <!-- ─── FAQ ─── -->
+      <section class="section" id="faq">
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>What types of pages can PageRX analyze?</span>
+            <span class="icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>PageRX can analyze any publicly accessible web page, including landing pages, blog posts, e-commerce product pages, SaaS sites, and documentation pages. The page must be accessible over HTTP or HTTPS without authentication. We do not analyze pages behind login walls, paywalls, or private networks.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>How is the score calculated?</span>
+            <span class="icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>The heuristic score (<code>/api/score/instant</code>) is calculated from structural signals: presence of title tags, meta descriptions, heading hierarchy, image alt attributes, page load time, word count, link structure, and Open Graph tags. The full analysis (<code>/api/analyze</code>) adds perspective-specific checks like color contrast (accessibility), HTTPS enforcement (security), and content-to-HTML ratio (content quality). The LLM analysis uses a language model trained on web quality best practices.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Can I use PageRX in my CI/CD pipeline?</span>
+            <span class="icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Absolutely. PageRX is designed for automation. Use the <code>/api/score/instant</code> endpoint as a lightweight check in your CI pipeline (GitHub Actions, GitLab CI, Jenkins, etc.). The batch analysis pattern shown in the code examples section works well for automated quality gates. You can fail a build if the score drops below a threshold or if critical accessibility errors are found.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>What happens when I exceed my rate limit?</span>
+            <span class="icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>The API returns a <code>429 Too Many Requests</code> status code with a <code>Retry-After</code> header indicating how long to wait before retrying. Free tier limits reset at the beginning of each calendar month. You can monitor your usage via the <code>X-RateLimit-Remaining</code> response header on every API call. Upgrade to Pro or Agency for higher limits.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Is there a sandbox or test environment?</span>
+            <span class="icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Yes! You can use <code>https://example.com</code> as a test URL — it's a stable, publicly available page that all endpoints can analyze. For more thorough testing, we recommend setting up your own test page or pointing the API at a staging environment. All endpoints return consistent, deterministic results for the same URL, making them suitable for integration tests.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>How does the LLM analysis differ from the regular analysis?</span>
+            <span class="icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>The standard analysis (<code>/api/analyze</code>) uses deterministic rules and heuristics — it's fast, consistent, and predictable. The LLM analysis (<code>/api/analyze/llm</code>) uses a language model to understand content nuance: writing quality, tone, brand voice, argument strength, and semantic structure. It provides human-like feedback but is slower and counts toward a separate usage limit. For automated quality gates, use the standard analysis; for deep content audits, use the LLM endpoint.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="footer">
+    <div class="container">
+      <p>
+        <a href="https://pagerx.dev">PageRX</a> &bull;
+        <a href="#">Privacy Policy</a> &bull;
+        <a href="#">Terms of Service</a>
+      </p>
+      <p style="margin-top:0.5rem;margin-bottom:0">&copy; 2026 PageRX. API v2.0.</p>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Code Tab Switcher ── */
+    document.querySelectorAll('.code-tab-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const parent = this.closest('.code-tabs');
+        parent.querySelectorAll('.code-tab-btn').forEach(b => b.classList.remove('active'));
+        parent.querySelectorAll('.code-tab-panel').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById(this.dataset.tab).classList.add('active');
+      });
+    });
+
+    /* ── FAQ Toggle ── */
+    function toggleFaq(el) {
+      el.classList.toggle('open');
+      const answer = el.nextElementSibling;
+      answer.classList.toggle('open');
+      const icon = el.querySelector('.icon');
+      icon.textContent = answer.classList.contains('open') ? '−' : '+';
+    }
+
+    /* ── Try It Now ── */
+    async function runTryDemo() {
+      const url = document.getElementById('try-url').value.trim();
+      const endpoint = document.getElementById('try-endpoint').value;
+      const btn = document.getElementById('try-btn');
+      const resultDiv = document.getElementById('try-result');
+
+      if (!url) {
+        resultDiv.textContent = 'Please enter a URL.';
+        resultDiv.className = 'try-result error';
+        return;
+      }
+
+      // Basic URL validation
+      try { new URL(url); } catch {
+        resultDiv.textContent = 'Invalid URL. Please enter a valid URL including protocol (e.g. https://example.com).';
+        resultDiv.className = 'try-result error';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="try-spinner"></span> Analyzing...';
+      resultDiv.textContent = 'Requesting analysis...';
+      resultDiv.className = 'try-result';
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(`HTTP ${response.status}: ${errText.slice(0, 200)}`);
+        }
+
+        const data = await response.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        resultDiv.className = 'try-result success';
+      } catch (err) {
+        resultDiv.textContent = `Request failed: ${err.message}`;
+        resultDiv.className = 'try-result error';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Analyze';
+      }
+    }
+
+    /* ── Keyboard shortcut: Enter in URL input triggers analysis ── */
+    document.getElementById('try-url').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') runTryDemo();
+    });
+  </script>
+</body>
+</html>
