@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestro Guard — Zero-Dependency AI Code Verifier CLI</title>
+    <meta name="description" content="Maestro Guard catches the bugs LLMs consistently produce: broken DOM refs, empty stubs, console.errors, and syntax errors. Zero dependencies. Pure Python stdlib.">
+    <meta name="keywords" content="AI code verification, LLM code bugs, Cursor verification, Claude Code checker, Copilot code quality, CLI code linter, AI-generated code, maestro-guard">
+    <meta name="author" content="Maestro Build">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Maestro Guard — Never Ship Broken AI Code Again">
+    <meta property="og:description" content="Zero-dependency CLI tool that checks AI-generated HTML/JS for the bugs LLMs consistently produce. Install with pip.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://github.com/ivo1974kanchev-arch/maestro-guard">
+    <meta property="og:site_name" content="Maestro Guard">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Maestro Guard — AI Code Verifier CLI">
+    <meta name="twitter:description" content="Catch broken DOM refs, empty stubs, console.errors, and syntax errors in AI-generated code. Zero deps. Pure Python.">
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Maestro Guard",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Linux, macOS, Windows",
+        "description": "Zero-dependency CLI tool that checks AI-generated HTML/JS for the bugs LLMs consistently produce. Broken DOM references, empty function stubs, console.errors left in production, syntax errors — all caught in milliseconds.",
+        "url": "https://github.com/ivo1974kanchev-arch/maestro-guard",
+        "softwareVersion": "1.0.0",
+        "installUrl": "https://pypi.org/project/maestro-guard/",
+        "programmingLanguage": "Python",
+        "requirements": "Python 3.8+",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "Maestro Build"
+        },
+        "license": "MIT"
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%236c5ce7'/%3E%3Cpath d='M8 16 L12 12 L18 18 L24 18 L24 10 L22 10 L22 16 L18 16 L12 10 L8 16Z' fill='white'/%3E%3C/svg%3E">
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        :root {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #0f0f24;
+            --bg-card: #1a1a3e;
+            --bg-card-hover: #22224a;
+            --accent: #6c5ce7;
+            --accent-glow: rgba(108, 92, 231, 0.25);
+            --accent-secondary: #a29bfe;
+            --text-primary: #e8e8f0;
+            --text-secondary: #9a9ab8;
+            --text-muted: #6a6a88;
+            --border: #2a2a4e;
+            --border-accent: #6c5ce7;
+            --success: #00cec9;
+            --danger: #ff6b6b;
+            --warning: #fdcb6e;
+            --gradient-hero: linear-gradient(135deg, #0a0a1a 0%, #151530 50%, #1a1a3e 100%);
+            --gradient-accent: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            --gradient-success: linear-gradient(135deg, #00cec9, #55efc4);
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ─── Background Effects ─── */
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(108, 92, 231, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(108, 92, 231, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-glow {
+            position: fixed;
+            top: -20%; right: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(108, 92, 231, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-glow-2 {
+            position: fixed;
+            bottom: -20%; left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, rgba(162, 155, 254, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ─── Navigation ─── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: rgba(10, 10, 26, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        .nav-brand .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 800;
+            color: white;
+        }
+        .nav-brand span { color: var(--accent); }
+
+        .nav-links { display: flex; align-items: center; gap: 1.5rem; list-style: none; }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text-primary); }
+
+        .nav-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.5rem 1.25rem;
+            background: var(--gradient-accent);
+            color: white !important;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .nav-cta:hover { opacity: 0.9; transform: translateY(-1px); color: white !important; }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+        .nav-toggle span {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        /* ─── Container ─── */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ─── Hero ─── */
+        .hero {
+            padding: 140px 0 80px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.4rem 1rem;
+            background: rgba(108, 92, 231, 0.12);
+            border: 1px solid rgba(108, 92, 231, 0.3);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--accent-secondary);
+            margin-bottom: 1.5rem;
+        }
+        .hero-badge code {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            background: rgba(108, 92, 231, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: var(--accent-secondary);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.25rem;
+            background: linear-gradient(135deg, #ffffff 0%, var(--accent-secondary) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: clamp(1.05rem, 2vw, 1.25rem);
+            color: var(--text-secondary);
+            max-width: 720px;
+            margin: 0 auto 2rem;
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.9rem 2rem;
+            background: var(--gradient-accent);
+            color: white !important;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--accent-glow); }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.9rem 2rem;
+            background: transparent;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 1px solid var(--border);
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .btn-secondary:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+        /* ─── Hero Terminal ─── */
+        .hero-terminal {
+            margin: 3rem auto 0;
+            max-width: 680px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            text-align: left;
+            box-shadow: 0 12px 50px rgba(0,0,0,0.3);
+        }
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.75rem 1rem;
+            background: rgba(0,0,0,0.25);
+            border-bottom: 1px solid var(--border);
+        }
+        .terminal-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+        }
+        .terminal-dot.red { background: #ff5f57; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #28c840; }
+        .terminal-title {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-left: 8px;
+            font-family: var(--font-mono);
+        }
+        .terminal-body {
+            padding: 1.25rem 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            overflow-x: auto;
+        }
+        .terminal-body .prompt { color: var(--success); }
+        .terminal-body .cmd { color: var(--text-primary); }
+        .terminal-body .output-pass { color: var(--success); }
+        .terminal-body .output-fail { color: var(--danger); }
+        .terminal-body .output-info { color: var(--accent-secondary); }
+        .terminal-body .output-muted { color: var(--text-muted); }
+        .terminal-body .comment { color: var(--text-muted); font-style: italic; }
+
+        /* ─── Sections ─── */
+        section { padding: 5rem 0; }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+
+        .section-title, .section-subtitle {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ─── Problem Section ─── */
+        .problem-section {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+            margin-top: 2.5rem;
+        }
+
+        .problem-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .problem-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .problem-icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .problem-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        .problem-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .problem-quote {
+            margin-top: 2.5rem;
+            padding: 1.5rem 2rem;
+            background: var(--bg-card);
+            border-left: 3px solid var(--warning);
+            border-radius: 8px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .problem-quote p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            line-height: 1.6;
+        }
+        .problem-quote .attribution {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: normal;
+        }
+
+        /* ─── Solution / How It Works ─── */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+            counter-reset: step;
+        }
+
+        .step-card {
+            counter-increment: step;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            position: relative;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .step-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+        .step-number {
+            width: 44px;
+            height: 44px;
+            background: var(--gradient-accent);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white;
+            margin: 0 auto 1rem;
+        }
+        .step-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .step-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+        .step-card code {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            background: rgba(108, 92, 231, 0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--accent-secondary);
+        }
+
+        /* ─── The 4 Checks ─── */
+        .checks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+            margin-top: 2.5rem;
+        }
+
+        .check-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .check-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .check-card .check-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .check-card .check-icon.dom { background: rgba(108, 92, 231, 0.2); color: var(--accent); }
+        .check-card .check-icon.stub { background: rgba(255, 107, 107, 0.2); color: var(--danger); }
+        .check-card .check-icon.console { background: rgba(253, 203, 110, 0.2); color: var(--warning); }
+        .check-card .check-icon.syntax { background: rgba(0, 206, 201, 0.2); color: var(--success); }
+
+        .check-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+        .check-card .check-weight {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .check-card p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* ─── 5 Review Perspectives ─── */
+        .perspectives-section {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .perspectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 1.25rem;
+            margin-top: 2.5rem;
+        }
+
+        .perspective-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .perspective-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .perspective-card .persp-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin: 0 auto 0.75rem;
+        }
+        .perspective-card:nth-child(1) .persp-icon { background: rgba(108, 92, 231, 0.2); color: var(--accent); }
+        .perspective-card:nth-child(2) .persp-icon { background: rgba(0, 206, 201, 0.2); color: var(--success); }
+        .perspective-card:nth-child(3) .persp-icon { background: rgba(253, 203, 110, 0.2); color: var(--warning); }
+        .perspective-card:nth-child(4) .persp-icon { background: rgba(162, 155, 254, 0.2); color: var(--accent-secondary); }
+        .perspective-card:nth-child(5) .persp-icon { background: rgba(255, 107, 107, 0.2); color: var(--danger); }
+
+        .perspective-card h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+        .perspective-card p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* ─── CLI Examples ─── */
+        .cli-examples {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .cli-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .cli-block .cli-header {
+            padding: 0.65rem 1rem;
+            background: rgba(0,0,0,0.2);
+            border-bottom: 1px solid var(--border);
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .cli-block pre {
+            padding: 1rem 1.25rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            overflow-x: auto;
+            white-space: pre;
+            margin: 0;
+        }
+        .cli-block pre .cmt { color: var(--text-muted); font-style: italic; }
+        .cli-block pre .prmpt { color: var(--success); }
+        .cli-block pre .cmd-text { color: var(--text-primary); }
+
+        /* ─── Comparison Table ─── */
+        .comparison-section {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .comp-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .comp-table thead {
+            background: rgba(0,0,0,0.25);
+        }
+        .comp-table th {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        .comp-table th:first-child { border-radius: 12px 0 0 0; }
+        .comp-table th:last-child { border-radius: 0 12px 0 0; }
+        .comp-table td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .comp-table tbody tr:hover { background: rgba(108, 92, 231, 0.04); }
+        .comp-table tbody tr:last-child td { border-bottom: none; }
+        .comp-table .feature-col { font-weight: 500; color: var(--text-primary); white-space: nowrap; }
+        .comp-table .check-yes { color: var(--success); }
+        .comp-table .check-no { color: var(--text-muted); }
+        .comp-table .check-partial { color: var(--warning); }
+        .comp-table .highlight-col {
+            background: rgba(108, 92, 231, 0.08);
+            border-left: 2px solid var(--accent);
+            border-right: 2px solid var(--accent);
+        }
+        .comp-table td.highlight-col, .comp-table th.highlight-col {
+            color: var(--text-primary);
+        }
+
+        .table-note {
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* ─── Install / CTA Section ─── */
+        .install-section {
+            text-align: center;
+        }
+
+        .install-box {
+            max-width: 600px;
+            margin: 2rem auto 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+        }
+        .install-box .pip-cmd {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            background: rgba(108, 92, 231, 0.12);
+            border: 1px solid rgba(108, 92, 231, 0.3);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            display: inline-block;
+            margin-bottom: 0.75rem;
+            transition: border-color 0.2s;
+        }
+        .install-box .pip-cmd:hover {
+            border-color: var(--accent);
+        }
+        .install-box .pip-sub {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .install-box .pip-sub .highlight {
+            color: var(--accent-secondary);
+            font-weight: 500;
+        }
+
+        .install-features {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+        .install-features span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+        }
+
+        /* ─── Footer ─── */
+        footer {
+            padding: 3rem 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+        footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        footer .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.88rem;
+            transition: color 0.2s;
+        }
+        footer .footer-links a:hover { color: var(--accent-secondary); }
+        footer .footer-copy {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-toggle { display: flex; }
+
+            nav {
+                padding: 0 1rem;
+            }
+            .container { padding: 0 1rem; }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .cli-examples {
+                grid-template-columns: 1fr;
+            }
+
+            .perspectives-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .comp-table {
+                font-size: 0.8rem;
+            }
+            .comp-table th,
+            .comp-table td {
+                padding: 0.75rem 0.75rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .install-box .pip-cmd {
+                font-size: 0.95rem;
+                padding: 0.8rem 1rem;
+                word-break: break-all;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .perspectives-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero {
+                padding: 110px 0 60px;
+            }
+            section { padding: 3rem 0; }
+        }
+
+        /* ─── Utility ─── */
+        .text-center { text-align: center; }
+        .mt-1 { margin-top: 1rem; }
+        .mt-2 { margin-top: 2rem; }
+
+        /* ─── Animated pulse on accent ─── */
+        @keyframes pulse-accent {
+            0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
+            50% { box-shadow: 0 0 40px var(--accent-glow); }
+        }
+        .btn-primary {
+            animation: pulse-accent 3s ease-in-out infinite;
+        }
+
+        /* ─── Code block styling ─── */
+        .inline-code {
+            font-family: var(--font-mono);
+            font-size: 0.85em;
+            background: rgba(108, 92, 231, 0.12);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--accent-secondary);
+        }
+
+        /* ─── CTA GitHub section ─── */
+        .github-cta-box {
+            max-width: 500px;
+            margin: 3rem auto 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .github-cta-box:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .github-cta-box .github-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .github-cta-box h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .github-cta-box p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-gh {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.85rem 2rem;
+            background: #24292e;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .btn-gh:hover {
+            background: #2c3138;
+            transform: translateY(-2px);
+        }
+
+        /* ─── Stats strip ─── */
+        .stats-strip {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+            padding: 1.5rem 0;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-item .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-item .stat-label {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ─── Review output preview ─── */
+        .review-preview {
+            margin: 2.5rem auto 0;
+            max-width: 680px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            text-align: left;
+        }
+        .review-preview pre {
+            padding: 1.25rem 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            overflow-x: auto;
+            white-space: pre;
+            margin: 0;
+        }
+        .review-preview .rp-pass { color: var(--success); }
+        .review-preview .rp-fail { color: var(--danger); }
+        .review-preview .rp-label { color: var(--accent-secondary); font-weight: 500; }
+        .review-preview .rp-score { color: var(--warning); }
+        .review-preview .rp-head { color: var(--text-primary); font-weight: 700; }
+        .review-preview .rp-dim { color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+<div class="bg-glow-2"></div>
+
+<!-- ═══ Nav ═══ -->
+<nav>
+    <a href="#" class="nav-brand">
+        <div class="logo-icon">MG</div>
+        Maestro <span>Guard</span>
+    </a>
+    <ul class="nav-links">
+        <li><a href="#problem">Problem</a></li>
+        <li><a href="#quickstart">Quick Start</a></li>
+        <li><a href="#checks">Checks</a></li>
+        <li><a href="#review">Review</a></li>
+        <li><a href="#comparison">Comparison</a></li>
+        <li><a href="https://github.com/ivo1974kanchev-arch/maestro-guard" class="nav-cta" target="_blank">GitHub →</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle navigation" onclick="this.parentElement.querySelector('.nav-links').classList.toggle('show')">
+        <span></span><span></span><span></span>
+    </button>
+</nav>
+
+<main>
+
+<!-- ═══ Hero ═══ -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">
+            ⚡ Zero-dependency · <code>pip install maestro-guard</code> · MIT
+        </div>
+        <h1>Never Ship Broken AI Code Again</h1>
+        <p>
+            Every developer using Cursor, Claude Code, or Copilot has shipped AI code
+            that <strong>looked right</strong> but had <strong>hidden bugs</strong>.
+            Maestro Guard catches them in <strong>milliseconds</strong>&nbsp;— no web service,
+            no dependencies, no false promises.
+        </p>
+        <div class="hero-actions">
+            <a href="#quickstart" class="btn-primary">⚡ Get Started</a>
+            <a href="#comparison" class="btn-secondary">See How It Works →</a>
+        </div>
+
+        <!-- Hero Terminal -->
+        <div class="hero-terminal">
+            <div class="terminal-header">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+                <span class="terminal-title">bash — maestro-guard</span>
+            </div>
+            <div class="terminal-body">
+                <span class="comment"># Install in one command</span><br>
+                <span class="prompt">$</span> <span class="cmd">pip install maestro-guard</span><br>
+                <br>
+                <span class="comment"># Check any AI-generated file</span><br>
+                <span class="prompt">$</span> <span class="cmd">maestro-guard check index.html</span><br>
+                <span class="output-pass">  ✅ js_syntax ........ 100/100</span><br>
+                <span class="output-pass">  ✅ handlers ......... 100/100</span><br>
+                <span class="output-pass">  ✅ dom_refs ......... 100/100</span><br>
+                <span class="output-pass">  ✅ console_errors ... 100/100</span><br>
+                <span class="output-info">  ─────────────────────────────</span><br>
+                <span class="output-pass">  ✅ ALL CHECKS PASSED</span><br>
+                <span class="output-muted">  Exit code: 0</span><br>
+                <br>
+                <span class="comment"># Or find the bugs before they ship</span><br>
+                <span class="prompt">$</span> <span class="cmd">maestro-guard check ai-output.html</span><br>
+                <span class="output-fail">  ❌ dom_refs ......... 40/100</span><br>
+                <span class="output-fail">     getElementById('submit-btn') — no id="submit-btn" found</span><br>
+                <span class="output-fail">     getElementById('nav-menu') — no id="nav-menu" found</span><br>
+                <span class="output-fail">  ❌ console_errors ... 50/100</span><br>
+                <span class="output-fail">     console.error('Failed to load user data') at line 47</span><br>
+                <span class="output-fail">  ❌ 2 checks failed</span>
+            </div>
+        </div>
+
+        <div class="stats-strip">
+            <div class="stat-item">
+                <div class="stat-value">0</div>
+                <div class="stat-label">Dependencies</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">4</div>
+                <div class="stat-label">Deterministic Checks</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">5</div>
+                <div class="stat-label">Review Perspectives</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">2</div>
+                <div class="stat-label">Commands</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Problem Section ═══ -->
+<section class="problem-section" id="problem">
+    <div class="container">
+        <div class="section-label text-center">The Problem</div>
+        <h2 class="section-title">AI Code Looks Right. Until It Doesn't.</h2>
+        <p class="section-subtitle">
+            LLMs are incredible at generating code that <em>appears</em> correct. But they
+            consistently produce the same class of bugs — and manual review misses them.
+        </p>
+
+        <div class="problem-grid">
+            <div class="problem-card">
+                <div class="problem-icon">🔗</div>
+                <h3>Broken DOM References</h3>
+                <p><code class="inline-code">getElementById('user-form')</code> but the HTML has <code class="inline-code">id="user-form "</code> (trailing space). The AI hallucinated the reference — page silently breaks.</p>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">🪹</div>
+                <h3>Empty Function Stubs</h3>
+                <p>AI fills in <code class="inline-code">function handleSubmit(e) { // TODO }</code> — it looks like real logic, but the button does nothing. Shipped as "complete."</p>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">🔊</div>
+                <h3>console.errors in Production</h3>
+                <p>Debug <code class="inline-code">console.error()</code> calls left in the output. The AI used them during development and forgot to strip them. Your users see red in the console.</p>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">💥</div>
+                <h3>Silent Syntax Errors</h3>
+                <p>An unbalanced brace or a missing bracket. The browser swallows it, the page partially renders, and you chase a phantom bug for hours.</p>
+            </div>
+        </div>
+
+        <div class="problem-quote">
+            <p>"AI coding tools are transformative. But they generate code that passes the 'looks right' test while hiding bugs that deterministically break production. Maestro Guard closes that gap."</p>
+            <div class="attribution">— The problem, stated simply</div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Quick Start / How It Works ═══ -->
+<section id="quickstart">
+    <div class="container">
+        <div class="section-label text-center">Quick Start</div>
+        <h2 class="section-title">Install &amp; Verify in 30 Seconds</h2>
+        <p class="section-subtitle">Zero configuration. Zero dependencies. Just pip and go.</p>
+
+        <div class="steps">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Install</h3>
+                <p>Run <code>pip install maestro-guard</code>. That's it — pure Python stdlib, no npm, no Docker, no cloud.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Run Checks</h3>
+                <p><code>maestro-guard check index.html</code> runs all 4 deterministic checks in milliseconds. Add <code>--json</code> for CI.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Review Deeper</h3>
+                <p><code>maestro-guard review index.html</code> analyzes from 5 expert perspectives: security, quality, UX, completeness, and business.</p>
+            </div>
+        </div>
+
+        <!-- Pip install box -->
+        <div class="install-box">
+            <div class="pip-cmd">
+                pip install maestro-guard
+            </div>
+            <div class="pip-sub">
+                Python 3.8+ &nbsp;·&nbsp; <span class="highlight">zero</span> dependencies &nbsp;·&nbsp; MIT license
+            </div>
+            <div class="install-features">
+                <span>✅ Pure Python stdlib</span>
+                <span>✅ No npm/Node/Docker</span>
+                <span>✅ CI-ready JSON output</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ The 4 Checks ═══ -->
+<section id="checks">
+    <div class="container">
+        <div class="section-label text-center">Deterministic Verification</div>
+        <h2 class="section-title">The 4 Checks — No False Positives</h2>
+        <p class="section-subtitle">
+            Each check must score <strong>100/100</strong> to pass. No partial credit.
+            No silent failures. No interpretation — just deterministic truth.
+        </p>
+
+        <div class="checks-grid">
+            <div class="check-card">
+                <div class="check-icon dom">🔗</div>
+                <h3>DOM References</h3>
+                <div class="check-weight">Weight: 20 &nbsp;·&nbsp; <code class="inline-code">dom_refs</code></div>
+                <p>Scans every <code>getElementById</code>, <code>querySelector</code>, and <code>getElementsByClassName</code> call and verifies the target actually exists in the HTML.</p>
+            </div>
+            <div class="check-card">
+                <div class="check-icon stub">🪹</div>
+                <h3>Empty Function Stubs</h3>
+                <div class="check-weight">Weight: 25 &nbsp;·&nbsp; <code class="inline-code">handlers</code></div>
+                <p>Detects empty function bodies, <code>// TODO</code> stubs, and casing mismatches between event handlers and their definitions.</p>
+            </div>
+            <div class="check-card">
+                <div class="check-icon console">🔊</div>
+                <h3>console.errors in Production</h3>
+                <div class="check-weight">Weight: 15 &nbsp;·&nbsp; <code class="inline-code">console_errors</code></div>
+                <p>Flags any <code>console.error()</code> or <code>console.warn()</code> calls the AI left behind. These are always debug artifacts — never intentional in production code.</p>
+            </div>
+            <div class="check-card">
+                <div class="check-icon syntax">💥</div>
+                <h3>Syntax Errors</h3>
+                <div class="check-weight">Weight: 25 &nbsp;·&nbsp; <code class="inline-code">js_syntax</code></div>
+                <p>Parses JS for unbalanced braces, brackets, and parens, plus broken string literals. Catches the silent breakers before they reach a browser.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 5 Review Perspectives ═══ -->
+<section class="perspectives-section" id="review">
+    <div class="container">
+        <div class="section-label text-center">Heuristic Review</div>
+        <h2 class="section-title">5 Expert Perspectives. One Command.</h2>
+        <p class="section-subtitle">
+            Beyond deterministic checks, <code class="inline-code">maestro-guard review</code> analyzes your code
+            from five distinct lenses — no API keys, no external services, just built-in heuristics.
+        </p>
+
+        <div class="perspectives-grid">
+            <div class="perspective-card">
+                <div class="persp-icon">🛡️</div>
+                <h3>Security Auditor</h3>
+                <p>Inline event handlers, eval(), innerHTML, CSP headers, localStorage exposure.</p>
+            </div>
+            <div class="perspective-card">
+                <div class="persp-icon">📐</div>
+                <h3>Code Quality</h3>
+                <p>Dead code, magic numbers, var usage, console.log, deep nesting, readability.</p>
+            </div>
+            <div class="perspective-card">
+                <div class="persp-icon">🎯</div>
+                <h3>UX Reviewer</h3>
+                <p>Viewport meta, alt text, semantic HTML, ARIA roles, focus styles, contrast.</p>
+            </div>
+            <div class="perspective-card">
+                <div class="persp-icon">📋</div>
+                <h3>Completeness</h3>
+                <p>Page title, meta description, charset, favicon, broken links, missing sections.</p>
+            </div>
+            <div class="perspective-card">
+                <div class="persp-icon">💰</div>
+                <h3>Business Viability</h3>
+                <p>CTAs, pricing, social proof, navigation structure, value proposition clarity.</p>
+            </div>
+        </div>
+
+        <!-- Review output preview -->
+        <div class="review-preview">
+            <div class="terminal-header">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+                <span class="terminal-title">maestro-guard review index.html</span>
+            </div>
+            <pre><span class="rp-head">  MULTI-PERSPECTIVE REVIEW REPORT</span>
+  <span class="rp-dim">═══════════════════════════════════════════</span>
+
+  <span class="rp-fail">❌ FAIL</span>  <span class="rp-label">Security Auditor</span>     <span class="rp-score">(4.5/10)</span>
+       ⚠ Inline event handlers: onclick, onsubmit
+       ⚠ No Content-Security-Policy meta tag
+       💡 Use addEventListener() instead
+
+  <span class="rp-pass">✅ PASS</span>  <span class="rp-label">Code Quality Analyst</span>  <span class="rp-score">(8.0/10)</span>
+
+  <span class="rp-fail">❌ FAIL</span>  <span class="rp-label">UX Reviewer</span>          <span class="rp-score">(5.0/10)</span>
+       ⚠ No viewport meta tag
+       ⚠ Limited use of semantic HTML
+
+  <span class="rp-pass">✅ PASS</span>  <span class="rp-label">Completeness</span>         <span class="rp-score">(7.5/10)</span>
+
+  <span class="rp-pass">✅ PASS</span>  <span class="rp-label">Business Viability</span>   <span class="rp-score">(9.0/10)</span>
+
+  <span class="rp-dim">───────────────────────────────────────</span>
+  <span class="rp-label">Overall Score:</span> <span class="rp-score">60.0/100</span>
+  <span class="rp-fail">Status: ❌ SOME REVIEWS FAILED</span></pre>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ CLI Examples ═══ -->
+<section id="cli">
+    <div class="container">
+        <div class="section-label text-center">CLI Usage</div>
+        <h2 class="section-title">Two Commands. Total Control.</h2>
+        <p class="section-subtitle">
+            <code class="inline-code">check</code> for deterministic verification, <code class="inline-code">review</code> for heuristic analysis.
+            Designed to fit into any workflow.
+        </p>
+
+        <div class="cli-examples">
+            <div class="cli-block">
+                <div class="cli-header">📋 maestro-guard check</div>
+                <pre><span class="cmt"># Single file</span>
+<span class="prmpt">$</span> <span class="cmd-text">maestro-guard check index.html</span>
+
+<span class="cmt"># With spec fulfillment</span>
+<span class="prmpt">$</span> <span class="cmd-text">maestro-guard check index.html --spec spec.md</span>
+
+<span class="cmt"># CI-friendly JSON output</span>
+<span class="prmpt">$</span> <span class="cmd-text">maestro-guard check index.html --json</span>
+
+<span class="cmt"># Check all files in directory</span>
+<span class="prmpt">$</span> <span class="cmd-text">maestro-guard check ./output/</span>
+
+<span class="cmt"># Verbose mode (show skipped checks)</span>
+<span class="prmpt">$</span> <span class="cmd-text">maestro-guard check index.html --verbose</span></pre>
+            </div>
+            <div class="cli-block">
+                <div class="cli-header">🔍 maestro-guard review</div>
+                <pre><span class="cmt"># Full 5-perspective review</span>
+<span class="prmpt">$</span> <span class="cmd-text">maestro-guard review index.html</span>
+
+<span class="cmt"># Specific roles only</span>
+<span class="prmpt">$</span> <span class="cmd-text">maestro-guard review index.html --roles security,ux</span>
+
+<span class="cmt"># Get structured fix suggestions</span>
+<span class="prmpt">$</span> <span class="cmd-text">maestro-guard review index.html --improve</span>
+
+<span class="cmt"># CI integration</span>
+<span class="prmpt">$</span> <span class="cmd-text">maestro-guard check ./output/index.html --json</span></pre>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Comparison Table ═══ -->
+<section class="comparison-section" id="comparison">
+    <div class="container">
+        <div class="section-label text-center">Comparison</div>
+        <h2 class="section-title">Maestro Guard vs. The Alternatives</h2>
+        <p class="section-subtitle">
+            No linter, formatter, or code review tool was built for AI-generated code.
+            Maestro Guard targets the specific bugs that LLMs produce.
+        </p>
+
+        <div class="table-wrapper">
+            <table class="comp-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th class="highlight-col">Maestro Guard</th>
+                        <th>Manual Review</th>
+                        <th>ESLint / Prettier</th>
+                        <th>SonarQube</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="feature-col">Broken DOM ref detection</td>
+                        <td class="highlight-col check-yes">✅ Deterministic</td>
+                        <td class="check-no">❌ Easy to miss</td>
+                        <td class="check-no">❌ Not covered</td>
+                        <td class="check-no">❌ Not covered</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-col">Empty stub detection</td>
+                        <td class="highlight-col check-yes">✅ Deterministic</td>
+                        <td class="check-partial">⚠️ Missed in review</td>
+                        <td class="check-no">❌ Not covered</td>
+                        <td class="check-no">❌ Not covered</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-col">console.error in prod</td>
+                        <td class="highlight-col check-yes">✅ Deterministic</td>
+                        <td class="check-no">❌ Frequently missed</td>
+                        <td class="check-yes">✅ With plugins</td>
+                        <td class="check-yes">✅ With rules</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-col">JS syntax validation</td>
+                        <td class="highlight-col check-yes">✅ 100/100 standard</td>
+                        <td class="check-partial">⚠️ Hit-or-miss</td>
+                        <td class="check-yes">✅ Built-in</td>
+                        <td class="check-yes">✅ Built-in</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-col">Multi-perspective review</td>
+                        <td class="highlight-col check-yes">✅ 5 expert roles</td>
+                        <td class="check-no">❌ Single perspective</td>
+                        <td class="check-no">❌ Not covered</td>
+                        <td class="check-no">❌ Code quality only</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-col">Spec fulfillment check</td>
+                        <td class="highlight-col check-yes">✅ --spec flag</td>
+                        <td class="check-partial">⚠️ Manual comparison</td>
+                        <td class="check-no">❌ Not covered</td>
+                        <td class="check-no">❌ Not covered</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-col">Zero dependencies</td>
+                        <td class="highlight-col check-yes">✅ Pure Python stdlib</td>
+                        <td class="check-yes">✅ N/A</td>
+                        <td class="check-no">❌ npm ecosystem</td>
+                        <td class="check-no">❌ Java runtime</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-col">CI-ready JSON output</td>
+                        <td class="highlight-col check-yes">✅ --json flag</td>
+                        <td class="check-no">❌ Manual</td>
+                        <td class="check-yes">✅ Yes</td>
+                        <td class="check-yes">✅ Yes</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-col">Built for AI-generated code</td>
+                        <td class="highlight-col check-yes">✅ Purpose-built</td>
+                        <td class="check-no">❌ General review</td>
+                        <td class="check-no">❌ General linting</td>
+                        <td class="check-no">❌ General analysis</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-col">Setup time</td>
+                        <td class="highlight-col check-yes">✅ 5 seconds</td>
+                        <td class="check-yes">✅ None</td>
+                        <td class="check-no">❌ 15+ min config</td>
+                        <td class="check-no">❌ 30+ min config</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-note">
+            Maestro Guard is the only tool purpose-built to catch the bugs LLMs consistently produce.
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Install / GitHub CTA ═══ -->
+<section class="install-section">
+    <div class="container">
+        <div class="section-label text-center">Get Started</div>
+        <h2 class="section-title">Ship AI Code With Confidence</h2>
+        <p class="section-subtitle">
+            Install in one command. Run in milliseconds. Catch bugs that every other tool misses.
+        </p>
+
+        <div class="install-box">
+            <div class="pip-cmd">
+                pip install maestro-guard
+            </div>
+            <div class="pip-sub">
+                <span class="highlight">Zero</span> dependencies &nbsp;·&nbsp; Python 3.8+ &nbsp;·&nbsp; MIT licensed &nbsp;·&nbsp; ~200 KB
+            </div>
+            <div class="install-features">
+                <span>✅ Deterministic checks</span>
+                <span>✅ 5-perspective review</span>
+                <span>✅ CI integration</span>
+                <span>✅ No API keys</span>
+            </div>
+        </div>
+
+        <div class="github-cta-box">
+            <div class="github-icon">🐙</div>
+            <h3>Open Source. MIT Licensed.</h3>
+            <p>Browse the source, open an issue, or contribute on GitHub.</p>
+            <a href="https://github.com/ivo1974kanchev-arch/maestro-guard" target="_blank" class="btn-gh">
+                View on GitHub →
+            </a>
+        </div>
+
+        <!-- CI example -->
+        <div class="hero-terminal" style="margin-top: 2.5rem;">
+            <div class="terminal-header">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+                <span class="terminal-title">.github/workflows/verify.yml</span>
+            </div>
+            <div class="terminal-body">
+                <span class="comment"># Use in CI — fails the build if any check fails</span><br>
+                <span class="output-muted">- name: Verify AI-generated code</span><br>
+                <span class="cmd">  run: maestro-guard check ./output/index.html --json</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<!-- ═══ Footer ═══ -->
+<footer>
+    <div class="container">
+        <div class="footer-links">
+            <a href="https://github.com/ivo1974kanchev-arch/maestro-guard" target="_blank">GitHub</a>
+            <a href="https://pypi.org/project/maestro-guard/" target="_blank">PyPI</a>
+            <a href="https://github.com/ivo1974kanchev-arch/maestro-guard/issues" target="_blank">Issues</a>
+            <a href="https://github.com/ivo1974kanchev-arch/maestro-guard/blob/main/LICENSE" target="_blank">License</a>
+        </div>
+        <div class="footer-copy">
+            Maestro Guard &nbsp;·&nbsp; MIT Licensed &nbsp;·&nbsp; Built for developers who ship AI code
+        </div>
+    </div>
+</footer>
+
+<!-- ═══ Mobile nav toggle script ═══ -->
+<script>
+    document.querySelector('.nav-toggle').addEventListener('click', function() {
+        const links = document.querySelector('.nav-links');
+        links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+        if (links.style.display === 'flex') {
+            links.style.flexDirection = 'column';
+            links.style.position = 'absolute';
+            links.style.top = '64px';
+            links.style.left = '0';
+            links.style.right = '0';
+            links.style.background = 'rgba(10, 10, 26, 0.98)';
+            links.style.backdropFilter = 'blur(20px)';
+            links.style.padding = '1rem 2rem 2rem';
+            links.style.borderBottom = '1px solid var(--border)';
+            links.style.alignItems = 'flex-start';
+        }
+    });
+
+    // Close mobile nav on link click
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            const links = document.querySelector('.nav-links');
+            if (window.innerWidth <= 768) {
+                links.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
