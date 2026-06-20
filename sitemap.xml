@@ -85,5 +85,10 @@
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-  </urlset>
+    <url>
+    <loc>https://ivo1974kanchev-arch.github.io/pagerx-frontend/maestro-guard.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>
     79|    74|
