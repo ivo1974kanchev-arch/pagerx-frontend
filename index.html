@@ -1916,10 +1916,15 @@
 
         // ── Detect Environment ──
         const IS_GITHUB_PAGES = window.location.hostname.includes('github.io');
+        const BACKEND_HOST = '116.203.180.240';
+        const BACKEND_PORT = '8000';
+        // When served from HTTPS (GitHub Pages), the browser blocks mixed-content HTTP requests.
+        // For full production use, set up a proper domain with SSL cert on the backend.
+        // For now: GitHub Pages redirects to the live backend directly.
         const API_BASE = IS_GITHUB_PAGES
-            ? 'http://116.203.180.240:8000/api'
+            ? 'http://' + BACKEND_HOST + ':' + BACKEND_PORT + '/api'
             : '/api';
-        const APP_URL = '//116.203.180.240:8000';
+        const APP_URL = '//' + BACKEND_HOST + ':' + BACKEND_PORT;
 
         // ── Analysis handler ──
         const form = document.getElementById('analyze-form');
@@ -1932,9 +1937,9 @@
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            // On GitHub Pages, redirect to the live app
+            // On GitHub Pages, redirect to the live backend directly
             if (IS_GITHUB_PAGES) {
-                window.location.href = 'http://116.203.180.240:8000/?url=' + encodeURIComponent(urlInput.value);
+                window.location.href = 'http://' + BACKEND_HOST + ':' + BACKEND_PORT + '/?url=' + encodeURIComponent(urlInput.value);
                 return;
             }
         });
